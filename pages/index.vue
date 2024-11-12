@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-
+useHead({
+  title: "Forside",
+});
 </script>
-
-<style></style>

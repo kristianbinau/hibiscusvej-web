@@ -2,7 +2,7 @@
   <section>
     <hr class="border-gray-200 dark:border-gray-800" />
 
-    <div class="flex justify-between mt-4">
+    <div class="flex justify-between mt-4 px-2">
       <div class="flex flex-col gap-2">
         <ULink
           to="https://www.abodense.dk/dept/0128/index"

@@ -6,11 +6,6 @@ export default defineNuxtConfig({
   ui: {
     global: true,
   },
-  nitro: {
-    experimental: {
-      openAPI: true
-    }
-  },
   hub: {
     database: true,
   },

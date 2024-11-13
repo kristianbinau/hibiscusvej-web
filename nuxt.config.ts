@@ -4,6 +4,14 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/ui', '@nuxt/content', '@nuxthub/core'],
   ui: {
-    global: true
+    global: true,
+  },
+  nitro: {
+    experimental: {
+      openAPI: true
+    }
+  },
+  hub: {
+    database: true,
   },
 })

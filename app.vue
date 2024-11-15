@@ -15,6 +15,10 @@
       <Links />
     </footer>
   </div>
+  
+  <ClientOnly>
+    <ServiceWorker />
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

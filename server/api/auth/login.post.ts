@@ -1,9 +1,15 @@
 export default eventHandler(async (event) => {
-    const users = await useDrizzle().select().from(tables.users).all()
-
     // TODO - Actually implement login logic
 
-    const user = users[0] // Logged in user
+    const userLogin = (await useDrizzle().select().from(tables.userLogins).all())[0]
+
+    const user = (await useDrizzle().select().from(tables.users).where(eq(tables.users.id, userLogin.userId)).get())
+    if (!user) {
+        throw createError({
+            statusCode: 401,
+            statusMessage: 'Unauthorized',
+        })
+    }
 
     // JWT tokens generation both accessToken and refreshToken
     const { refreshToken, accessToken } = await generateTokens(user, null)
@@ -14,7 +20,7 @@ export default eventHandler(async (event) => {
 
     // Add refreshToken to UserSession table
     await useDrizzle().insert(tables.userSessions).values({
-        userId: user.id,
+        userLoginId: userLogin.id,
         refreshToken: refreshToken,
         tokenFamily: decodedRefreshToken.payload.jti,
         expiredAt: new Date(decodedRefreshToken.payload.exp * 1000),

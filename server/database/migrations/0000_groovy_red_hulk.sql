@@ -13,6 +13,7 @@ CREATE TABLE `apartments` (
 	`door` text
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `apartments_street_number_floor_door_unique` ON `apartments` (`street`,`number`,`floor`,`door`);--> statement-breakpoint
 CREATE TABLE `communal_bookings` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
@@ -27,10 +28,12 @@ CREATE TABLE `user_logins` (
 	`user_id` integer NOT NULL,
 	`email` text NOT NULL,
 	`password` text NOT NULL,
+	`single_use` integer NOT NULL,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `user_logins_email_unique` ON `user_logins` (`email`);--> statement-breakpoint
 CREATE TABLE `user_persons` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
@@ -51,6 +54,8 @@ CREATE TABLE `user_sessions` (
 	`updated_at` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `user_sessions_refresh_token_unique` ON `user_sessions` (`refresh_token`);--> statement-breakpoint
+CREATE UNIQUE INDEX `user_sessions_token_family_unique` ON `user_sessions` (`token_family`);--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`apartment_id` integer NOT NULL,

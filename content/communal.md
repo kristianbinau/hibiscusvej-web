@@ -1,6 +1,6 @@
 ---
-title: "Fælleslokale"
-description: "Regler og information om fælleslokalet"
+title: 'Fælleslokale'
+description: 'Regler og information om fælleslokalet'
 ---
 
 ## WIFI
@@ -32,4 +32,3 @@ Der er rengørings udstyr ved køkkenet inkl. genbrugelige klude, viskestykker o
 :UButton{label="Book Fælleslokale" to="/communal-book" size="xl" icon="i-material-symbols-add-home-work-rounded" class="markdown-exclude"}
 
 </div>
-

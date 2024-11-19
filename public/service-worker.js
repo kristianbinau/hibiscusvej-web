@@ -102,7 +102,9 @@ function processOnFetch(event) {
 	const url = new URL(event.request.url);
 
 	// We currently only want to do stuff with "real" requests: Navigation and API calls.
-	if (!(event.request.mode === 'navigate' || event.request.url.includes('/api/'))) {
+	if (
+		!(event.request.mode === 'navigate' || event.request.url.includes('/api/'))
+	) {
 		return fetch(event.request);
 	}
 
@@ -144,7 +146,10 @@ async function processTokenOnFetch(event) {
 		}
 	}
 
-	if (typeof accessToken === 'string' && accessToken !== ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED) {
+	if (
+		typeof accessToken === 'string' &&
+		accessToken !== ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED
+	) {
 		// Getting the expiration of the access token
 		let accessTokenExpiration = await (async () => {
 			let decodedAndParsedJWTBody = JSON.parse(atob(accessToken.split('.')[1]));
@@ -165,8 +170,14 @@ async function processTokenOnFetch(event) {
 		 * If Access Token a string and is not ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED, then we can assume that it's a real JWT.
 		 * All we have to do now is to modify the original request and add our 'Authorization' header.
 		 */
-		if (typeof accessToken === 'string' && accessToken !== ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED) {
-			const modifiedRequest = addAuthHeaderToRequest(event.request, accessToken);
+		if (
+			typeof accessToken === 'string' &&
+			accessToken !== ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED
+		) {
+			const modifiedRequest = addAuthHeaderToRequest(
+				event.request,
+				accessToken,
+			);
 
 			/**
 			 * If url is an "unauthorize"
@@ -217,7 +228,10 @@ async function refreshTokens(event) {
 	refreshingTokensLock.lock(async () => {
 		// Aborting the fetch request.
 		controller.abort();
-		await localforage.setItem(ACCESS_TOKEN, ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED);
+		await localforage.setItem(
+			ACCESS_TOKEN,
+			ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED,
+		);
 	});
 
 	let accessToken;
@@ -307,7 +321,11 @@ function addAuthHeaderToRequest(request, accessToken) {
  * @return {boolean}
  */
 function isAuthorizeUrls(url) {
-	const urlsExact = ['/api/auth/login', '/api/auth/register', '/api/auth/refresh'];
+	const urlsExact = [
+		'/api/auth/login',
+		'/api/auth/register',
+		'/api/auth/refresh',
+	];
 
 	return matchUrls(url, urlsExact);
 }

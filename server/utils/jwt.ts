@@ -4,9 +4,14 @@ const secretKey =
 	'cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2';
 
 const ISSUER = 'hibiscusvej:web';
+
 const ACCESS_LIFETIME = '5 minutes';
+export const ACCESS_AUDIENCE = 'hibiscusvej:access';
+
 const REFRESH_LIFETIME = '60 days';
 const REFRESH_ABSOLUTE_LIFETIME = '1 year';
+export const REFRESH_AUDIENCE = 'hibiscusvej:refresh';
+export const REFRESH_COOKIE_NAME = 'REFRESH-TOKEN';
 
 const secret = new TextEncoder().encode(secretKey);
 const alg = 'HS256';
@@ -37,6 +42,7 @@ async function generateRefreshToken(
 		.setProtectedHeader({ alg })
 		.setIssuedAt()
 		.setIssuer(ISSUER)
+		.setAudience(REFRESH_AUDIENCE)
 		.setSubject(subject.toString())
 		.setJti(familyKey)
 		.setExpirationTime(REFRESH_LIFETIME)
@@ -51,6 +57,7 @@ async function generateAccessToken(
 		.setProtectedHeader({ alg })
 		.setIssuedAt()
 		.setIssuer(ISSUER)
+		.setAudience(ACCESS_AUDIENCE)
 		.setSubject(subject.toString())
 		.setJti(familyKey)
 		.setExpirationTime(ACCESS_LIFETIME)

@@ -65,7 +65,7 @@ export default eventHandler(async (event) => {
 			.get();
 
 		// Set refreshToken cookie
-		setCookie(event, 'REFRESH-TOKEN', refreshToken, {
+		setCookie(event, REFRESH_COOKIE_NAME, refreshToken, {
 			httpOnly: true,
 			secure: true,
 			sameSite: 'strict',

@@ -2,6 +2,9 @@
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
+## Prerequisites
+- NodeJS (v22.11.0)
+
 ## Setup
 
 Make sure to install dependencies:
@@ -26,15 +29,14 @@ Build the application for production:
 npm run build
 ```
 
-Locally preview production build:
+Preview deployment:
 
 ```bash
-npm run build
-npx wrangler dev .output/server/index.mjs --assets .output/public/
+npx nuxthub preview
 ```
 
-Deploy to Cloudflare Workers:
+Deploy to production:
 
 ```bash
-npx wrangler deploy
+npx nuxthub deploy
 ```

@@ -1,0 +1,6 @@
+package-lock.json
+dist
+.nuxt
+.data
+.output
+server/database/migrations/meta

@@ -3,9 +3,10 @@
 		class="lg:w-2/4 lg:px-0 px-4 mx-auto flex flex-col items-center gap-4 mt-12"
 	>
 		<UForm
+			ref="form"
 			:schema="schema"
 			:state="state"
-			@submit="onSubmit"
+			@submit.prevent="onSubmit"
 			class="md:w-3/4 w-full"
 		>
 			<UCard>
@@ -13,23 +14,26 @@
 					<h1 class="text-2xl font-semibold text-primary">Login</h1>
 				</template>
 
-				<UFormGroup label="Email" name="email">
+				<UFormGroup label="Email" name="email" required>
 					<UInput v-model="state.email" />
 				</UFormGroup>
 
-				<UFormGroup label="Password" name="password" class="mt-3">
+				<UFormGroup label="Password" name="password" class="mt-3" required>
 					<UInput v-model="state.password" type="password" />
 				</UFormGroup>
 
 				<template #footer>
-					<div class="flex gap-3 flex-wrap">
+					<div
+						class="flex gap-3 flex-wrap md:flex-nowrap flex-1 justify-between"
+					>
 						<ULink
 							to="/auth/register"
 							class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
 						>
-							Don't have an account?
+							Har du ikke en konto?
 						</ULink>
-						<UButton type="submit" block>Login</UButton>
+
+						<UButton class="md:max-w-[48%]" type="submit" block>Login</UButton>
 					</div>
 				</template>
 			</UCard>
@@ -39,7 +43,7 @@
 
 <script lang="ts" setup>
 import { z } from 'zod';
-import type { FormSubmitEvent } from '#ui/types';
+import type { Form, FormSubmitEvent } from '#ui/types';
 
 definePageMeta({
 	layout: 'minimal',
@@ -49,12 +53,16 @@ useHead({
 	title: 'Login',
 });
 
+const toast = useToast();
+
 const schema = z.object({
 	email: z.string(),
 	password: z.string(),
 });
 
 type Schema = z.output<typeof schema>;
+
+const form = ref<Form<Schema>>();
 
 const state = reactive<{
 	email: string | undefined;
@@ -65,16 +73,32 @@ const state = reactive<{
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-	const res = await $fetch('/api/auth/login', {
-		method: 'POST',
-		body: {
-			email: event.data.email,
-			password: event.data.password,
-		},
-	});
+	form.value!.clear();
+	try {
+		const res = await $fetch('/api/auth/login', {
+			method: 'POST',
+			body: {
+				email: event.data.email,
+				password: event.data.password,
+			},
+		});
 
-	console.log(res);
-
-	// TODO: Handle response
+		if (res) {
+			await navigateTo('/u');
+		}
+	} catch (error: any) {
+		if (error.statusCode === 401) {
+			form.value!.setErrors([
+				{
+					path: 'email',
+					message: 'Email eller kodeord er forkert',
+				},
+				{
+					path: 'password',
+					message: 'Email eller kodeord er forkert',
+				},
+			]);
+		}
+	}
 }
 </script>

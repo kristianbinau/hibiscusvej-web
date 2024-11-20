@@ -7,6 +7,8 @@
 		<NuxtLayout>
 			<NuxtPage />
 		</NuxtLayout>
+
+		<UNotifications />
 	</div>
 
 	<ClientOnly>

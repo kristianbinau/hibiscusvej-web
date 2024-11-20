@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 const schema = z.object({
 	apartmentId: z.number(),
 	email: z.string().email(),

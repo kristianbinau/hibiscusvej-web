@@ -16,20 +16,20 @@
 		"@nuxt/ui": "^2.19.2",
 		"@nuxthub/core": "^0.8.7",
 		"bcryptjs": "^2.4.3",
-		"drizzle-orm": "^0.36.2",
+		"drizzle-orm": "^0.36.3",
 		"jose": "^5.9.6",
-		"nuxt": "^3.14.159",
+		"nuxt": "^3.14.1592",
 		"vue": "latest",
 		"vue-router": "latest",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@iconify-json/material-symbols": "^1.2.6",
+		"@iconify-json/material-symbols": "^1.2.7",
 		"@iconify-json/mdi": "^1.2.1",
 		"@types/bcryptjs": "^2.4.6",
-		"drizzle-kit": "^0.28.0",
+		"drizzle-kit": "^0.28.1",
 		"prettier": "3.3.3",
-		"wrangler": "^3.87.0"
+		"wrangler": "^3.88.0"
 	},
 	"volta": {
 		"node": "22.11.0"

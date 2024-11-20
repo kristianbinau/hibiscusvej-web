@@ -26,6 +26,16 @@ const links = [
 			icon: 'i-material-symbols-tools-power-drill',
 			to: '/borrow',
 		},
+		{
+			badge: {
+				icon: 'i-material-symbols-key',
+				variant: 'subtle',
+				label: 'Login',
+				size: 'md',
+				color: 'primary',
+			},
+			to: '/auth/login',
+		},
 	],
 ];
 </script>

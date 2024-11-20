@@ -161,6 +161,7 @@ useHead({
 });
 
 const toast = useToast();
+const { hash } = useHash();
 
 /**
  * Form
@@ -227,14 +228,16 @@ const state = reactive<{
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-	form.value!.clear()
+	form.value!.clear();
 	try {
+		const passwordHash = await hash(event.data.password);
+
 		const res = await $fetch('/api/auth/register', {
 			method: 'POST',
 			body: {
 				apartmentId: event.data.apartmentId,
 				email: event.data.email,
-				password: event.data.password,
+				password: passwordHash,
 				persons: event.data.persons,
 			},
 		});
@@ -242,8 +245,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (res) {
 			toast.add({
 				title: 'Konto oprettet',
-				description:
-					'Skal vi tage dig til login siden?',
+				description: 'Skal vi tage dig til login siden?',
 				icon: 'i-material-symbols-person-check',
 				timeout: 20000,
 				actions: [

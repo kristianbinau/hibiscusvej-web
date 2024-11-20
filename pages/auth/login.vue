@@ -53,7 +53,7 @@ useHead({
 	title: 'Login',
 });
 
-const toast = useToast();
+const { hash } = useHash();
 
 const schema = z.object({
 	email: z.string(),
@@ -75,11 +75,13 @@ const state = reactive<{
 async function onSubmit(event: FormSubmitEvent<Schema>) {
 	form.value!.clear();
 	try {
+		const passwordHash = await hash(event.data.password);
+
 		const res = await $fetch('/api/auth/login', {
 			method: 'POST',
 			body: {
 				email: event.data.email,
-				password: event.data.password,
+				password: passwordHash,
 			},
 		});
 

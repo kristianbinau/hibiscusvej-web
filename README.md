@@ -28,3 +28,15 @@ Build the application for production:
 ```bash
 npm run build
 ```
+
+Preview deployment:
+
+```bash
+npx nuxthub preview
+```
+
+Deploy to production:
+
+```bash
+npx nuxthub deploy
+```

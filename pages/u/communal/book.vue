@@ -1,6 +1,7 @@
 <template>
-	<h1>Logged in!</h1>
-	<p v-if="authUser">UserId: {{ authUser.user.id }}</p>
+  <div>
+    <h1>Book</h1>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -8,8 +9,8 @@ definePageMeta({
 	layout: 'logged-in',
 	middleware: 'auth-required',
 });
-
-const { authUser } = await useUser();
 </script>
 
-<style></style>
+<style>
+
+</style>

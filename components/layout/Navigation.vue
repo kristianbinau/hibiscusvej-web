@@ -6,17 +6,11 @@
 </template>
 
 <script lang="ts" setup>
-const links = [
-	[
-		{
-			label: 'Hibiscusvej',
-			labelClass: 'sm:text-2xl',
-			icon: 'i-material-symbols-home',
-			to: '/',
-		},
-	],
-	[],
-];
+import type { HorizontalNavigationLink } from '#ui/types';
+
+defineProps<{
+	links: HorizontalNavigationLink[] | HorizontalNavigationLink[][];
+}>();
 </script>
 
 <style></style>

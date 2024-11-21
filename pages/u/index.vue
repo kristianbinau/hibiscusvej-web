@@ -1,28 +1,17 @@
 <template>
 	<div>
 		<h1>Logged in!</h1>
-    <p v-if="authUser">UserId: {{ authUser.user.id }}</p>
+		<p v-if="authUser">UserId: {{ authUser.user.id }}</p>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import type { InternalApi } from 'nitropack';
-type UserResponse = InternalApi['/api/auth/user']['get'];
-
 definePageMeta({
 	layout: 'logged-in',
+	middleware: 'auth-required',
 });
 
-const authUser = ref<UserResponse | null>(null);
-
-async function fetchUser() {
-	const { data } = await useFetch('/api/auth/user');
-
-	if (data.value === null) return;
-
-	authUser.value = data.value;
-}
-fetchUser();
+const { authUser } = await useUser();
 </script>
 
 <style></style>

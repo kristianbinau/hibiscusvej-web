@@ -2,6 +2,7 @@
 	"recommendations": [
 		"bradlc.vscode-tailwindcss",
 		"vue.volar",
-		"nuxtr.nuxtr-vscode"
+		"nuxtr.nuxtr-vscode",
+		"antfu.iconify"
 	]
 }

@@ -154,6 +154,7 @@ import type { Form, FormSubmitEvent } from '#ui/types';
 
 definePageMeta({
 	layout: 'minimal',
+	middleware: 'guest-required',
 });
 
 useHead({

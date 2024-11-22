@@ -14,10 +14,21 @@ const links = [
 		{
 			label: 'Hibiscusvej',
 			labelClass: 'sm:text-2xl',
-			icon: 'i-material-symbols-home',
+			icon: 'Logo',
 			to: '/',
 		},
 	],
-	[],
+	[
+		{
+			badge: {
+				icon: 'i-material-symbols-arrow-back-rounded',
+				label: 'Tilbage',
+				variant: 'subtle',
+				size: 'md',
+				color: 'primary',
+			},
+			to: '/',
+		},
+	],
 ];
 </script>

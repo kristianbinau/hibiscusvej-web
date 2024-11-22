@@ -19,19 +19,22 @@ const links = [
 	[
 		{
 			label: 'Hibiscusvej',
-			labelClass: 'sm:text-2xl',
-			icon: 'i-material-symbols-home-rounded',
+			labelClass: 'hidden sm:text-2xl sm:block',
+			icon: 'Logo',
+			iconClass: 'sm:h-6 sm:w-6',
 			to: '/u',
 		},
 	],
 	[
 		{
 			label: 'Book lokale',
+			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-add-home-work-rounded',
 			to: '/u/communal/book',
 		},
 		{
 			label: 'Mine bookinger',
+			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-home-work-rounded',
 			to: '/u/communal/me',
 		},

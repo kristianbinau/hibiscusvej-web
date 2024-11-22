@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<template>
 <svg clip-rule="evenodd" fill-rule="evenodd" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 <path d="M241.5 24.5c-6.52.837-12.854 2.17-19 4h-9a312.61 312.61 0 0 1 19-4.5c3.196-.805 6.196-.638 9 .5Z" fill="#738eb4"/>
 <path d="m208.5 29.5c-1.533 1.745-3.533 2.745-6 3 1.533-1.745 3.533-2.745 6-3z" fill="#94a5c3" opacity=".741"/>
@@ -544,3 +544,4 @@
 <path d="M326.5 449.5c-.296 1.903-.963 3.57-2 5v-4l2-1Z" fill="#b2b9d3" opacity=".376"/>
 <path d="M283.5 452.5h4c5.676-.166 11.343.001 17 .5 1.237.232 2.237.732 3 1.5a676.756 676.756 0 0 1-24-2Z" fill="#6e7da3" opacity=".549"/>
 </svg>
+</template>

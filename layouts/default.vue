@@ -19,26 +19,28 @@ const links = [
 	[
 		{
 			label: 'Hibiscusvej',
-			labelClass: 'sm:text-2xl',
-			icon: 'i-material-symbols-home-rounded',
+			labelClass: ' hidden sm:text-2xl sm:block',
+			icon: 'Logo',
+			iconClass: 'sm:h-6 sm:w-6',
 			to: '/',
 		},
 	],
 	[
 		{
 			label: 'Fælleslokale',
+			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-add-home-work-rounded',
 			to: '/communal',
 		},
 		{
 			label: 'Lån & Leje',
+			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-tools-power-drill',
 			to: '/borrow',
 		},
 		{
 			badge: {
 				icon: 'i-material-symbols-key-outline-rounded',
-				variant: 'subtle',
 				label: 'Login',
 				size: 'md',
 				color: 'primary',

@@ -17,7 +17,7 @@ const schema = z.object({
 });
 
 export default eventHandler(async (event) => {
-	const body = await readValidatedBody(event, (body) => schema.parse(body));
+	const body = await readValidatedBody(event, schema.parse);
 
 	// If Email is already in use, return 409 Conflict
 	const userByEmail = await useDrizzle()

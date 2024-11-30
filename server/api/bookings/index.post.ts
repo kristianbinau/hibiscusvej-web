@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { UTCDateMini } from '@date-fns/utc';
+import { endOfYesterday, isAfter, addDays } from 'date-fns';
 
 const schema = z.object({
-	from: z.string().datetime(),
-	to: z.string().datetime(),
+	date: z.string().date(),
 });
 
 const maxConsecutiveDays = 2;
@@ -11,22 +12,27 @@ export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 	const body = await readValidatedBody(event, schema.parse);
 
-	const from = new Date(body.from);
-	const to = new Date(body.to);
+	const date = new UTCDateMini(body.date);
+	const from = new UTCDateMini(date);
+	const to = new UTCDateMini(addDays(from, 1));
+
+	from.setHours(10, 0, 0, 0);
+	to.setHours(9, 59, 59, 0);
 
 	// If from is later than to, return 400 Bad Request
-	if (from > to) {
+	if (isAfter(from, to)) {
 		throw createError({
 			statusCode: 400,
-			statusMessage: 'Bad Request',
+			statusMessage:
+				'Start tidspunktet skal være tidligere end slut tidspunktet.',
 		});
 	}
 
-	// If from is earlier than now, return 400 Bad Request
-	if (from < new Date()) {
+	// If from is yesterday, return 400 Bad Request
+	if (!isAfter(from, endOfYesterday())) {
 		throw createError({
 			statusCode: 400,
-			statusMessage: 'Bad Request',
+			statusMessage: 'Booking kan ikke starte i fortiden.',
 		});
 	}
 
@@ -37,7 +43,7 @@ export default eventHandler(async (event) => {
 	) {
 		throw createError({
 			statusCode: 400,
-			statusMessage: 'Bad Request',
+			statusMessage: 'Booking vare længere end max tilladt.',
 		});
 	}
 

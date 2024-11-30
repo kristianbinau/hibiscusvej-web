@@ -27,7 +27,5 @@ export default eventHandler(async (event) => {
 		)
 		.all();
 
-	return {
-		bookings,
-	};
+	return bookings;
 });

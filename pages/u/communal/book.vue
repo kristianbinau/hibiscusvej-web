@@ -37,6 +37,10 @@ definePageMeta({
 	middleware: 'auth-required',
 });
 
+useHead({
+	title: 'Book fælleslokalet',
+});
+
 const toast = useToast();
 
 const date = ref<Date | null>(null);
@@ -112,6 +116,9 @@ async function fetchBookingsThisMonth() {
 }
 fetchBookingsThisMonth();
 
+/**
+ * Submit
+ */
 async function onSubmit() {
 	if (!date.value) return;
 

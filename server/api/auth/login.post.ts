@@ -6,7 +6,7 @@ const schema = z.object({
 });
 
 export default eventHandler(async (event) => {
-	const body = await readValidatedBody(event, (body) => schema.parse(body));
+	const body = await readValidatedBody(event, schema.parse);
 
 	// If UserLogin w/ Email is not found, return 401 Unauthorized
 	const userLogin = await useDrizzle()

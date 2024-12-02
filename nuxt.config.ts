@@ -14,4 +14,13 @@ export default defineNuxtConfig({
 			tasks: true,
 		},
 	},
+
+	routeRules: {
+		"/u": {
+			redirect: {
+			  to: "/u/communal/book",
+			  statusCode: 302,
+			},
+		},
+	  },
 });

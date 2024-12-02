@@ -9,6 +9,10 @@ definePageMeta({
 	middleware: 'auth-required',
 });
 
+useHead({
+	title: '',
+});
+
 const { authUser } = await useUser();
 </script>
 

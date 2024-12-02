@@ -3,9 +3,19 @@ import { H3Event, EventHandlerRequest } from 'h3';
 export const useAuthUser = async (event: H3Event<EventHandlerRequest>) => {
 	const decodedToken = await useDecodedToken(event);
 
+	if (
+		decodedToken.payload.sub === undefined ||
+		isNaN(Number(decodedToken.payload.sub))
+	) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
 	return {
 		user: {
-			id: decodedToken.payload.sub,
+			id: Number(decodedToken.payload.sub),
 		},
 		session: {
 			family: decodedToken.payload.jti as string,

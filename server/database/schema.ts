@@ -63,8 +63,8 @@ export const apartments = sqliteTable(
 export const communalBookings = sqliteTable('communal_bookings', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	userId: integer('user_id').notNull(),
-	from: integer('from').notNull(),
-	to: integer('to').notNull(),
+	from: integer('from', { mode: 'timestamp' }).notNull(),
+	to: integer('to', { mode: 'timestamp' }).notNull(),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 });

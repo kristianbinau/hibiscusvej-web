@@ -19,7 +19,7 @@
 		"@popperjs/core": "^2.11.8",
 		"bcryptjs": "^2.4.3",
 		"date-fns": "^4.1.0",
-		"drizzle-orm": "^0.36.3",
+		"drizzle-orm": "^0.36.4",
 		"jose": "^5.9.6",
 		"nuxt": "^3.14.1592",
 		"v-calendar": "^3.1.2",
@@ -28,12 +28,12 @@
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@iconify-json/material-symbols": "^1.2.7",
+		"@iconify-json/material-symbols": "^1.2.8",
 		"@iconify-json/mdi": "^1.2.1",
 		"@types/bcryptjs": "^2.4.6",
 		"drizzle-kit": "^0.28.1",
-		"prettier": "3.3.3",
-		"wrangler": "^3.88.0"
+		"prettier": "3.4.1",
+		"wrangler": "^3.91.0"
 	},
 	"volta": {
 		"node": "22.11.0"

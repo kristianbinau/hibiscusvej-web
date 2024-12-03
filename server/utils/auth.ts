@@ -16,6 +16,7 @@ export const useAuthUser = async (event: H3Event<EventHandlerRequest>) => {
 	return {
 		user: {
 			id: Number(decodedToken.payload.sub),
+			admin: Boolean(decodedToken.payload.aud === ACCESS_AUDIENCE_ADMIN),
 		},
 		session: {
 			family: decodedToken.payload.jti as string,
@@ -25,6 +26,13 @@ export const useAuthUser = async (event: H3Event<EventHandlerRequest>) => {
 
 export const useAuthAdmin = async (event: H3Event<EventHandlerRequest>) => {
 	const authUser = await useAuthUser(event);
+
+	if (!authUser.user.admin) {
+		throw createError({
+			statusCode: 403,
+			statusMessage: 'Forbidden',
+		});
+	}
 
 	return {
 		...authUser,

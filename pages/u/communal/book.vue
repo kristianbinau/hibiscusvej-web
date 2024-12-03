@@ -5,7 +5,7 @@
 				<h1 class="text-primary text-2xl mt-2 mb-2">Book fælleslokalet</h1>
 				<p>
 					Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
-					Du kan fjerne din booking indtil 24 timer før start. <br />
+					Du kan fjerne din booking indtil før den starter. <br />
 					Dine bookinger kan ses under
 					<ULink
 						to="/u/communal/me"
@@ -15,13 +15,32 @@
 				</p>
 			</div>
 			<div class="flex flex-col">
-				<DatePicker
-					v-model="date"
-					:attributes="attributes"
-					:minDate="new Date()"
-					@didMove="onDidMove"
-				/>
-				<UButton @click="onSubmit" :disabled="date === null">Book</UButton>
+				<ClientOnly>
+					<DatePicker
+						v-model="date"
+						:attributes="attributes"
+						:minDate="new Date()"
+						@didMove="onDidMove"
+					/>
+
+					<UCheckbox v-model="hasReadTerms" class="my-4">
+						<template #label>
+							<span class="select-none">
+								Jeg har læst og accepteret
+								<ULink
+									to="/communal"
+									target="_blank"
+									class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+									>reglerne</ULink
+								>.
+							</span>
+						</template>
+					</UCheckbox>
+
+					<UButton @click="onSubmit" :disabled="date === null || !hasReadTerms"
+						>Book</UButton
+					>
+				</ClientOnly>
 			</div>
 		</div>
 	</section>
@@ -43,6 +62,7 @@ useHead({
 
 const toast = useToast();
 
+const hasReadTerms = ref(false);
 const date = ref<Date | null>(null);
 const year = ref<number>(new Date().getFullYear());
 const month = ref<number>(new Date().getMonth() + 1);
@@ -123,8 +143,6 @@ async function onSubmit() {
 	if (!date.value) return;
 
 	try {
-		console.log(date.value);
-
 		const res = await $fetch('/api/bookings', {
 			method: 'POST',
 			body: {

@@ -7,10 +7,12 @@ const ISSUER = 'hibiscusvej:web';
 
 const ACCESS_LIFETIME = '5 minutes';
 export const ACCESS_AUDIENCE = 'hibiscusvej:access';
+export const ACCESS_AUDIENCE_ADMIN = 'hibiscusvej:access-admin';
 
 const REFRESH_LIFETIME = '60 days';
 const REFRESH_ABSOLUTE_LIFETIME = '1 year';
 export const REFRESH_AUDIENCE = 'hibiscusvej:refresh';
+export const REFRESH_AUDIENCE_ADMIN = 'hibiscusvej:refresh-admin';
 export const REFRESH_COOKIE_NAME = 'REFRESH-TOKEN';
 
 const secret = new TextEncoder().encode(secretKey);
@@ -18,6 +20,7 @@ const alg = 'HS256';
 
 export async function generateTokens(
 	userId: number,
+	isAdmin: boolean,
 	family: string | null,
 ): Promise<{
 	refreshToken: string;
@@ -25,8 +28,8 @@ export async function generateTokens(
 }> {
 	const familyKey = family || crypto.randomUUID();
 
-	const refreshToken = await generateRefreshToken(userId, familyKey);
-	const accessToken = await generateAccessToken(userId, familyKey);
+	const refreshToken = await generateRefreshToken(userId, isAdmin, familyKey);
+	const accessToken = await generateAccessToken(userId, isAdmin, familyKey);
 
 	return {
 		refreshToken: refreshToken,
@@ -36,13 +39,14 @@ export async function generateTokens(
 
 async function generateRefreshToken(
 	subject: number,
+	isAdmin: boolean,
 	familyKey: string,
 ): Promise<string> {
 	return await new jose.SignJWT()
 		.setProtectedHeader({ alg })
 		.setIssuedAt()
 		.setIssuer(ISSUER)
-		.setAudience(REFRESH_AUDIENCE)
+		.setAudience(isAdmin ? REFRESH_AUDIENCE_ADMIN : REFRESH_AUDIENCE)
 		.setSubject(subject.toString())
 		.setJti(familyKey)
 		.setExpirationTime(REFRESH_LIFETIME)
@@ -51,13 +55,14 @@ async function generateRefreshToken(
 
 async function generateAccessToken(
 	subject: number,
+	isAdmin: boolean,
 	familyKey: string,
 ): Promise<string> {
 	return await new jose.SignJWT()
 		.setProtectedHeader({ alg })
 		.setIssuedAt()
 		.setIssuer(ISSUER)
-		.setAudience(ACCESS_AUDIENCE)
+		.setAudience(isAdmin ? ACCESS_AUDIENCE_ADMIN : ACCESS_AUDIENCE)
 		.setSubject(subject.toString())
 		.setJti(familyKey)
 		.setExpirationTime(ACCESS_LIFETIME)

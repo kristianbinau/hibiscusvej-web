@@ -2,12 +2,12 @@
 
 <script lang="ts" setup>
 definePageMeta({
-	layout: 'logged-in',
-	middleware: 'auth-required',
+	layout: 'logged-in-admin',
+	middleware: 'admin-required',
 });
 
 useHead({
-	title: '',
+	title: 'Admin: Bookings',
 });
 </script>
 

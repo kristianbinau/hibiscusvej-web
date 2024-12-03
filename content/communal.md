@@ -29,6 +29,6 @@ Der er rengørings udstyr ved køkkenet inkl. genbrugelige klude, viskestykker o
 
 <div class="flex justify-center w-100 mt-8">
 
-:UButton{label="Book Fælleslokale" to="/communal-book" size="xl" icon="i-material-symbols-add-home-work-rounded" class="markdown-exclude"}
+:UButton{label="Book Fælleslokale" to="/u/communal/book" size="xl" icon="i-material-symbols-add-home-work-rounded" class="markdown-exclude"}
 
 </div>

@@ -17,8 +17,6 @@
 <script setup lang="ts">
 import type { HorizontalNavigationLink } from '#ui/types';
 
-const { authUser } = await useUser();
-
 const links: HorizontalNavigationLink[][] = [
 	[
 		{
@@ -26,62 +24,32 @@ const links: HorizontalNavigationLink[][] = [
 			labelClass: 'hidden sm:text-2xl sm:block',
 			icon: 'Logo',
 			iconClass: 'sm:h-6 sm:w-6',
-			to: '/u',
+			to: '/u/admin',
 		},
 	],
 	[
 		{
-			label: 'Book lokale',
+			label: 'Users',
 			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-add-home-work-rounded',
-			to: '/u/communal/book',
+			to: '/u/admin/users',
 		},
 		{
-			label: 'Mine bookinger',
+			label: 'Bookings',
 			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-home-work-rounded',
-			to: '/u/communal/me',
+			to: '/u/admin/bookings',
 		},
 		{
 			badge: {
-				icon: 'i-material-symbols-key-off-outline-rounded',
+				icon: 'i-material-symbols-backspace-rounded',
 				variant: 'subtle',
-				label: 'Logout',
+				label: 'Tilbage',
 				size: 'md',
 				color: 'primary',
 			},
-			click: () => logout(),
+			click: () => navigateTo('/u'),
 		},
 	],
 ];
-
-if (authUser.value && authUser.value.user.admin) {
-	const link: HorizontalNavigationLink = {
-		badge: {
-			icon: 'i-material-symbols-admin-panel-settings-rounded',
-			variant: 'subtle',
-			label: 'Admin',
-			size: 'md',
-			color: 'primary',
-		},
-		click: () => navigateTo('/u/admin'),
-	};
-
-	// Add before logout
-	links[1].splice(-1, 0, link);
-}
-
-async function logout() {
-	try {
-		const res = await $fetch('/api/auth/logout', {
-			method: 'POST',
-		});
-
-		if (res) {
-			await navigateTo('/');
-		}
-	} catch (error: any) {
-		await navigateTo('/');
-	}
-}
 </script>

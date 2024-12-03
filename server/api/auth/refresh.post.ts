@@ -14,7 +14,11 @@ export default eventHandler(async (event) => {
 			payload: { aud: string; jti: string };
 		};
 
-		if (currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE) {
+		// If refreshToken is not an REFRESH_AUDIENCE or REFRESH_AUDIENCE_ADMIN token, return 401 Unauthorized
+		if (
+			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE &&
+			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE_ADMIN
+		) {
 			throw createError({
 				statusCode: 401,
 				statusMessage: 'Unauthorized',
@@ -105,6 +109,7 @@ export default eventHandler(async (event) => {
 	try {
 		const { refreshToken, accessToken } = await generateTokens(
 			userLogin.userId,
+			Boolean(user.admin),
 			currentDecodedRefreshToken.payload.jti,
 		);
 		const newDecodedRefreshToken = (await verifyToken(refreshToken)) as {

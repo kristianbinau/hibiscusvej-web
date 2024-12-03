@@ -8,18 +8,20 @@
 			</p>
 		</div>
 
-		<UTable :loading="fetchingBookings" :rows="rows" :columns="columns">
-			<template #id-data="{ row }">
-				<UButton
-					size="md"
-					label="Slet denne booking"
-					color="red"
-					variant="soft"
-					:disabled="isAfter(now, row.fromDate)"
-					@click="deleteBooking(row.id)"
-				/>
-			</template>
-		</UTable>
+		<ClientOnly>
+			<UTable :loading="fetchingBookings" :rows="rows" :columns="columns">
+				<template #id-data="{ row }">
+					<UButton
+						size="md"
+						label="Slet denne booking"
+						color="red"
+						variant="soft"
+						:disabled="isAfter(now, row.fromDate)"
+						@click="deleteBooking(row.id)"
+					/>
+				</template>
+			</UTable>
+		</ClientOnly>
 	</section>
 </template>
 
@@ -48,6 +50,9 @@ const columns = [
 	{
 		key: 'createdAt',
 		label: 'Oprettet',
+		// Hide on mobile
+		class: 'hidden md:table-cell',
+		rowClass: 'hidden md:table-cell',
 	},
 	{
 		key: 'id',

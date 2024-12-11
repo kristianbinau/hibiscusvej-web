@@ -4,7 +4,7 @@ import { relations } from 'drizzle-orm';
 export const users = sqliteTable('users', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	apartmentId: integer('apartment_id').notNull(),
-	admin: integer('admin').notNull(),
+	admin: integer('admin', { mode: 'boolean' }).notNull(),
 	verifiedByUserId: integer('verified_by_user_id'),
 	verifiedAt: integer('verified_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),

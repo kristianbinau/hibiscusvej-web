@@ -1,5 +1,4 @@
 import { subDays } from 'date-fns';
-import { desc } from 'drizzle-orm';
 
 const HISTORY_DAYS = 180;
 

@@ -109,7 +109,7 @@ export default eventHandler(async (event) => {
 	try {
 		const { refreshToken, accessToken } = await generateTokens(
 			userLogin.userId,
-			Boolean(user.admin),
+			user.admin,
 			currentDecodedRefreshToken.payload.jti,
 		);
 		const newDecodedRefreshToken = (await verifyToken(refreshToken)) as {

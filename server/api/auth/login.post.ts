@@ -48,7 +48,7 @@ export default eventHandler(async (event) => {
 
 	// Try to generate tokens
 	try {
-		const { refreshToken, accessToken } = await generateTokens(user.id, Boolean(user.admin), null);
+		const { refreshToken, accessToken } = await generateTokens(user.id, user.admin, null);
 		const decodedRefreshToken = (await verifyToken(refreshToken)) as {
 			payload: { exp: number; jti: string };
 		};

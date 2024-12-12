@@ -13,7 +13,10 @@ export default eventHandler(async (event) => {
 
 	try {
 		await useDrizzle()
-			.delete(tables.communalBookings)
+			.update(tables.communalBookings)
+			.set({
+				deletedAt: now,
+			})
 			.where(
 				and(
 					eq(tables.communalBookings.id, id),

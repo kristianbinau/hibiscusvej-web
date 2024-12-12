@@ -52,14 +52,17 @@ export default eventHandler(async (event) => {
 		.select()
 		.from(tables.communalBookings)
 		.where(
-			or(
-				and(
-					gte(tables.communalBookings.from, from),
-					lte(tables.communalBookings.from, to),
-				),
-				and(
-					gte(tables.communalBookings.to, from),
-					lte(tables.communalBookings.to, to),
+			and(
+				isNull(tables.communalBookings.deletedAt),
+				or(
+					and(
+						gte(tables.communalBookings.from, from),
+						lte(tables.communalBookings.from, to),
+					),
+					and(
+						gte(tables.communalBookings.to, from),
+						lte(tables.communalBookings.to, to),
+					),
 				),
 			),
 		)

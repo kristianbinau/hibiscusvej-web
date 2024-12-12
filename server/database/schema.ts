@@ -7,6 +7,7 @@ export const users = sqliteTable('users', {
 	admin: integer('admin', { mode: 'boolean' }).notNull(),
 	verifiedByUserId: integer('verified_by_user_id'),
 	verifiedAt: integer('verified_at', { mode: 'timestamp' }),
+	deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 });
@@ -65,6 +66,7 @@ export const communalBookings = sqliteTable('communal_bookings', {
 	userId: integer('user_id').notNull(),
 	from: integer('from', { mode: 'timestamp' }).notNull(),
 	to: integer('to', { mode: 'timestamp' }).notNull(),
+	deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 });

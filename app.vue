@@ -1,7 +1,5 @@
 <template>
-	<div
-		class="flex flex-col bg-gray-100 dark:bg-gray-900 min-h-dvh"
-	>
+	<div class="flex flex-col bg-gray-100 dark:bg-gray-900 min-h-dvh">
 		<NuxtRouteAnnouncer />
 
 		<NuxtLayout>

@@ -1,7 +1,5 @@
 <template>
-	<h1>
-		Velkommen Administator, dette er under udvikling
-	</h1>
+	<h1>Velkommen Administator, dette er under udvikling</h1>
 </template>
 
 <script lang="ts" setup>

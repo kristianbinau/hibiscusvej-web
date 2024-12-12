@@ -3,6 +3,7 @@
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Prerequisites
+
 - NodeJS (v22.11.0)
 
 ## Setup
@@ -39,4 +40,36 @@ Deploy to production:
 
 ```bash
 npx nuxthub deploy
+```
+
+## Commands
+
+Generate migrations:
+
+```bash
+npm run db:generate
+```
+
+Check for TypeScript errors:
+
+```bash
+npx nuxi typecheck
+```
+
+Format code:
+
+```bash
+npm run format
+```
+
+Check for dependencies updates:
+
+```bash
+npm run update-dependencies
+```
+
+Update dependencies:
+
+```bash
+npm run update-dependencies -- -u
 ```

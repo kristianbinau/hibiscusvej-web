@@ -91,7 +91,12 @@ export default eventHandler(async (event) => {
 	const user = await useDrizzle()
 		.select()
 		.from(tables.users)
-		.where(eq(tables.users.id, userLogin.userId))
+		.where(
+			and(
+				eq(tables.users.id, userLogin.userId),
+				isNull(tables.users.deletedAt),
+			),
+		)
 		.get();
 	if (!user) {
 		throw createError({

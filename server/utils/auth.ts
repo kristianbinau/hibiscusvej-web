@@ -1,4 +1,4 @@
-import { H3Event, EventHandlerRequest } from 'h3';
+import type { H3Event, EventHandlerRequest } from 'h3';
 
 export const useAuthUser = async (event: H3Event<EventHandlerRequest>) => {
 	const decodedToken = await useDecodedToken(event);

@@ -15,12 +15,22 @@ export default defineNuxtConfig({
 		},
 	},
 
+	/**
+	 * Waiting for fix in NuxtHub
+	 * @see https://github.com/nuxt-hub/core/issues/293
+	 */
+	/*
+	typescript: {
+		typeCheck: true,
+	},
+	*/
+
 	routeRules: {
-		"/u": {
+		'/u': {
 			redirect: {
-			  to: "/u/communal/book",
-			  statusCode: 302,
+				to: '/u/communal/book',
+				statusCode: 302,
 			},
 		},
-	  },
+	},
 });

@@ -52,7 +52,7 @@ export default eventHandler(async (event) => {
 			.insert(tables.users)
 			.values({
 				apartmentId: apartment.id,
-				admin: 0,
+				admin: false,
 				createdAt: new Date(),
 				updatedAt: new Date(),
 			})
@@ -84,7 +84,9 @@ export default eventHandler(async (event) => {
 			.returning()
 			.get();
 	} catch (error) {
-		// TODO: Remove user if userLogin fails
+		// Remove user if userLogin fails
+		await useDrizzle().delete(tables.users).where(eq(tables.users.id, user.id));
+
 		console.error(error);
 		throw createError({
 			statusCode: 500,
@@ -110,7 +112,17 @@ export default eventHandler(async (event) => {
 					.get(),
 			);
 		} catch (error) {
-			// TODO: Remove user, userLogin, and userPersons if userPerson fails
+			// Remove user, userLogin, and userPersons if userPerson fails
+			await useDrizzle()
+				.delete(tables.users)
+				.where(eq(tables.users.id, user.id));
+			await useDrizzle()
+				.delete(tables.userLogins)
+				.where(eq(tables.userLogins.userId, user.id));
+			await useDrizzle()
+				.delete(tables.userPersons)
+				.where(eq(tables.userPersons.userId, user.id));
+
 			console.error(error);
 			throw createError({
 				statusCode: 500,

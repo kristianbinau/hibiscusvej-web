@@ -1,7 +1,11 @@
 export default defineEventHandler(async (event) => {
 	await useAuthAdmin(event);
 
-	const users = await useDrizzle().select().from(tables.users).all();
+	const users = await useDrizzle()
+		.select()
+		.from(tables.users)
+		.where(isNull(tables.users.deletedAt))
+		.all();
 
 	const userLogins = await useDrizzle()
 		.select({

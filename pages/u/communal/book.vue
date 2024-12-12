@@ -1,5 +1,17 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
+		<ClientOnly>
+			<UAlert
+				v-if="currentUser && currentUser.user.verifiedAt === null"
+				title="Din konto er ikke verificeret!"
+				description="Du kan ikke booke fælleslokalet før din konto er verificeret. Bestyrelsen vil verificere din konto hurtigst muligt."
+				icon="i-material-symbols-vedit-attributes-outline-rounded"
+				color="red"
+				variant="subtle"
+				class="mb-6 cursor-pointer select-none"
+			></UAlert>
+		</ClientOnly>
+
 		<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
 			<div>
 				<h1 class="text-primary text-2xl mt-2 mb-2">Book fælleslokalet</h1>
@@ -50,6 +62,9 @@
 import type { AttributeConfig } from 'v-calendar/dist/types/src/utils/attribute.d.ts';
 import type { Page } from 'v-calendar/dist/types/src/utils/page.js';
 import { format, isSameDay } from 'date-fns';
+
+import type { InternalApi } from 'nitropack';
+type CurrentUserResponse = InternalApi['/api/users/me']['get'];
 
 definePageMeta({
 	layout: 'logged-in',
@@ -103,6 +118,7 @@ function onDidMove(pages: Page[]) {
 /**
  * Bookings
  */
+
 const bookingsThisMonth = ref<Date[]>([]);
 const fetchingBookings = ref(true);
 
@@ -137,8 +153,36 @@ async function fetchBookingsThisMonth() {
 fetchBookingsThisMonth();
 
 /**
+ * Current User
+ */
+
+const currentUser = ref<CurrentUserResponse | null>(null);
+
+async function fetchCurrentUser() {
+	try {
+		const { data } = await useFetch('/api/users/me');
+
+		if (data.value === null) {
+			toast.add({
+				title: 'Der skete en fejl ved hentning af brugeroplysninger',
+			});
+			currentUser.value = null;
+			return;
+		}
+
+		currentUser.value = data.value;
+	} catch (error) {
+		toast.add({
+			title: 'Der skete en fejl ved hentning af brugeroplysninger',
+		});
+	}
+}
+fetchCurrentUser();
+
+/**
  * Submit
  */
+
 async function onSubmit() {
 	if (!date.value) return;
 

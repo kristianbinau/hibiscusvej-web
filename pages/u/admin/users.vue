@@ -43,30 +43,32 @@
 						size="sm"
 						color="red"
 						variant="soft"
-						@click="verifyUser(row.id)"
 					/>
 				</template>
 
 				<template #verified-data="{ row }">
 					<UTooltip
-						v-if="row.verified === 'Ikke verificeret'"
-						text="Klik for at verificere"
+						v-if="row.verified !== 'Ikke verificeret'"
+						:text="row.verified"
 					>
-						<UButton
-							icon="i-material-symbols-check-box-outline-blank"
-							size="sm"
-							color="red"
-							variant="soft"
-							@click="verifyUser(row.id)"
-						/>
-					</UTooltip>
-
-					<UTooltip v-else :text="row.verified">
 						<UButton
 							icon="i-material-symbols-check-box-rounded"
 							size="sm"
 							color="green"
 							variant="soft"
+							:loading="updatingVerificationUserIds.includes(row.id)"
+							@click="unverifyUser(row.id)"
+						/>
+					</UTooltip>
+
+					<UTooltip v-else text="Klik for at verificere">
+						<UButton
+							icon="i-material-symbols-check-box-outline-blank"
+							size="sm"
+							color="red"
+							variant="soft"
+							:loading="updatingVerificationUserIds.includes(row.id)"
+							@click="verifyUser(row.id)"
 						/>
 					</UTooltip>
 				</template>
@@ -252,9 +254,92 @@ fetch();
 /**
  * Actions
  */
-async function verifyUser(id: number) {}
 
-async function unverifyUser(id: number) {}
+const updatingVerificationUserIds = ref<number[]>([]);
+
+async function verifyUser(id: number) {
+	if (updatingVerificationUserIds.value.includes(id)) return;
+
+	updatingVerificationUserIds.value.push(id);
+
+	await new Promise((resolve) => setTimeout(resolve, 1000));
+
+	try {
+		const res = await $fetch('/api/admin/users/verify', {
+			method: 'POST',
+			body: {
+				userIds: [id],
+			},
+		});
+
+		if (res) {
+			toast.remove(`user-unverified-${id}`);
+			toast.add({
+				id: `user-verified-${id}`,
+				title: `Du har verificeret brugeren med ID: ${id}`,
+				timeout: 10000,
+				actions: [
+					{
+						label: 'Undo',
+						click: () => unverifyUser(id),
+					},
+				],
+			});
+
+			await fetch();
+		}
+	} catch (error: any) {
+		toast.add({
+			title: 'Der skete en fejl ved verificering af bruger',
+		});
+	}
+
+	updatingVerificationUserIds.value = updatingVerificationUserIds.value.filter(
+		(userId) => userId !== id,
+	);
+}
+
+async function unverifyUser(id: number) {
+	if (updatingVerificationUserIds.value.includes(id)) return;
+
+	updatingVerificationUserIds.value.push(id);
+
+	await new Promise((resolve) => setTimeout(resolve, 1000));
+
+	try {
+		const res = await $fetch('/api/admin/users/unverify', {
+			method: 'POST',
+			body: {
+				userIds: [id],
+			},
+		});
+
+		if (res) {
+			toast.remove(`user-verified-${id}`);
+			toast.add({
+				id: `user-unverified-${id}`,
+				title: `Du har fjernet verificeringen af brugeren med ID: ${id}`,
+				timeout: 10000,
+				actions: [
+					{
+						label: 'Undo',
+						click: () => verifyUser(id),
+					},
+				],
+			});
+
+			await fetch();
+		}
+	} catch (error: any) {
+		toast.add({
+			title: 'Der skete en fejl ved fjernelse af verificering af bruger',
+		});
+	}
+
+	updatingVerificationUserIds.value = updatingVerificationUserIds.value.filter(
+		(userId) => userId !== id,
+	);
+}
 
 /**
  * Problems

@@ -15,6 +15,13 @@
       "when": 1734038883604,
       "tag": "0001_glorious_cardiac",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1734042555291,
+      "tag": "0002_wonderful_wraith",
+      "breakpoints": true
     }
   ]
 }

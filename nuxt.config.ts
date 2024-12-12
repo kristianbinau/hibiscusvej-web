@@ -32,5 +32,11 @@ export default defineNuxtConfig({
 				statusCode: 302,
 			},
 		},
+		'/u/admin': {
+			redirect: {
+				to: '/u/admin/users',
+				statusCode: 302,
+			},
+		},
 	},
 });

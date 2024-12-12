@@ -12,6 +12,33 @@ export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 	const body = await readValidatedBody(event, schema.parse);
 
+	const user = await useDrizzle()
+		.select()
+		.from(tables.users)
+		.where(
+			and(
+				eq(tables.users.id, authUser.user.id),
+				isNull(tables.users.deletedAt),
+			),
+		)
+		.get();
+
+	// If user is not found, return 401 Unauthorized
+	if (!user) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
+	// If user is not verified, return 403 Forbidden
+	if (user.verifiedAt === null) {
+		throw createError({
+			statusCode: 403,
+			statusMessage: 'Din bruger er ikke verificeret.',
+		});
+	}
+
 	const date = new UTCDateMini(body.date);
 	const from = new UTCDateMini(date);
 	const to = new UTCDateMini(addDays(from, 1));

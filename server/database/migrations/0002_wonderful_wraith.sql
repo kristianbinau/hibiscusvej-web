@@ -1,0 +1,1 @@
+ALTER TABLE `admin_log` RENAME TO `admin_logs`;

@@ -27,7 +27,7 @@ export default eventHandler(async (event) => {
 	} catch (error) {
 		throw createError({
 			statusCode: 500,
-			statusMessage: 'Server error',
+			statusMessage: 'Internal Server Error',
 		});
 	}
 

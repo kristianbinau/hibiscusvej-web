@@ -71,7 +71,7 @@ export const communalBookings = sqliteTable('communal_bookings', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 });
 
-export const adminLog = sqliteTable('admin_log', {
+export const adminLogs = sqliteTable('admin_logs', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	userId: integer('user_id').notNull(),
 	action: text('action').notNull(),

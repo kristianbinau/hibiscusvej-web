@@ -4,47 +4,46 @@
 			<h1 class="text-primary text-2xl mt-2 mb-2">Users</h1>
 			<p>Her kan vi se alle brugere, deres sessions, logins og personer.</p>
 		</div>
-
-		<UAlert
-			v-if="usersWithDuplicateApartments.length > 0"
-			title="Flere brugere har samme lejlighed"
-			description="Der er flere brugere med samme lejlighed. Klik for at løse."
-			icon="i-material-symbols-apartment-rounded"
-			color="red"
-			variant="subtle"
-			class="mb-6 cursor-pointer select-none"
-			@click="isOpenApartmentConfict = true"
-		/>
-
-		<UAlert
-			v-if="usersWithDuplicatePersons.length > 0"
-			title="Flere brugere har samme person"
-			description="Der er flere brugere med samme person. Klik for at løse."
-			icon="i-material-symbols-person-rounded"
-			color="red"
-			variant="subtle"
-			class="mb-6 cursor-pointer select-none"
-			@click="isOpenPersonConfict = true"
-		></UAlert>
-
 		<ClientOnly>
+			<UAlert
+				v-if="usersWithDuplicateApartments.length > 0"
+				title="Flere brugere har samme lejlighed"
+				description="Der er flere brugere med samme lejlighed. Klik for at løse."
+				icon="i-material-symbols-apartment-rounded"
+				color="red"
+				variant="subtle"
+				class="mb-6 cursor-pointer select-none"
+				@click="isOpenApartmentConfict = true"
+			/>
+
+			<UAlert
+				v-if="usersWithDuplicatePersons.length > 0"
+				title="Flere brugere har samme person"
+				description="Der er flere brugere med samme person. Klik for at løse."
+				icon="i-material-symbols-person-rounded"
+				color="red"
+				variant="subtle"
+				class="mb-6 cursor-pointer select-none"
+				@click="isOpenPersonConfict = true"
+			></UAlert>
+
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
 				<template #admin-data="{ row }">
 					<UButton
 						v-if="row.admin"
+						icon="i-material-symbols-check-box-rounded"
+						size="sm"
+						color="green"
+						variant="soft"
+					/>
+
+					<UButton
+						v-else
 						icon="i-material-symbols-check-box-outline-blank"
 						size="sm"
 						color="red"
 						variant="soft"
 						@click="verifyUser(row.id)"
-					/>
-
-					<UButton
-						v-else
-						icon="i-material-symbols-check-box-rounded"
-						size="sm"
-						color="green"
-						variant="soft"
 					/>
 				</template>
 

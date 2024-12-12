@@ -5,16 +5,100 @@
 			<p>Her kan vi se alle brugere, deres sessions, logins og personer.</p>
 		</div>
 
+		<UAlert
+			v-if="usersWithDuplicateApartments.length > 0"
+			title="Flere brugere har samme lejlighed"
+			description="Der er flere brugere med samme lejlighed. Klik for at løse."
+			icon="i-material-symbols-apartment-rounded"
+			color="red"
+			variant="subtle"
+			class="mb-6 cursor-pointer select-none"
+			@click="isOpenApartmentConfict = true"
+		/>
+
+		<UAlert
+			v-if="usersWithDuplicatePersons.length > 0"
+			title="Flere brugere har samme person"
+			description="Der er flere brugere med samme person. Klik for at løse."
+			icon="i-material-symbols-person-rounded"
+			color="red"
+			variant="subtle"
+			class="mb-6 cursor-pointer select-none"
+			@click="isOpenPersonConfict = true"
+		></UAlert>
+
 		<ClientOnly>
-			<UTable :loading="fetching" :rows="rows" :columns="columns"></UTable>
+			<UTable :loading="fetching" :rows="rows" :columns="columns">
+				<template #admin-data="{ row }">
+					<UButton
+						v-if="row.admin"
+						icon="i-material-symbols-check-box-outline-blank"
+						size="sm"
+						color="red"
+						variant="soft"
+						@click="verifyUser(row.id)"
+					/>
+
+					<UButton
+						v-else
+						icon="i-material-symbols-check-box-rounded"
+						size="sm"
+						color="green"
+						variant="soft"
+					/>
+				</template>
+
+				<template #verified-data="{ row }">
+					<UTooltip
+						v-if="row.verified === 'Ikke verificeret'"
+						text="Klik for at verificere"
+					>
+						<UButton
+							icon="i-material-symbols-check-box-outline-blank"
+							size="sm"
+							color="red"
+							variant="soft"
+							@click="verifyUser(row.id)"
+						/>
+					</UTooltip>
+
+					<UTooltip v-else :text="row.verified">
+						<UButton
+							icon="i-material-symbols-check-box-rounded"
+							size="sm"
+							color="green"
+							variant="soft"
+						/>
+					</UTooltip>
+				</template>
+			</UTable>
 		</ClientOnly>
 	</section>
+
+	<ClientOnly>
+		<AdminConflictApartment
+			v-if="usersWithDuplicatePersons.length > 0"
+			v-model="isOpenApartmentConfict"
+			:conflicting="usersWithDuplicateApartments"
+		/>
+
+		<AdminConflictPerson
+			v-if="usersWithDuplicatePersons.length > 0"
+			v-model="isOpenPersonConfict"
+			:conflicting="usersWithDuplicatePersons"
+		/>
+	</ClientOnly>
 </template>
 
 <script lang="ts" setup>
 import type { InternalApi } from 'nitropack';
 type AdminUsersApiResponse = InternalApi['/api/admin/users']['get'];
-import { format } from 'date-fns';
+
+type User = {
+	sessions: AdminUsersApiResponse['userSessions'];
+	logins: AdminUsersApiResponse['userLogins'];
+	persons: AdminUsersApiResponse['userPersons'];
+} & AdminUsersApiResponse['users'][0];
 
 definePageMeta({
 	layout: 'logged-in-admin',
@@ -31,38 +115,47 @@ const columns = [
 	{
 		key: 'id',
 		label: 'ID',
+		sortable: true,
 	},
 	{
 		key: 'apartmentId',
 		label: 'Apartment',
+		sortable: true,
 	},
 	{
 		key: 'admin',
 		label: 'isAdmin',
+		sortable: true,
 	},
 	{
 		key: 'verified',
 		label: 'Verificeret',
+		sortable: true,
 	},
 	{
 		key: 'sessionCount',
 		label: 'Sessions',
+		sortable: true,
 	},
 	{
 		key: 'loginCount',
 		label: 'Logins',
+		sortable: true,
 	},
 	{
 		key: 'personCount',
 		label: 'Personer',
+		sortable: true,
 	},
 	{
 		key: 'createdAt',
 		label: 'Oprettet',
+		sortable: true,
 	},
 	{
 		key: 'updatedAt',
 		label: 'Opdateret',
+		sortable: true,
 	},
 ];
 
@@ -97,7 +190,7 @@ const rows = computed(() => {
 /**
  * Join users, sessions, logins and persons into one array
  */
-const usersJoined = computed(() => {
+const usersJoined: Ref<User[]> = computed(() => {
 	return adminUsersApiResponse.value.users.map((user) => {
 		const userPersons = adminUsersApiResponse.value.userPersons.filter(
 			(person) => person.userId === user.id,
@@ -156,6 +249,84 @@ async function fetch() {
 	fetching.value = false;
 }
 fetch();
+
+/**
+ * Actions
+ */
+async function verifyUser(id: number) {}
+
+async function unverifyUser(id: number) {}
+
+/**
+ * Problems
+ */
+
+const isOpenApartmentConfict = ref(false);
+const usersWithDuplicateApartments: Ref<
+	{
+		apartmentId: number;
+		users: User[];
+	}[]
+> = computed(() => {
+	const usersWithDuplicateApartments = usersJoined.value.reduce(
+		(acc, user) => {
+			const existing = acc.find(
+				(item) => item.apartmentId === user.apartmentId,
+			);
+
+			if (existing) {
+				existing.users.push(user);
+			} else {
+				acc.push({
+					apartmentId: user.apartmentId,
+					users: [user],
+				});
+			}
+
+			return acc;
+		},
+		[] as { apartmentId: number; users: User[] }[],
+	);
+
+	return usersWithDuplicateApartments.filter((item) => item.users.length > 1);
+});
+
+const isOpenPersonConfict = ref(false);
+const usersWithDuplicatePersons: Ref<
+	{
+		users: User[];
+	}[]
+> = computed(() => {
+	const usersWithDuplicatePersons = usersJoined.value.reduce(
+		(acc, user) => {
+			const existing = acc.find((item) =>
+				item.users.some((existingUser) =>
+					existingUser.persons.some((existingPerson) =>
+						user.persons.some(
+							(person) =>
+								person.name === existingPerson.name ||
+								person.email === existingPerson.email ||
+								person.phone === existingPerson.phone,
+						),
+					),
+				),
+			);
+
+			if (existing) {
+				existing.users.push(user);
+			} else {
+				acc.push({
+					users: [user],
+				});
+			}
+
+			return acc;
+		},
+		[] as { users: User[] }[],
+	);
+
+	return usersWithDuplicatePersons.filter((item) => item.users.length > 1);
+});
 </script>
 
 <style></style>

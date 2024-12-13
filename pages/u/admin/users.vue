@@ -4,30 +4,21 @@
 			<h1 class="text-primary text-2xl mt-2 mb-2">Users</h1>
 			<p>Her kan vi se alle brugere, deres sessions, logins og personer.</p>
 		</div>
+
+		<AdminUsersConflictHandling
+			v-if="usersJoined.length > 0"
+			:users="usersJoined"
+			:apartments="apartments"
+		/>
+
 		<ClientOnly>
-			<UAlert
-				v-if="usersWithDuplicateApartments.length > 0"
-				title="Flere brugere har samme lejlighed"
-				description="Der er flere brugere med samme lejlighed. Klik for at løse."
-				icon="i-material-symbols-apartment-rounded"
-				color="red"
-				variant="subtle"
-				class="mb-6 cursor-pointer select-none"
-				@click="isOpenApartmentConfict = true"
-			/>
-
-			<UAlert
-				v-if="usersWithDuplicatePersons.length > 0"
-				title="Flere brugere har samme person"
-				description="Der er flere brugere med samme person. Klik for at løse."
-				icon="i-material-symbols-person-rounded"
-				color="red"
-				variant="subtle"
-				class="mb-6 cursor-pointer select-none"
-				@click="isOpenPersonConfict = true"
-			></UAlert>
-
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
+				<template #apartmentId-data="{ row }">
+					<UTooltip :text="`ID: ${row.apartmentId}`">
+						{{ convertApartmentIdToApartmentAdress(row.apartmentId) }}
+					</UTooltip>
+				</template>
+
 				<template #admin-data="{ row }">
 					<UButton
 						v-if="row.admin"
@@ -75,31 +66,20 @@
 			</UTable>
 		</ClientOnly>
 	</section>
-
-	<ClientOnly>
-		<AdminConflictApartment
-			v-if="usersWithDuplicatePersons.length > 0"
-			v-model="isOpenApartmentConfict"
-			:conflicting="usersWithDuplicateApartments"
-		/>
-
-		<AdminConflictPerson
-			v-if="usersWithDuplicatePersons.length > 0"
-			v-model="isOpenPersonConfict"
-			:conflicting="usersWithDuplicatePersons"
-		/>
-	</ClientOnly>
 </template>
 
 <script lang="ts" setup>
 import type { InternalApi } from 'nitropack';
 type AdminUsersApiResponse = InternalApi['/api/admin/users']['get'];
+type ApartmentsApiResponse = InternalApi['/api/apartments']['get'];
 
 type User = {
 	sessions: AdminUsersApiResponse['userSessions'];
 	logins: AdminUsersApiResponse['userLogins'];
 	persons: AdminUsersApiResponse['userPersons'];
 } & AdminUsersApiResponse['users'][0];
+
+type Apartment = ApartmentsApiResponse[0];
 
 definePageMeta({
 	layout: 'logged-in-admin',
@@ -185,7 +165,7 @@ const rows = computed(() => {
 });
 
 /**
- * Fetch Admin Users endpoint
+ * Fetch Admin Users
  */
 
 /**
@@ -252,6 +232,49 @@ async function fetch() {
 fetch();
 
 /**
+ * Fetch Apartments
+ */
+
+const apartments = ref<Apartment[]>([]);
+async function fetchApartments() {
+	try {
+		const { data } = await useFetch('/api/apartments');
+
+		if (data.value === null) {
+			toast.add({
+				title:
+					'Der er ingen lejligheder? Dette er en fejl, kontakt system administrator',
+			});
+
+			return;
+		}
+
+		apartments.value = data.value;
+	} catch (error) {
+		toast.add({
+			title: 'Der skete en fejl ved hentning af lejligheder, genindlæs siden',
+		});
+	}
+}
+fetchApartments();
+
+function convertApartmentIdToApartmentAdress(apartmentId: number) {
+	const apartment = apartments.value.find(
+		(apartment) => apartment.id === apartmentId,
+	);
+
+	if (!apartment) return 'Ukendt lejlighed';
+
+	const streetAdress = `${apartment.street} ${apartment.number}`;
+	const apartmentAdress =
+		apartment.floor && apartment.door
+			? `, ${apartment.floor}, ${apartment.door}`
+			: '';
+
+	return `${streetAdress}${apartmentAdress}`;
+}
+
+/**
  * Actions
  */
 
@@ -262,7 +285,7 @@ async function verifyUser(id: number) {
 
 	updatingVerificationUserIds.value.push(id);
 
-	await new Promise((resolve) => setTimeout(resolve, 1000));
+	await new Promise((resolve) => setTimeout(resolve, 100));
 
 	try {
 		const res = await $fetch('/api/admin/users/verify', {
@@ -304,7 +327,7 @@ async function unverifyUser(id: number) {
 
 	updatingVerificationUserIds.value.push(id);
 
-	await new Promise((resolve) => setTimeout(resolve, 1000));
+	await new Promise((resolve) => setTimeout(resolve, 100));
 
 	try {
 		const res = await $fetch('/api/admin/users/unverify', {
@@ -340,77 +363,6 @@ async function unverifyUser(id: number) {
 		(userId) => userId !== id,
 	);
 }
-
-/**
- * Problems
- */
-
-const isOpenApartmentConfict = ref(false);
-const usersWithDuplicateApartments: Ref<
-	{
-		apartmentId: number;
-		users: User[];
-	}[]
-> = computed(() => {
-	const usersWithDuplicateApartments = usersJoined.value.reduce(
-		(acc, user) => {
-			const existing = acc.find(
-				(item) => item.apartmentId === user.apartmentId,
-			);
-
-			if (existing) {
-				existing.users.push(user);
-			} else {
-				acc.push({
-					apartmentId: user.apartmentId,
-					users: [user],
-				});
-			}
-
-			return acc;
-		},
-		[] as { apartmentId: number; users: User[] }[],
-	);
-
-	return usersWithDuplicateApartments.filter((item) => item.users.length > 1);
-});
-
-const isOpenPersonConfict = ref(false);
-const usersWithDuplicatePersons: Ref<
-	{
-		users: User[];
-	}[]
-> = computed(() => {
-	const usersWithDuplicatePersons = usersJoined.value.reduce(
-		(acc, user) => {
-			const existing = acc.find((item) =>
-				item.users.some((existingUser) =>
-					existingUser.persons.some((existingPerson) =>
-						user.persons.some(
-							(person) =>
-								person.name === existingPerson.name ||
-								person.email === existingPerson.email ||
-								person.phone === existingPerson.phone,
-						),
-					),
-				),
-			);
-
-			if (existing) {
-				existing.users.push(user);
-			} else {
-				acc.push({
-					users: [user],
-				});
-			}
-
-			return acc;
-		},
-		[] as { users: User[] }[],
-	);
-
-	return usersWithDuplicatePersons.filter((item) => item.users.length > 1);
-});
 </script>
 
 <style></style>

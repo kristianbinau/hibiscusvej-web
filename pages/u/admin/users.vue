@@ -5,13 +5,13 @@
 			<p>Her kan vi se alle brugere, deres sessions, logins og personer.</p>
 		</div>
 
-		<AdminUsersConflictHandling
-			v-if="usersJoined.length > 0"
-			:users="usersJoined"
-			:apartments="apartments"
-		/>
-
 		<ClientOnly>
+			<AdminUsersConflictHandling
+				v-if="usersJoined.length > 0"
+				:users="usersJoined"
+				:apartments="apartments"
+			/>
+
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
 				<template #apartmentId-data="{ row }">
 					<UTooltip :text="`ID: ${row.apartmentId}`">
@@ -265,13 +265,7 @@ function convertApartmentIdToApartmentAdress(apartmentId: number) {
 
 	if (!apartment) return 'Ukendt lejlighed';
 
-	const streetAdress = `${apartment.street} ${apartment.number}`;
-	const apartmentAdress =
-		apartment.floor && apartment.door
-			? `, ${apartment.floor}, ${apartment.door}`
-			: '';
-
-	return `${streetAdress}${apartmentAdress}`;
+	return apartmentToAdress(apartment);
 }
 
 /**

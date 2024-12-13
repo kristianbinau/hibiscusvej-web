@@ -1,39 +1,38 @@
 <template>
-	<ClientOnly>
-		<UAlert
-			v-if="usersWithDuplicateApartments.length > 0"
-			title="Flere brugere har samme lejlighed"
-			description="Der er flere brugere med samme lejlighed. Klik for at løse."
-			icon="i-material-symbols-apartment-rounded"
-			color="red"
-			variant="subtle"
-			class="mb-6 cursor-pointer select-none"
-			@click="isOpenApartmentConfict = true"
-		/>
+	<UAlert
+		v-if="usersWithDuplicateApartments.length > 0"
+		title="Flere brugere har samme lejlighed"
+		description="Der er flere brugere med samme lejlighed. Klik for at løse."
+		icon="i-material-symbols-apartment-rounded"
+		color="red"
+		variant="subtle"
+		class="mb-6 cursor-pointer select-none"
+		@click="isOpenApartmentConfict = true"
+	/>
 
-		<AdminConflictApartment
-			v-if="usersWithDuplicateApartments.length > 0"
-			v-model="isOpenApartmentConfict"
-			:conflicting="usersWithDuplicateApartments"
-		/>
+	<AdminConflictApartment
+		v-if="usersWithDuplicateApartments.length > 0"
+		v-model="isOpenApartmentConfict"
+		:conflicting="usersWithDuplicateApartments"
+		:apartments="props.apartments"
+	/>
 
-		<UAlert
-			v-if="usersWithDuplicatePersons.length > 0"
-			title="Flere brugere har samme person"
-			description="Der er flere brugere med samme person. Klik for at løse."
-			icon="i-material-symbols-person-rounded"
-			color="red"
-			variant="subtle"
-			class="mb-6 cursor-pointer select-none"
-			@click="isOpenPersonConfict = true"
-		></UAlert>
+	<UAlert
+		v-if="usersWithDuplicatePersons.length > 0"
+		title="Flere brugere har samme person"
+		description="Der er flere brugere med samme person. Klik for at løse."
+		icon="i-material-symbols-person-rounded"
+		color="red"
+		variant="subtle"
+		class="mb-6 cursor-pointer select-none"
+		@click="isOpenPersonConfict = true"
+	></UAlert>
 
-		<AdminConflictPerson
-			v-if="usersWithDuplicatePersons.length > 0"
-			v-model="isOpenPersonConfict"
-			:conflicting="usersWithDuplicatePersons"
-		/>
-	</ClientOnly>
+	<AdminConflictPerson
+		v-if="usersWithDuplicatePersons.length > 0"
+		v-model="isOpenPersonConfict"
+		:conflicting="usersWithDuplicatePersons"
+	/>
 </template>
 
 <script lang="ts" setup>

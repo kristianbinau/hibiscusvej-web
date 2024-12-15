@@ -12,8 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { InternalApi } from 'nitropack';
-type AdminBookingsApiResponse = InternalApi['/api/admin/bookings']['get'];
+import type { AdminBookingsApiResponse } from '~/utils/types/admin';
 
 definePageMeta({
 	layout: 'logged-in-admin',

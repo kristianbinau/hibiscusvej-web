@@ -6,9 +6,9 @@ const schema = z.object({
 
 export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const query = await getValidatedRouterParams(event, schema.parse);
+	const params = await getValidatedRouterParams(event, schema.parse);
 
-	const id = query.id;
+	const id = params.id;
 	const now = new Date();
 
 	try {

@@ -1,7 +1,4 @@
-import type { InternalApi } from 'nitropack';
-type ApartmentsApiResponse = InternalApi['/api/apartments']['get'];
-
-type Apartment = ApartmentsApiResponse[0];
+import type { Apartment } from '~/utils/types/admin';
 
 export default (apartment: Apartment) => {
 	const streetAdress = `${apartment.street} ${apartment.number}`;

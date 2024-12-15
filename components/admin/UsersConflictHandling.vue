@@ -36,17 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { InternalApi } from 'nitropack';
-type AdminUsersApiResponse = InternalApi['/api/admin/users']['get'];
-type ApartmentsApiResponse = InternalApi['/api/apartments']['get'];
-
-type User = {
-	sessions: AdminUsersApiResponse['userSessions'];
-	logins: AdminUsersApiResponse['userLogins'];
-	persons: AdminUsersApiResponse['userPersons'];
-} & AdminUsersApiResponse['users'][0];
-
-type Apartment = ApartmentsApiResponse[0];
+import type { Apartment, User } from '~/utils/types/admin';
 
 const props = defineProps<{
 	users: User[];

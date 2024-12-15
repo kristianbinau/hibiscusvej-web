@@ -69,17 +69,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { InternalApi } from 'nitropack';
-type AdminUsersApiResponse = InternalApi['/api/admin/users']['get'];
-type ApartmentsApiResponse = InternalApi['/api/apartments']['get'];
-
-type User = {
-	sessions: AdminUsersApiResponse['userSessions'];
-	logins: AdminUsersApiResponse['userLogins'];
-	persons: AdminUsersApiResponse['userPersons'];
-} & AdminUsersApiResponse['users'][0];
-
-type Apartment = ApartmentsApiResponse[0];
+import type {
+	AdminUsersApiResponse,
+	User,
+	Apartment,
+} from '~/utils/types/admin';
 
 definePageMeta({
 	layout: 'logged-in-admin',
@@ -224,7 +218,6 @@ async function fetch() {
 		toast.add({
 			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
 		});
-		fetching.value = false;
 	}
 
 	fetching.value = false;
@@ -279,7 +272,7 @@ async function verifyUser(id: number) {
 
 	updatingVerificationUserIds.value.push(id);
 
-	await new Promise((resolve) => setTimeout(resolve, 100));
+	await new Promise((resolve) => setTimeout(resolve, 500));
 
 	try {
 		const res = await $fetch('/api/admin/users/verify', {
@@ -321,7 +314,7 @@ async function unverifyUser(id: number) {
 
 	updatingVerificationUserIds.value.push(id);
 
-	await new Promise((resolve) => setTimeout(resolve, 100));
+	await new Promise((resolve) => setTimeout(resolve, 500));
 
 	try {
 		const res = await $fetch('/api/admin/users/unverify', {

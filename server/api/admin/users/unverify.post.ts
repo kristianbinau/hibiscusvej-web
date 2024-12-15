@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
 			.set({
 				verifiedAt: null,
 				verifiedByUserId: null,
+				updatedAt: now,
 			})
 			.where(inArray(tables.users.id, userIds));
 

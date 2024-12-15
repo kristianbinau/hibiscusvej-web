@@ -35,19 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { InternalApi } from 'nitropack';
-type AdminUsersApiResponse = InternalApi['/api/admin/users']['get'];
-
-type User = {
-	sessions: AdminUsersApiResponse['userSessions'];
-	logins: AdminUsersApiResponse['userLogins'];
-	persons: AdminUsersApiResponse['userPersons'];
-} & AdminUsersApiResponse['users'][0];
-
-type ConfictingPerson = {
-	users: User[];
-};
-
+import type { ConfictingPerson } from '~/utils/types/admin';
 const isOpen = defineModel({ required: true, type: Boolean });
 
 const props = defineProps<{

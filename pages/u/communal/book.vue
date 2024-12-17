@@ -9,6 +9,7 @@
 				color="red"
 				variant="subtle"
 				class="mb-6 cursor-pointer select-none"
+				@click="onClickNotVerified"
 			></UAlert>
 		</ClientOnly>
 
@@ -214,6 +215,30 @@ async function onSubmit() {
 			}
 		}
 	}
+}
+
+/**
+ * Push Notifications
+ */
+const { isSupported, hasPermission, askPermission, subscribeUserToPush } =
+	usePush();
+
+async function onClickNotVerified() {
+	if (!isSupported.value) {
+		return;
+	}
+
+	if (!hasPermission.value) {
+		const permission = await askPermission();
+
+		if (!permission) {
+			return;
+		}
+	}
+
+	const pushSubscription = await subscribeUserToPush();
+
+	console.log(pushSubscription);
 }
 </script>
 

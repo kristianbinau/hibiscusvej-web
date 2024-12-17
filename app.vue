@@ -17,7 +17,7 @@
 <script setup lang="ts">
 useHead({
 	titleTemplate: (titleChunk) => {
-		return titleChunk ? `${titleChunk} - Hibiscusvej` : 'Hibiscusvej';
+		return titleChunk ? `${titleChunk} - Hibiscusvej 2-30` : 'Hibiscusvej 2-30';
 	},
 	meta: [
 		{

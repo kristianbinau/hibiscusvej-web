@@ -92,6 +92,16 @@ self.addEventListener('fetch', (event) => {
 	event.respondWith(processOnFetch(event));
 });
 
+self.addEventListener('push', (event) => {
+	console.log('Push!');
+
+	const data = event.data.json();
+
+	self.registration.showNotification(data.title, {
+		body: data.body,
+	});
+});
+
 /**
  * Process this when fetching
  *

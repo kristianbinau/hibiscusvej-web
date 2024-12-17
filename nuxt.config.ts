@@ -39,4 +39,12 @@ export default defineNuxtConfig({
 			},
 		},
 	},
+
+	runtimeConfig: {
+		vapidPrivateKey: '',
+		public: {
+			vapidSubject: '',
+			vapidPublicKey: '',
+		},
+	},
 });

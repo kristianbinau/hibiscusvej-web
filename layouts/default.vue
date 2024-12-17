@@ -18,7 +18,7 @@
 const links = [
 	[
 		{
-			label: 'Hibiscusvej',
+			label: 'Hibiscusvej 2-30',
 			labelClass: ' hidden sm:text-2xl sm:block',
 			icon: 'Logo',
 			iconClass: 'sm:h-6 sm:w-6',

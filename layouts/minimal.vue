@@ -12,7 +12,7 @@
 const links = [
 	[
 		{
-			label: 'Hibiscusvej',
+			label: 'Hibiscusvej 2-30',
 			labelClass: 'sm:text-2xl',
 			icon: 'Logo',
 			to: '/',

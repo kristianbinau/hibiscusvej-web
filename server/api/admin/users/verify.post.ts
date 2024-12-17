@@ -37,5 +37,23 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
+	/**
+	 * Notify Users
+	 */
+
+	const pushMessage = {
+		data: JSON.stringify({
+			title: 'Konto verificeret',
+			body: 'Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!',
+		}),
+		options: {
+			topic: 'verification_update',
+			ttl: 86400,
+			urgency: 'normal' as const,
+		},
+	} as WebPushMessage;
+
+	await sendPushNotificationToUserIds(userIds, pushMessage);
+
 	return true;
 });

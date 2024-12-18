@@ -3,16 +3,16 @@ title: 'Fælleslokale'
 description: 'Regler og information om fælleslokalet'
 ---
 
-## WIFI
+## Wifi
 
 WIFImodem-3963  
 ah28h32ad2
 
-## RENGØRING
+## Rengøring
 
 Der er rengørings udstyr ved køkkenet inkl. genbrugelige klude, viskestykker og svampe som lægges i den lyserøde kurv efter brug så de kan blive vasket.
 
-## REGLER FOR LEJE AF FÆLLESRUMMET HIBISCUSVEJ 22
+## Regler for leje af fællesrummet Hibiscusvej 22
 
 - Booking af rummet gælder fra kl. 10 på den valgte dag til kl. 10 dagen efter.
 - Møbler, service og andet fundet i lokalet skal afleveres i samme tilstand som ved start af booking.

@@ -26,7 +26,7 @@ const links: HorizontalNavigationLink[][] = [
 			labelClass: 'hidden sm:text-2xl sm:block',
 			icon: 'Logo',
 			iconClass: 'sm:h-6 sm:w-6',
-			to: '/u',
+			to: '/',
 		},
 	],
 	[

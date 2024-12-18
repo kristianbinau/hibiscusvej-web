@@ -20,6 +20,13 @@
 				>
 					hibiscusvejbestyrelse@outlook.dk
 				</ULink>
+
+				<ULink
+					to="/privacy"
+					class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+				>
+					Privatlivspolitik
+				</ULink>
 			</div>
 
 			<div>

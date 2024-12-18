@@ -78,13 +78,13 @@ let refreshingTokensLock = new ExecutionLock();
 self.addEventListener('install', (event) => {
 	// Skip the 'waiting' lifecycle phase, to go directly from 'installed' to 'activated', even if
 	// there are still previous incarnations of this service worker registration active.
-	console.log('Install!');
+	console.info('Install!');
 	event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (event) => {
 	// Claim any clients immediately, so that the page will be under SW control without reloading.
-	console.log('Activate!');
+	console.info('Activate!');
 	event.waitUntil(self.clients.claim());
 });
 
@@ -93,12 +93,13 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-	console.log('Push!');
+	console.info('Push!');
 
 	const data = event.data.json();
 
 	self.registration.showNotification(data.title, {
 		body: data.body,
+		icon: '/favicon.svg',
 	});
 });
 

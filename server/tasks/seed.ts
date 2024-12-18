@@ -4,7 +4,7 @@ export default defineTask({
 		description: 'Run database seed task',
 	},
 	async run() {
-		console.log('Running DB seed task...');
+		console.info('Running DB seed task...');
 
 		// Check if the tables are already seeded
 		const apartmentsDatabase = await useDrizzle()
@@ -531,7 +531,7 @@ export default defineTask({
 					.values(apartments.slice(i, i + 20))
 					.get();
 			}
-			console.log('Apartments seeded');
+			console.info('Apartments seeded');
 		}
 		return { result: 'success' };
 	},

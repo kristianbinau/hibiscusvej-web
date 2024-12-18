@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	compatibilityDate: '2024-09-19',
+	compatibilityDate: '2024-12-12',
 	devtools: { enabled: true },
 	modules: ['@nuxt/ui', '@nuxt/content', '@nuxthub/core'],
 	ui: {
@@ -41,10 +41,10 @@ export default defineNuxtConfig({
 	},
 
 	runtimeConfig: {
-		vapidPrivateKey: '',
+		vapidPrivateKey: process.env.NUXT_VAPID_PRIVATE_KEY,
 		public: {
-			vapidSubject: '',
-			vapidPublicKey: '',
+			vapidSubject: process.env.NUXT_PUBLIC_VAPID_SUBJECT,
+			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
 		},
 	},
 });

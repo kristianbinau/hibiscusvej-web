@@ -237,8 +237,6 @@ async function onClickNotVerified() {
 	}
 
 	const pushSubscription = await subscribeUserToPush();
-
-	console.log(pushSubscription);
 }
 </script>
 

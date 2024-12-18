@@ -20,7 +20,7 @@ export const useServiceWorker = () => {
 			registration.active || registration.waiting || registration.installing;
 		//console.info('Registered worker:', registeredWorker);
 		if (registeredWorker?.scriptURL != url) {
-			console.log(
+			console.info(
 				'[ServiceWorker] Old URL:',
 				registeredWorker?.scriptURL || 'none',
 				'updating to:',

@@ -27,7 +27,10 @@ export const sendPushNotificationToUserIds = async (
 			await sendPushNotification(pushSubscription, message);
 		}
 	} catch (error) {
-		// Do nothing
+		console.error(
+			'Utils/Push: Failed to send push notification to userIds',
+			error,
+		);
 	}
 };
 
@@ -45,12 +48,15 @@ export const sendPushNotification = async (
 			await deleteSubscription(subscription);
 		}
 
+		// TODO: Better handling of rest of errors
+
 		if (res.status < 200 || res.status >= 300) {
 			return false;
 		}
 
 		return true;
 	} catch (error) {
+		console.error('Utils/Push: Failed to send push notification', error);
 		return false;
 	}
 };
@@ -59,14 +65,21 @@ const deleteSubscription = async (subscription: PushSubscription) => {
 	await useDrizzle()
 		.delete(tables.userSubscriptions)
 		.where(eq(tables.userSubscriptions.subscriptionObject, subscription));
+
+	// TODO: Also delete the subscription from the browser
 };
 
 const getVapid = () => {
 	const runtimeConfig = useRuntimeConfig();
 
 	return {
-		subject: runtimeConfig.public.vapidSubject,
-		publicKey: runtimeConfig.public.vapidPublicKey,
-		privateKey: runtimeConfig.vapidPrivateKey,
+		subject:
+			process.env.NUXT_PUBLIC_VAPID_SUBJECT ||
+			runtimeConfig.public.vapidSubject,
+		publicKey:
+			process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY ||
+			runtimeConfig.public.vapidPublicKey,
+		privateKey:
+			process.env.NUXT_VAPID_PRIVATE_KEY || runtimeConfig.vapidPrivateKey,
 	};
 };

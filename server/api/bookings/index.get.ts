@@ -19,10 +19,12 @@ export default eventHandler(async (event) => {
 		.where(
 			and(
 				isNull(tables.communalBookings.deletedAt),
-				gte(tables.communalBookings.from, new Date(year, month - 1, 1)),
-				lte(
-					tables.communalBookings.to,
-					new Date(year, month, 0, 23, 59, 59, 999),
+				or(
+					gte(tables.communalBookings.from, new Date(year, month - 1, 1)),
+					lte(
+						tables.communalBookings.to,
+						new Date(year, month, 0, 23, 59, 59, 999),
+					),
 				),
 			),
 		)

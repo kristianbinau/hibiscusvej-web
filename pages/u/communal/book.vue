@@ -5,7 +5,7 @@
 				v-if="currentUser && currentUser.user.verifiedAt === null"
 				title="Din konto er ikke verificeret!"
 				description="Du kan ikke booke fælleslokalet før din konto er verificeret. Bestyrelsen vil verificere din konto hurtigst muligt."
-				icon="i-material-symbols-vedit-attributes-outline-rounded"
+				icon="i-material-symbols-edit-attributes-outline-rounded"
 				color="red"
 				variant="subtle"
 				class="mb-6 cursor-pointer select-none"

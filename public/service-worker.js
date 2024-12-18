@@ -258,8 +258,8 @@ async function refreshTokens(event) {
 	 */
 	if (refreshResponse && refreshResponse.ok) {
 		let jsonResponse = await refreshResponse.json();
-		accessToken = jsonResponse.access_token;
-		await localforage.setItem(ACCESS_TOKEN, jsonResponse.accessToken);
+		accessToken = jsonResponse.accessToken;
+		await localforage.setItem(ACCESS_TOKEN, accessToken);
 	}
 
 	/**

@@ -5,7 +5,7 @@ const secretKey =
 
 const ISSUER = 'hibiscusvej:web';
 
-const ACCESS_LIFETIME = '5 minutes';
+const ACCESS_LIFETIME = '2 hours';
 export const ACCESS_AUDIENCE = 'hibiscusvej:access';
 export const ACCESS_AUDIENCE_ADMIN = 'hibiscusvej:access-admin';
 

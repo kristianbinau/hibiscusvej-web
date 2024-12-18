@@ -79,7 +79,7 @@ const now = ref(new Date());
 const myBookings = ref<BookingsMeApiResponse>([]);
 const fetchingBookings = ref(true);
 
-async function fetchBookingsThisMonth() {
+async function fetchMyBookings() {
 	fetchingBookings.value = true;
 
 	try {
@@ -101,27 +101,34 @@ async function fetchBookingsThisMonth() {
 
 	fetchingBookings.value = false;
 }
-fetchBookingsThisMonth();
+fetchMyBookings();
 
 /**
  * Delete Bookings
  */
 async function deleteBooking(id: number) {
 	try {
-		await useFetch(`/api/bookings/${id}`, {
+		const res = await $fetch(`/api/bookings/${id}`, {
 			method: 'DELETE',
 		});
 
-		myBookings.value = myBookings.value.filter((booking) => booking.id !== id);
+		if (res) {
+			myBookings.value = myBookings.value.filter(
+				(booking) => booking.id !== id,
+			);
 
-		toast.add({
-			title: 'Booking slettet',
-		});
+			toast.add({
+				title: 'Booking slettet',
+			});
+		}
 	} catch (error) {
 		toast.add({
 			title: 'Der skete en fejl ved sletning af booking',
 		});
+		return false;
 	}
+
+	return true;
 }
 </script>
 

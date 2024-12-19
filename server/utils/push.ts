@@ -4,6 +4,8 @@ import {
 	type PushSubscription,
 } from '@block65/webcrypto-web-push';
 
+const LOG_MODULE = 'Utils/Push';
+
 export type {
 	PushMessage as WebPushMessage,
 	PushSubscription as WebPushSubscription,
@@ -27,10 +29,7 @@ export const sendPushNotificationToUserIds = async (
 			await sendPushNotification(pushSubscription, message);
 		}
 	} catch (error) {
-		console.error(
-			'Utils/Push: Failed to send push notification to userIds',
-			error,
-		);
+		logError(LOG_MODULE, 'Failed to send push notification to userIds', error);
 	}
 };
 
@@ -56,7 +55,7 @@ export const sendPushNotification = async (
 
 		return true;
 	} catch (error) {
-		console.error('Utils/Push: Failed to send push notification', error);
+		logError(LOG_MODULE, 'Failed to send push notification', error);
 		return false;
 	}
 };

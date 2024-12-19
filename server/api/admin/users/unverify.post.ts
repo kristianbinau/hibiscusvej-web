@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const LOG_MODULE = 'Api/Admin/Users/UnVerify';
+
 const schema = z.object({
 	userIds: z.array(z.number()),
 });
@@ -31,6 +33,7 @@ export default defineEventHandler(async (event) => {
 				createdAt: now,
 			});
 	} catch (error) {
+		logError(LOG_MODULE, 'Failed Update', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

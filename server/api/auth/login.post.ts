@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const LOG_MODULE = 'Api/Auth/Login';
+
 const schema = z.object({
 	email: z.string(),
 	password: z.string(),
@@ -89,7 +91,7 @@ export default eventHandler(async (event) => {
 			accessToken: accessToken,
 		};
 	} catch (error) {
-		console.error(error);
+		logError(LOG_MODULE, 'Failed Generate Tokens', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

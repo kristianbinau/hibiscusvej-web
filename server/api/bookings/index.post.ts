@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays } from 'date-fns';
 
+const LOG_MODULE = 'Api/Booking/Create';
+
 const schema = z.object({
 	date: z.string().date(),
 });
@@ -117,6 +119,7 @@ export default eventHandler(async (event) => {
 			})
 			.execute();
 	} catch (error) {
+		logError(LOG_MODULE, 'Failed Insert', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

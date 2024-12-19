@@ -1,3 +1,5 @@
+const LOG_MODULE = 'Api/Auth/Refresh';
+
 export default eventHandler(async (event) => {
 	const refreshToken = getCookie(event, REFRESH_COOKIE_NAME);
 	if (!refreshToken) {
@@ -148,7 +150,7 @@ export default eventHandler(async (event) => {
 			accessToken: accessToken,
 		};
 	} catch (error) {
-		console.error(error);
+		logError(LOG_MODULE, 'Failed to generate tokens', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const LOG_MODULE = 'Api/Push/Subscribe';
+
 const pushSubscriptionJSON = z.custom<PushSubscriptionJSON>((val) => {
 	return (
 		typeof val.endpoint === 'string' &&
@@ -46,6 +48,7 @@ export default defineEventHandler(async (event) => {
 			.returning()
 			.get();
 	} catch (error) {
+		logError(LOG_MODULE, 'Failed Insert', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const LOG_MODULE = 'Api/Auth/Register';
+
 const schema = z.object({
 	apartmentId: z.number(),
 	email: z.string().email(),
@@ -59,7 +61,7 @@ export default eventHandler(async (event) => {
 			.returning()
 			.get();
 	} catch (error) {
-		console.error(error);
+		logError(LOG_MODULE, 'Failed Create User', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -87,7 +89,7 @@ export default eventHandler(async (event) => {
 		// Remove user if userLogin fails
 		await useDrizzle().delete(tables.users).where(eq(tables.users.id, user.id));
 
-		console.error(error);
+		logError(LOG_MODULE, 'Failed Create UserLogin', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -123,7 +125,7 @@ export default eventHandler(async (event) => {
 				.delete(tables.userPersons)
 				.where(eq(tables.userPersons.userId, user.id));
 
-			console.error(error);
+			logError(LOG_MODULE, 'Failed Create Persons', error);
 			throw createError({
 				statusCode: 500,
 				statusMessage: 'Internal Server Error',

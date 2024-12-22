@@ -21,12 +21,14 @@ export default eventHandler(async (event) => {
 			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE &&
 			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE_ADMIN
 		) {
+			deleteCookie(event, REFRESH_COOKIE_NAME);
 			throw createError({
 				statusCode: 401,
 				statusMessage: 'Unauthorized',
 			});
 		}
 	} catch (error) {
+		deleteCookie(event, REFRESH_COOKIE_NAME);
 		throw createError({
 			statusCode: 401,
 			statusMessage: 'Unauthorized',
@@ -48,6 +50,7 @@ export default eventHandler(async (event) => {
 		)
 		.get();
 	if (!userSession) {
+		deleteCookie(event, REFRESH_COOKIE_NAME);
 		throw createError({
 			statusCode: 401,
 			statusMessage: 'Unauthorized',
@@ -83,6 +86,7 @@ export default eventHandler(async (event) => {
 		.where(eq(tables.userLogins.id, userSession.userLoginId))
 		.get();
 	if (!userLogin) {
+		deleteCookie(event, REFRESH_COOKIE_NAME);
 		throw createError({
 			statusCode: 401,
 			statusMessage: 'Unauthorized',
@@ -101,6 +105,7 @@ export default eventHandler(async (event) => {
 		)
 		.get();
 	if (!user) {
+		deleteCookie(event, REFRESH_COOKIE_NAME);
 		throw createError({
 			statusCode: 401,
 			statusMessage: 'Unauthorized',

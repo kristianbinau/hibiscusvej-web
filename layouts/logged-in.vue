@@ -44,6 +44,15 @@ const links: HorizontalNavigationLink[][] = [
 		},
 		{
 			badge: {
+				icon: 'i-material-symbols-settings-account-box-rounded',
+				variant: 'subtle',
+				size: 'md',
+				color: 'primary',
+			},
+			click: () => navigateTo('/u/settings'),
+		},
+		{
+			badge: {
 				icon: 'i-material-symbols-key-off-outline-rounded',
 				variant: 'subtle',
 				label: 'Logout',

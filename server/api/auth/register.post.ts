@@ -9,9 +9,9 @@ const schema = z.object({
 	persons: z
 		.array(
 			z.object({
-				name: z.string(),
-				email: z.string().email(),
-				phone: z.string(),
+				name: z.string().min(1).max(255),
+				email: z.string().email().min(1).max(255),
+				phone: z.string().min(1).max(255),
 			}),
 		)
 		.min(1)
@@ -47,6 +47,8 @@ export default eventHandler(async (event) => {
 		});
 	}
 
+	const now = new Date();
+
 	// Try to create a new user
 	let user = null;
 	try {
@@ -55,8 +57,8 @@ export default eventHandler(async (event) => {
 			.values({
 				apartmentId: apartment.id,
 				admin: false,
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: now,
+				updatedAt: now,
 			})
 			.returning()
 			.get();
@@ -79,9 +81,9 @@ export default eventHandler(async (event) => {
 				userId: user.id,
 				email: body.email,
 				password: hashedPassword,
-				singleUse: 0,
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				singleUse: false,
+				createdAt: now,
+				updatedAt: now,
 			})
 			.returning()
 			.get();
@@ -108,8 +110,8 @@ export default eventHandler(async (event) => {
 						name: person.name,
 						email: person.email,
 						phone: person.phone,
-						createdAt: new Date(),
-						updatedAt: new Date(),
+						createdAt: now,
+						updatedAt: now,
 					})
 					.get(),
 			);

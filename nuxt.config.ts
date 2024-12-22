@@ -8,11 +8,16 @@ export default defineNuxtConfig({
 	},
 	hub: {
 		database: true,
+		cache: true,
 	},
 	nitro: {
 		experimental: {
 			tasks: true,
 		},
+	},
+
+	experimental: {
+		inlineRouteRules: true,
 	},
 
 	/**

@@ -3,10 +3,10 @@ export const logError = async (
 	message: string,
 	error: unknown = '',
 ) => {
-  if (error === '') {
-    console.error(`${module}: ${message}`);
-    return;
-  }
+	if (error === '') {
+		console.error(`${module}: ${message}`);
+		return;
+	}
 
 	console.error(`${module}: ${message} - `, error);
 };

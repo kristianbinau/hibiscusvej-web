@@ -1,7 +1,5 @@
-export default defineEventHandler(async () => {
+export default cachedEventHandler(async () => {
 	const apartments = await useDrizzle().select().from(tables.apartments).all();
 
-	// TODO: Cache
-
 	return apartments;
-});
+}, cacheOneWeek());

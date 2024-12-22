@@ -1,7 +1,6 @@
 export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 
-	// Get the user's data
 	const user = await useDrizzle()
 		.select()
 		.from(tables.users)

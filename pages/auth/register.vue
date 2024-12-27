@@ -199,7 +199,7 @@ const schema = z.object({
 					.email('Ugyldig email'),
 				phone: z.string({
 					required_error: 'Påkrævet',
-				}),
+				}).min(8, 'Telefonnummeret skal være mindst 8 tegn'),
 			}),
 		)
 		.min(1, 'Det skal være mindst 1 kontaktperson')

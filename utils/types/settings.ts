@@ -5,4 +5,4 @@ export type UserMeLoginsApiResponse = InternalApi['/api/users/me/logins']['get']
 
 export type Me = UserMeApiResponse['user'];
 export type MePerson = UserMePersonsApiResponse['persons'][0];
-export type MeLogin = UserMeLoginsApiResponse['persons'][0];
+export type MeLogin = UserMeLoginsApiResponse['logins'][0];

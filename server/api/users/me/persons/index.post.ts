@@ -25,17 +25,22 @@ export default eventHandler(async (event) => {
 		});
 	}
 
+	let person;
 	try {
 		const now = new Date();
 
-		await useDrizzle().insert(tables.userPersons).values({
-			userId: authUser.user.id,
-			name: body.name,
-			email: body.email,
-			phone: body.phone,
-			createdAt: now,
-			updatedAt: now,
-		});
+		person = await useDrizzle()
+			.insert(tables.userPersons)
+			.values({
+				userId: authUser.user.id,
+				name: body.name,
+				email: body.email,
+				phone: body.phone,
+				createdAt: now,
+				updatedAt: now,
+			})
+			.returning()
+			.get();
 	} catch (error) {
 		logError(LOG_MODULE, 'Failed Insert', error);
 		throw createError({
@@ -44,5 +49,7 @@ export default eventHandler(async (event) => {
 		});
 	}
 
-	return true;
+	return {
+		person: person,
+	};
 });

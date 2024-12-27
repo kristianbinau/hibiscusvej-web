@@ -90,6 +90,18 @@ export default eventHandler(async (event) => {
 		await useDrizzle()
 			.delete(tables.userSettings)
 			.where(eq(tables.userSettings.userId, userId));
+
+		await useDrizzle()
+			.update(tables.communalBookings)
+			.set({
+				deletedAt: now,
+			})
+			.where(
+				and(
+					eq(tables.communalBookings.userId, authUser.user.id),
+					gte(tables.communalBookings.from, now),
+				),
+			);
 	} catch (error) {
 		logError(LOG_MODULE, `Failed Delete of UserId: ${userId}`, error);
 		throw createError({

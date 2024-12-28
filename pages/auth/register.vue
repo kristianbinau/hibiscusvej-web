@@ -2,149 +2,175 @@
 	<section
 		class="lg:w-2/4 lg:px-0 px-4 mx-auto flex flex-col items-center gap-4 mt-12"
 	>
-		<UForm
-			ref="form"
-			:schema="schema"
-			:state="state"
-			@submit.prevent="onSubmit"
-			class="md:w-3/4 w-full"
-		>
-			<UCard>
-				<template #header>
-					<h1 class="text-2xl font-semibold text-primary">Registér</h1>
-				</template>
+		<ClientOnly>
+			<UForm
+				ref="form"
+				:schema="schema"
+				:state="state"
+				@submit.prevent="onSubmit"
+				class="md:w-3/4 w-full"
+			>
+				<UCard>
+					<template #header>
+						<h1 class="text-2xl font-semibold text-primary">Registér</h1>
+					</template>
 
-				<h3 class="text-xl font-semibold text-primary mb-2">Lejlighed</h3>
+					<h3 class="text-xl font-semibold text-primary mb-2">Lejlighed</h3>
 
-				<p class="mb-5">
-					Vi har brug for at vide hvilken lejlighed du bor i. Når du har
-					oprettet din konto vil Afdelingsbestyrelsen verificere de indtastede
-					informationer.
-				</p>
+					<p class="mb-5">
+						Vi har brug for at vide hvilken lejlighed du bor i. Når du har
+						oprettet din konto vil Afdelingsbestyrelsen verificere de indtastede
+						informationer.
+					</p>
 
-				<UFormGroup
-					label="Lejlighed"
-					name="apartmentId"
-					class="mt-3 mb-5"
-					required
-				>
-					<USelectMenu
-						v-model="state.apartmentId"
-						:options="apartments"
-						value-attribute="id"
-						option-attribute="address"
-					/>
-				</UFormGroup>
+					<UFormGroup
+						label="Lejlighed"
+						name="apartmentId"
+						class="mt-3 mb-5"
+						required
+					>
+						<USelectMenu
+							v-model="state.apartmentId"
+							:options="apartments"
+							value-attribute="id"
+							option-attribute="address"
+						/>
+					</UFormGroup>
 
-				<hr class="border-gray-200 dark:border-gray-800 mb-5" />
+					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-				<h3 class="text-xl font-semibold text-primary mb-2">Login</h3>
+					<h3 class="text-xl font-semibold text-primary mb-2">Login</h3>
 
-				<p class="mb-5">
-					Vi har brug for login informationer, så du kan logge ind på din konto.
-					Din adgangskoden bliver krypteret før den bliver sendt til vores
-					servere.
-				</p>
+					<p class="mb-5">
+						Vi har brug for login informationer, så du kan logge ind på din
+						konto. Din adgangskoden bliver krypteret før den bliver sendt til
+						vores servere.
+					</p>
 
-				<UFormGroup label="Email" name="email" class="my-3" required>
-					<UInput v-model="state.email" />
-				</UFormGroup>
+					<UFormGroup label="Email" name="email" class="my-3" required>
+						<UInput v-model="state.email" />
+					</UFormGroup>
 
-				<UFormGroup
-					label="Kodeord"
-					name="password"
-					class="mt-3 mb-5"
-					eager-validation
-					required
-				>
-					<UInput v-model="state.password" type="password" />
-				</UFormGroup>
+					<UFormGroup
+						label="Kodeord"
+						name="password"
+						class="mt-3 mb-5"
+						eager-validation
+						required
+					>
+						<UInput v-model="state.password" type="password" />
+					</UFormGroup>
 
-				<hr class="border-gray-200 dark:border-gray-800 mb-5" />
+					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-				<h3 class="text-xl font-semibold text-primary mb-2">Kontakt</h3>
+					<h3 class="text-xl font-semibold text-primary mb-2">Kontakt</h3>
 
-				<p class="mb-5">
-					Vi har brug for kontaktinformationer på alle beboere i lejligheden.
-					Det er vigtigt at vi har korrekte informationer, så vi kan kontakte
-					jer.
-				</p>
+					<p class="mb-5">
+						Vi har brug for kontaktinformationer på alle beboere i lejligheden.
+						Det er vigtigt at vi har korrekte informationer, så vi kan kontakte
+						jer.
+					</p>
 
-				<!-- Contact Information -->
-				<UFormGroup name="persons">
-					<div class="flex flex-col gap-6">
-						<template v-for="(person, index) in state.persons">
-							<UFormGroup
-								:label="`${index + 1}. kontaktperson`"
-								:name="`persons.${index}`"
+					<!-- Contact Information -->
+					<UFormGroup name="persons">
+						<div class="flex flex-col gap-6">
+							<template v-for="(person, index) in state.persons">
+								<UFormGroup
+									:label="`${index + 1}. kontaktperson`"
+									:name="`persons.${index}`"
+								>
+									<UFormGroup
+										label="Navn"
+										:name="`persons.${index}.name`"
+										class="mt-3"
+										required
+									>
+										<UInput v-model="person.name" label="Name" />
+									</UFormGroup>
+									<UFormGroup
+										label="Email"
+										:name="`persons.${index}.email`"
+										class="mt-3"
+										required
+									>
+										<UInput v-model="person.email" />
+									</UFormGroup>
+									<UFormGroup
+										label="Telefon"
+										:name="`persons.${index}.phone`"
+										class="mt-3"
+										required
+									>
+										<UInput v-model="person.phone" label="Phone" />
+									</UFormGroup>
+									<UButton
+										v-if="state.persons.length > 1"
+										color="red"
+										variant="soft"
+										@click="() => removePerson(index)"
+										class="mt-5"
+									>
+										Fjern kontaktperson
+									</UButton>
+								</UFormGroup>
+							</template>
+						</div>
+					</UFormGroup>
+
+					<template v-if="state.persons.length < 2">
+						<UButton
+							color="emerald"
+							variant="soft"
+							@click="addPerson"
+							class="mt-5 mb-5"
+						>
+							Tilføj kontaktperson
+						</UButton>
+					</template>
+
+					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
+
+					<h3 class="text-xl font-semibold text-primary mb-2">Samtykke</h3>
+
+					<p class="mb-5">
+						Vi har brug for dit samtykke til at behandle dine informationer i
+						overstemmelse med vores
+						<ULink to="/privacy" target="_blank" class="text-primary underline"
+							>privatlivspolitik</ULink
+						>.
+					</p>
+
+					<UFormGroup name="acceptedPrivacyPolicy" class="mt-3 mb-5" required>
+						<UCheckbox
+							v-model="state.acceptedPrivacyPolicy"
+							label="Jeg giver samtykke til at mine informationer bliver behandlet i henhold til privatlivspolitikken"
+							class="select-none"
+						/>
+					</UFormGroup>
+
+					<template #footer>
+						<div
+							class="flex gap-3 flex-wrap md:flex-nowrap flex-1 justify-between"
+						>
+							<ULink
+								to="/auth/login"
+								class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
 							>
-								<UFormGroup
-									label="Navn"
-									:name="`persons.${index}.name`"
-									class="mt-3"
-									required
-								>
-									<UInput v-model="person.name" label="Name" />
-								</UFormGroup>
-								<UFormGroup
-									label="Email"
-									:name="`persons.${index}.email`"
-									class="mt-3"
-									required
-								>
-									<UInput v-model="person.email" />
-								</UFormGroup>
-								<UFormGroup
-									label="Telefon"
-									:name="`persons.${index}.phone`"
-									class="mt-3"
-									required
-								>
-									<UInput v-model="person.phone" label="Phone" />
-								</UFormGroup>
-								<UButton
-									v-if="state.persons.length > 1"
-									color="red"
-									variant="soft"
-									@click="() => removePerson(index)"
-									class="mt-5"
-								>
-									Fjern kontaktperson
-								</UButton>
-							</UFormGroup>
-						</template>
-					</div>
-				</UFormGroup>
+								Har du allerede en konto?
+							</ULink>
 
-				<template v-if="state.persons.length < 2">
-					<UButton
-						color="emerald"
-						variant="soft"
-						@click="addPerson"
-						class="mt-5 mb-5"
-					>
-						Tilføj kontaktperson
-					</UButton>
-				</template>
-
-				<template #footer>
-					<div
-						class="flex gap-3 flex-wrap md:flex-nowrap flex-1 justify-between"
-					>
-						<ULink
-							to="/auth/login"
-							class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
-						>
-							Har du allerede en konto?
-						</ULink>
-
-						<UButton :loading="onSubmitLoading" class="md:max-w-[48%]" type="submit" block
-							>Registér</UButton
-						>
-					</div>
-				</template>
-			</UCard>
-		</UForm>
+							<UButton
+								:loading="onSubmitLoading"
+								class="md:max-w-[48%]"
+								type="submit"
+								block
+								>Registér</UButton
+							>
+						</div>
+					</template>
+				</UCard>
+			</UForm>
+		</ClientOnly>
 	</section>
 </template>
 
@@ -197,13 +223,22 @@ const schema = z.object({
 						required_error: 'Påkrævet',
 					})
 					.email('Ugyldig email'),
-				phone: z.string({
-					required_error: 'Påkrævet',
-				}).min(8, 'Telefonnummeret skal være mindst 8 tegn'),
+				phone: z
+					.string({
+						required_error: 'Påkrævet',
+					})
+					.min(8, 'Telefonnummeret skal være mindst 8 tegn'),
 			}),
 		)
 		.min(1, 'Det skal være mindst 1 kontaktperson')
 		.max(2, 'Det kan maksimalt være 2 kontaktpersoner'),
+	acceptedPrivacyPolicy: z
+		.boolean({
+			required_error: 'Påkrævet',
+		})
+		.refine((value) => value === true, {
+			message: 'Påkrævet',
+		}),
 });
 
 type Schema = z.output<typeof schema>;
@@ -219,6 +254,7 @@ const state = reactive<{
 		email: string | undefined;
 		phone: string | undefined;
 	}[];
+	acceptedPrivacyPolicy: boolean;
 }>({
 	apartmentId: undefined,
 	email: undefined,
@@ -230,6 +266,7 @@ const state = reactive<{
 			phone: undefined,
 		},
 	],
+	acceptedPrivacyPolicy: false,
 });
 
 const onSubmitLoading = ref<boolean>(false);

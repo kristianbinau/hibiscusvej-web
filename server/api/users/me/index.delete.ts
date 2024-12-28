@@ -17,7 +17,7 @@ export default eventHandler(async (event) => {
 	const currentSession = await useDrizzle()
 		.select()
 		.from(tables.userSessions)
-		.where(and(eq(tables.userSessions.tokenFamily, authUser.session.family)))
+		.where(eq(tables.userSessions.tokenFamily, authUser.session.family))
 		.get();
 
 	if (!currentSession) {

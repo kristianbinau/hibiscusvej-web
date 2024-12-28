@@ -33,7 +33,7 @@
 							Har du ikke en konto?
 						</ULink>
 
-						<UButton class="md:max-w-[48%]" type="submit" block>Login</UButton>
+						<UButton :loading="onSubmitLoading" class="md:max-w-[48%]" type="submit" block>Login</UButton>
 					</div>
 				</template>
 			</UCard>
@@ -77,7 +77,11 @@ const state = reactive<{
 	password: undefined,
 });
 
+const onSubmitLoading = ref<boolean>(false);
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+	onSubmitLoading.value = true;
+
 	form.value!.clear();
 	try {
 		const passwordHash = await hash(event.data.password);
@@ -107,5 +111,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			]);
 		}
 	}
+
+	onSubmitLoading.value = false;
 }
 </script>

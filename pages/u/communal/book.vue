@@ -50,7 +50,10 @@
 						</template>
 					</UCheckbox>
 
-					<UButton @click="onSubmit" :disabled="date === null || !hasReadTerms"
+					<UButton
+						:loading="onSubmitLoading"
+						@click="onSubmit"
+						:disabled="date === null || !hasReadTerms"
 						>Book</UButton
 					>
 				</ClientOnly>
@@ -184,8 +187,12 @@ fetchCurrentUser();
  * Submit
  */
 
+const onSubmitLoading = ref<boolean>(false);
+
 async function onSubmit() {
 	if (!date.value) return;
+
+	onSubmitLoading.value = true;
 
 	try {
 		const res = await $fetch('/api/bookings', {
@@ -215,6 +222,8 @@ async function onSubmit() {
 			}
 		}
 	}
+
+	onSubmitLoading.value = false;
 }
 
 /**

@@ -138,7 +138,7 @@
 							Har du allerede en konto?
 						</ULink>
 
-						<UButton class="md:max-w-[48%]" type="submit" block
+						<UButton :loading="onSubmitLoading" class="md:max-w-[48%]" type="submit" block
 							>Registér</UButton
 						>
 					</div>
@@ -232,7 +232,11 @@ const state = reactive<{
 	],
 });
 
+const onSubmitLoading = ref<boolean>(false);
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+	onSubmitLoading.value = true;
+
 	form.value!.clear();
 	try {
 		const passwordHash = await hash(event.data.password);
@@ -281,6 +285,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			]);
 		}
 	}
+
+	onSubmitLoading.value = false;
 }
 
 /**

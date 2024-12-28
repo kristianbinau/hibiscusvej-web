@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const schema = z.object({
-	everywhere: z.boolean().optional(),
+	everywhere: z.coerce.boolean().optional(),
 });
 
 export default eventHandler(async (event) => {

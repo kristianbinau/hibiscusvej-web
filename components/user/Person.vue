@@ -12,8 +12,12 @@
 						class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
 					>
 						<template v-if="isCreated">
-							{{ personIndex ? `${personIndex}. Kontaktperson` : `Kontaktperson ID: ${person.id}` }} </template
-						>
+							{{
+								personIndex
+									? `${personIndex}. Kontaktperson`
+									: `Kontaktperson ID: ${person.id}`
+							}}
+						</template>
 						<template v-else> Uoprettet Konktaktperson </template>
 					</h3>
 				</div>
@@ -36,6 +40,7 @@
 					<UButton
 						v-if="deleteable"
 						@click="onDelete"
+						:loading="onDeleteLoading"
 						color="red"
 						variant="soft"
 						class="flex-1"
@@ -44,6 +49,7 @@
 					>
 
 					<UButton
+						:loading="onSubmitLoading"
 						:disabled="!hasChanges"
 						color="green"
 						type="submit"
@@ -63,7 +69,12 @@
 						>Fjern Person</UButton
 					>
 
-					<UButton color="green" type="submit" class="flex-1" block
+					<UButton
+						:loading="onSubmitLoading"
+						color="green"
+						type="submit"
+						class="flex-1"
+						block
 						>Opret Person</UButton
 					>
 				</template>
@@ -124,7 +135,11 @@ const state = reactive<{
 
 const isCreated = computed(() => person.value.id !== 0);
 
+const onSubmitLoading = ref<boolean>(false);
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+	onSubmitLoading.value = true;
+
 	form.value!.clear();
 	try {
 		if (!isCreated.value) {
@@ -147,13 +162,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			});
 		}
 	}
+
+	onSubmitLoading.value = false;
 }
+
+const onDeleteLoading = ref<boolean>(false);
 
 async function onDelete() {
 	if (person.value.id === 0) {
 		emit('delete');
 		return;
 	}
+
+	onDeleteLoading.value = true;
 
 	try {
 		const res = await $fetch(`/api/users/me/persons/${person.value.id}`, {
@@ -172,6 +193,8 @@ async function onDelete() {
 			title: 'Der skete en fejl ved sletning af kontaktpersonen',
 		});
 	}
+
+	onDeleteLoading.value = false;
 }
 
 async function createPerson(event: FormSubmitEvent<Schema>) {

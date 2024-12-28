@@ -51,6 +51,96 @@
 					</UCard>
 				</template>
 			</div>
+
+			<h2 class="text-lg mt-8 mb-4">Handlinger</h2>
+
+			<div class="flex flex-col md:flex-row gap-4">
+				<UPopover :popper="{ placement: 'top-start' }" overlay>
+					<UTooltip text="Klik for at logge ud på alle enheder">
+						<UButton
+							icon="i-material-symbols-key-off-outline-rounded"
+							label="Log ud på alle enheder"
+							color="red"
+							variant="soft"
+							class="flex-1"
+							block
+						/>
+					</UTooltip>
+
+					<template #panel>
+						<div class="p-4">
+							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+							<p class="text-xs">
+								Du er ved at logge ud på alle enheder. <br />
+								Dette vil medføre, at du skal logge ind igen på alle enheder.
+							</p>
+
+							<UButton
+								label="Godkend"
+								icon="i-material-symbols-check-circle-rounded"
+								color="red"
+								variant="soft"
+								size="xs"
+								@click="logoutEverywhere"
+								:loading="logoutEverywhereLoading"
+								class="mt-4"
+							/>
+						</div>
+					</template>
+				</UPopover>
+
+				<UPopover :popper="{ placement: 'top-start' }" overlay>
+					<UTooltip text="Klik for at permanent slette din bruger">
+						<UButton
+							icon="i-material-symbols-delete-outline-rounded"
+							label="Slet bruger"
+							color="red"
+							variant="soft"
+							class="flex-1"
+							block
+						/>
+					</UTooltip>
+
+					<template #panel>
+						<div class="p-4">
+							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+							<p class="text-xs">
+								Du er ved at slette din bruger. <br />
+								Dette kan ikke fortrydes, og alle dine data vil blive slettet.
+								<br />
+								<span class="italic"
+									>Fremtidige bookinger vil blive annulleret.</span
+								>
+							</p>
+
+							<UFormGroup
+								class="mt-4"
+								label="Adgangskode"
+								help="Vi skal bruge din adgangskode for at bekræfte handlingen"
+								:error="wrongCurrentSessionPassword && 'Forkert adgangskode'"
+								size="xs"
+							>
+								<UInput
+									size="xs"
+									type="password"
+									v-model="currentSessionPassword"
+								/>
+							</UFormGroup>
+
+							<UButton
+								label="Godkend"
+								icon="i-material-symbols-check-circle-rounded"
+								color="red"
+								variant="soft"
+								size="xs"
+								@click="deleteAccount"
+								:loading="deleteAccountLoading"
+								class="mt-4"
+							/>
+						</div>
+					</template>
+				</UPopover>
+			</div>
 		</ClientOnly>
 	</section>
 </template>
@@ -185,6 +275,74 @@ async function fetchLogins() {
 	fetchingLogins.value = false;
 }
 fetchLogins();
+
+/**
+ * Account Actions
+ */
+const currentSessionPassword = ref<string>('');
+const wrongCurrentSessionPassword = ref<boolean>(false);
+const deleteAccountLoading = ref<boolean>(false);
+
+const { hash } = useHash();
+
+async function deleteAccount() {
+	deleteAccountLoading.value = true;
+	wrongCurrentSessionPassword.value = false;
+
+	try {
+		const passwordHash = await hash(currentSessionPassword.value);
+
+		const res = await $fetch('/api/users/me', {
+			method: 'DELETE',
+			body: {
+				currentSessionPassword: passwordHash,
+			},
+		});
+
+		if (res) {
+			await logoutEverywhere();
+
+			toast.add({
+				title: 'Din bruger blev slettet, og du er blevet logget ud.',
+			});
+		}
+	} catch (error: any) {
+		if (error.status === 401) {
+			wrongCurrentSessionPassword.value = true;
+		} else {
+			toast.add({
+				title: 'Der skete en fejl ved sletning af brugeren',
+			});
+		}
+	}
+
+	deleteAccountLoading.value = false;
+}
+
+const logoutEverywhereLoading = ref<boolean>(false);
+
+async function logoutEverywhere() {
+	logoutEverywhereLoading.value = true;
+
+	try {
+		const res = await $fetch('/api/auth/logout', {
+			method: 'POST',
+			query: {
+				everywhere: true,
+			},
+		});
+
+		if (res) {
+			await navigateTo('/');
+		}
+	} catch (error) {
+		toast.add({
+			title: 'Der skete en fejl ved logout, genindlæs siden',
+		});
+	}
+
+	logoutEverywhereLoading.value = false;
+}
 </script>
 
 <style></style>

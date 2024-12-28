@@ -2,42 +2,50 @@
 	<section
 		class="lg:w-2/4 lg:px-0 px-4 mx-auto flex flex-col items-center gap-4 mt-12"
 	>
-		<UForm
-			ref="form"
-			:schema="schema"
-			:state="state"
-			@submit.prevent="onSubmit"
-			class="md:w-3/4 w-full"
-		>
-			<UCard>
-				<template #header>
-					<h1 class="text-2xl font-semibold text-primary">Login</h1>
-				</template>
+		<ClientOnly>
+			<UForm
+				ref="form"
+				:schema="schema"
+				:state="state"
+				@submit.prevent="onSubmit"
+				class="md:w-3/4 w-full"
+			>
+				<UCard>
+					<template #header>
+						<h1 class="text-2xl font-semibold text-primary">Login</h1>
+					</template>
 
-				<UFormGroup label="Email" name="email" required>
-					<UInput v-model="state.email" />
-				</UFormGroup>
+					<UFormGroup label="Email" name="email" required>
+						<UInput v-model="state.email" />
+					</UFormGroup>
 
-				<UFormGroup label="Password" name="password" class="mt-3" required>
-					<UInput v-model="state.password" type="password" />
-				</UFormGroup>
+					<UFormGroup label="Password" name="password" class="mt-3" required>
+						<UInput v-model="state.password" type="password" />
+					</UFormGroup>
 
-				<template #footer>
-					<div
-						class="flex gap-3 flex-wrap md:flex-nowrap flex-1 justify-between"
-					>
-						<ULink
-							to="/auth/register"
-							class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+					<template #footer>
+						<div
+							class="flex gap-3 flex-wrap md:flex-nowrap flex-1 justify-between"
 						>
-							Har du ikke en konto?
-						</ULink>
+							<ULink
+								to="/auth/register"
+								class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+							>
+								Har du ikke en konto?
+							</ULink>
 
-						<UButton :loading="onSubmitLoading" class="md:max-w-[48%]" type="submit" block>Login</UButton>
-					</div>
-				</template>
-			</UCard>
-		</UForm>
+							<UButton
+								:loading="onSubmitLoading"
+								class="md:max-w-[48%]"
+								type="submit"
+								block
+								>Login</UButton
+							>
+						</div>
+					</template>
+				</UCard>
+			</UForm>
+		</ClientOnly>
 	</section>
 </template>
 

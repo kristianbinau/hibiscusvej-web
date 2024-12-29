@@ -1,6 +1,6 @@
 ---
-title: 'Lån & Leje'
-description: 'Lån og leje af fællesfaciliteter'
+title: 'Privatlivspolitik'
+description: 'Beskrivelse af, hvordan vi indsamler, bruger og beskytter dine oplysninger.'
 ---
 
 # Privatlivspolitik

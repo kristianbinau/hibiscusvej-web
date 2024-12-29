@@ -13,22 +13,22 @@
 			></UAlert>
 		</ClientOnly>
 
-		<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
-			<div>
-				<h1 class="text-primary text-2xl mt-2 mb-2">Book fælleslokalet</h1>
-				<p>
-					Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
-					Du kan fjerne din booking indtil før den starter. <br />
-					Dine bookinger kan ses under
-					<ULink
-						to="/u/communal/me"
-						class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
-						>Mine bookinger</ULink
-					>.
-				</p>
-			</div>
-			<div class="flex flex-col">
-				<ClientOnly>
+		<ClientOnly>
+			<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
+				<div>
+					<h1 class="text-primary text-2xl mt-2 mb-2">Book fælleslokalet</h1>
+					<p>
+						Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
+						Du kan fjerne din booking indtil før den starter. <br />
+						Dine bookinger kan ses under
+						<ULink
+							to="/u/communal/me"
+							class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+							>Mine bookinger</ULink
+						>.
+					</p>
+				</div>
+				<div class="flex flex-col">
 					<DatePicker
 						v-model="date"
 						:attributes="attributes"
@@ -56,9 +56,9 @@
 						:disabled="date === null || !hasReadTerms"
 						>Book</UButton
 					>
-				</ClientOnly>
+				</div>
 			</div>
-		</div>
+		</ClientOnly>
 	</section>
 </template>
 
@@ -88,11 +88,21 @@ const month = ref<number>(new Date().getMonth() + 1);
 
 watch(date, async (newDate) => {
 	if (newDate) {
-		const bookingOnDayExists = bookingsThisMonth.value.some((booking) =>
+		const alreadyBooked = bookingsThisMonth.value.some((booking) =>
 			isSameDay(booking, newDate),
 		);
-		if (bookingOnDayExists) {
+
+		const alreadyBookedByUser = myBookingsThisMonth.value.some((booking) =>
+			isSameDay(booking, newDate),
+		);
+
+		if (alreadyBooked) {
 			toast.add({ title: 'Der er allerede en booking den dag' });
+			date.value = null;
+		}
+
+		if (alreadyBookedByUser) {
+			toast.add({ title: 'Du har allerede booket den dag' });
 			date.value = null;
 		}
 	}
@@ -104,6 +114,11 @@ const attributes: Ref<AttributeConfig[]> = computed(() => {
 			highlight: 'red',
 			dates: bookingsThisMonth.value,
 			order: 0,
+		},
+		{
+			highlight: 'blue',
+			dates: myBookingsThisMonth.value,
+			order: 1,
 		},
 	];
 });
@@ -124,6 +139,7 @@ function onDidMove(pages: Page[]) {
  */
 
 const bookingsThisMonth = ref<Date[]>([]);
+const myBookingsThisMonth = ref<Date[]>([]);
 const fetchingBookings = ref(true);
 
 async function fetchBookingsThisMonth() {
@@ -142,9 +158,16 @@ async function fetchBookingsThisMonth() {
 			return;
 		}
 
-		bookingsThisMonth.value = data.value.map((booking) => {
-			return new Date(booking.from);
-		});
+		bookingsThisMonth.value = data.value
+			.filter((booking) => booking.userId !== currentUser.value?.user.id)
+			.map((booking) => {
+				return new Date(booking.from);
+			});
+		myBookingsThisMonth.value = data.value
+			.filter((booking) => booking.userId === currentUser.value?.user.id)
+			.map((booking) => {
+				return new Date(booking.from);
+			});
 	} catch (error) {
 		toast.add({
 			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
@@ -208,7 +231,7 @@ async function onSubmit() {
 				title: `Du har booket fælleslokalet - ${date.value.toLocaleDateString()}`,
 			});
 
-			bookingsThisMonth.value.push(date.value);
+			myBookingsThisMonth.value.push(date.value);
 			date.value = null;
 		}
 	} catch (error: any) {

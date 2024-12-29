@@ -1,3 +1,4 @@
+import { startOfMonth, endOfMonth } from 'date-fns';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -12,6 +13,10 @@ export default eventHandler(async (event) => {
 	const year = query.year;
 	const month = query.month;
 
+	const date = new Date(year, month - 1, 1, 0, 0, 0, 0);
+	const startDate = startOfMonth(date);
+	const endDate = endOfMonth(date);
+
 	// Get all bookings for the month
 	const bookings = await useDrizzle()
 		.select()
@@ -20,10 +25,13 @@ export default eventHandler(async (event) => {
 			and(
 				isNull(tables.communalBookings.deletedAt),
 				or(
-					gte(tables.communalBookings.from, new Date(year, month - 1, 1)),
-					lte(
-						tables.communalBookings.to,
-						new Date(year, month, 0, 23, 59, 59, 999),
+					and(
+						gte(tables.communalBookings.from, startDate),
+						lte(tables.communalBookings.from, endDate),
+					),
+					and(
+						gte(tables.communalBookings.to, startDate),
+						lte(tables.communalBookings.to, endDate),
 					),
 				),
 			),

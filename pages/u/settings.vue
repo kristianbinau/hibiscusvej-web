@@ -6,6 +6,8 @@
 		</div>
 
 		<ClientOnly>
+			<hr class="border-gray-200 dark:border-gray-800 mb-5" />
+
 			<h2 class="text-lg mb-4">Kontaktpersoner</h2>
 
 			<div class="flex flex-col md:flex-row gap-4">
@@ -51,6 +53,8 @@
 					</UCard>
 				</template>
 			</div>
+
+			<hr class="border-gray-200 dark:border-gray-800 mt-10 mb-5" />
 
 			<h2 class="text-lg mt-8 mb-4">Handlinger</h2>
 

@@ -69,15 +69,14 @@ if (authUser.value && authUser.value.user.admin) {
 		badge: {
 			icon: 'i-material-symbols-admin-panel-settings-rounded',
 			variant: 'subtle',
-			label: 'Admin',
 			size: 'md',
 			color: 'primary',
 		},
 		click: () => navigateTo('/u/admin'),
 	};
 
-	// Add before logout
-	links[1].splice(-1, 0, link);
+	// Add before settings
+	links[1].splice(-2, 0, link);
 }
 
 async function logout() {

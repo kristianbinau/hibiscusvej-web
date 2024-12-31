@@ -1,5 +1,14 @@
 <template>
-	<UCard v-if="user" class="mb-4">
+	<UCard
+		v-if="user"
+		class="mb-4 flex flex-col flex-1"
+		:ui="{
+			base: 'h-dvh',
+			body: { base: 'overflow-auto flex-1' },
+			ring: '',
+			divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+		}"
+	>
 		<template #header>
 			<div class="flex items-center justify-between">
 				<h3
@@ -54,191 +63,229 @@
 			/>
 		</UFormGroup>
 
-		<template v-if="showPersons">
-			<h3
-				class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-			>
-				Persons
-			</h3>
+		<UAccordion
+			:items="accordionItems"
+			class="mt-4"
+			:ui="{ item: { base: 'relative' } }"
+		>
+			<template #persons>
+				<UCard
+					v-if="user.persons.length"
+					v-for="person in user.persons"
+					class="mb-4 last:mb-0"
+				>
+					<template #header>
+						<h4
+							class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
+						>
+							Person ID: {{ person.id }}
+						</h4>
+					</template>
 
-			<UCard
-				v-if="showPersons"
-				v-for="person in user.persons"
-				class="mb-4 last:mb-0"
-			>
-				<template #header>
-					<h4
-						class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
+					<UFormGroup label="Name">
+						<UInput
+							disabled
+							:model-value="person.name"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+					<UFormGroup label="Email">
+						<UInput
+							disabled
+							:model-value="person.email"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+					<UFormGroup label="Phone">
+						<UInput
+							disabled
+							:model-value="person.phone"
+							class="disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+				</UCard>
+
+				<template v-else>
+					<USkeleton class="h-24" />
+					<UBadge
+						class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+						color="red"
 					>
-						Person ID: {{ person.id }}
-					</h4>
+						Ingen Kontaktpersoner! Det er et krav at have mindst én..
+					</UBadge>
+				</template>
+			</template>
+
+			<template #logins>
+				<UCard
+					v-if="user.logins.length"
+					v-for="login in user.logins"
+					class="mb-4 last:mb-0"
+				>
+					<template #header>
+						<h4
+							class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
+						>
+							Login ID: {{ login.id }}
+						</h4>
+					</template>
+
+					<UFormGroup label="Email">
+						<UInput
+							disabled
+							:model-value="login.email"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+				</UCard>
+
+				<template v-else>
+					<USkeleton class="h-24" />
+					<UBadge
+						class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+						color="red"
+					>
+						Ingen Logins! Brugeren kan ikke bruges..
+					</UBadge>
+				</template>
+			</template>
+
+			<template #sessions>
+				<UCard
+					v-if="user.sessions.length"
+					v-for="session in user.sessions"
+					class="mb-4 last:mb-0"
+				>
+					<template #header>
+						<h4
+							class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
+						>
+							Session ID: {{ session.id }}
+						</h4>
+					</template>
+
+					<UFormGroup label="Expires At">
+						<UInput
+							disabled
+							:model-value="
+								String(new Date(session.expiredAt).toLocaleDateString())
+							"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+
+					<UFormGroup label="Created At">
+						<UInput
+							disabled
+							:model-value="
+								String(new Date(session.createdAt).toLocaleDateString())
+							"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+
+					<UFormGroup label="Updated At">
+						<UInput
+							disabled
+							:model-value="
+								String(new Date(session.updatedAt).toLocaleDateString())
+							"
+							class="disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+				</UCard>
+
+				<template v-else>
+					<USkeleton class="h-24" />
+					<UBadge
+						class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+						color="gray"
+					>
+						Ingen Sessions!
+					</UBadge>
+				</template>
+			</template>
+
+			<template #bookings>
+				<UCard
+					v-if="!fetchingBookings && bookings && bookings.length"
+					v-for="booking in bookings"
+					class="mb-4 last:mb-0"
+				>
+					<template #header>
+						<h4
+							class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
+						>
+							Booking ID: {{ booking.id }}
+						</h4>
+					</template>
+
+					<UFormGroup label="Starts At">
+						<UInput
+							disabled
+							:model-value="String(new Date(booking.from).toLocaleString())"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+
+					<UFormGroup label="Ends At">
+						<UInput
+							disabled
+							:model-value="String(new Date(booking.to).toLocaleString())"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+
+					<UFormGroup label="Deleted At">
+						<UInput
+							disabled
+							:model-value="
+								booking.deletedAt
+									? String(new Date(booking.deletedAt).toLocaleDateString())
+									: 'Ikke slettet'
+							"
+							class="disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+
+					<UFormGroup label="Created At">
+						<UInput
+							disabled
+							:model-value="
+								String(new Date(booking.createdAt).toLocaleDateString())
+							"
+							class="mb-4 disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+					<UFormGroup label="Updated At">
+						<UInput
+							disabled
+							:model-value="
+								String(new Date(booking.updatedAt).toLocaleDateString())
+							"
+							class="disabled:*:cursor-default"
+						/>
+					</UFormGroup>
+				</UCard>
+
+				<template v-else-if="fetchingBookings">
+					<USkeleton class="h-24" />
 				</template>
 
-				<UFormGroup label="Name">
-					<UInput
-						disabled
-						:model-value="person.name"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-				<UFormGroup label="Email">
-					<UInput
-						disabled
-						:model-value="person.email"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-				<UFormGroup label="Phone">
-					<UInput
-						disabled
-						:model-value="person.phone"
-						class="disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-			</UCard>
-		</template>
-
-		<template v-if="showLogins">
-			<h3
-				class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-			>
-				Logins
-			</h3>
-
-			<UCard
-				v-if="showLogins"
-				v-for="login in user.logins"
-				class="mb-4 last:mb-0"
-			>
-				<template #header>
-					<h4
-						class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
+				<template v-else>
+					<USkeleton class="h-24" />
+					<UBadge
+						class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+						color="gray"
 					>
-						Login ID: {{ login.id }}
-					</h4>
+						Ingen Bookings!
+					</UBadge>
 				</template>
+			</template>
+		</UAccordion>
 
-				<UFormGroup label="Email">
-					<UInput
-						disabled
-						:model-value="login.email"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-			</UCard>
-		</template>
-
-		<template v-if="showSessions">
-			<h3
-				class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-			>
-				Sessions
-			</h3>
-
-			<UCard v-for="session in user.sessions" class="mb-4 last:mb-0">
-				<template #header>
-					<h4
-						class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
-					>
-						Session ID: {{ session.id }}
-					</h4>
-				</template>
-
-				<UFormGroup label="Expires At">
-					<UInput
-						disabled
-						:model-value="
-							String(new Date(session.expiredAt).toLocaleDateString())
-						"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-
-				<UFormGroup label="Created At">
-					<UInput
-						disabled
-						:model-value="
-							String(new Date(session.createdAt).toLocaleDateString())
-						"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-
-				<UFormGroup label="Updated At">
-					<UInput
-						disabled
-						:model-value="
-							String(new Date(session.updatedAt).toLocaleDateString())
-						"
-						class="disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-			</UCard>
-		</template>
-
-		<template v-if="showBookings">
-			<h3
-				class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-			>
-				Bookings
-			</h3>
-
-			<UCard v-for="booking in bookings" class="mb-4 last:mb-0">
-				<template #header>
-					<h4
-						class="text-sm font-semibold leading-5 text-gray-900 dark:text-white"
-					>
-						Booking ID: {{ booking.id }}
-					</h4>
-				</template>
-
-				<UFormGroup label="Starts At">
-					<UInput
-						disabled
-						:model-value="String(new Date(booking.from).toLocaleString())"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-
-				<UFormGroup label="Ends At">
-					<UInput
-						disabled
-						:model-value="String(new Date(booking.to).toLocaleString())"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-
-				<UFormGroup label="Deleted At">
-					<UInput
-						disabled
-						:model-value="
-							booking.deletedAt
-								? String(new Date(booking.deletedAt).toLocaleDateString())
-								: 'Ikke slettet'
-						"
-						class="disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-
-				<UFormGroup label="Created At">
-					<UInput
-						disabled
-						:model-value="
-							String(new Date(booking.createdAt).toLocaleDateString())
-						"
-						class="mb-4 disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-				<UFormGroup label="Updated At">
-					<UInput
-						disabled
-						:model-value="
-							String(new Date(booking.updatedAt).toLocaleDateString())
-						"
-						class="disabled:*:cursor-default"
-					/>
-				</UFormGroup>
-			</UCard>
+		<template #footer>
+			<USkeleton class="h-8" />
 		</template>
 	</UCard>
 </template>
@@ -263,6 +310,44 @@ const bookings = defineModel<Booking[]>('bookings', {
 
 const toast = useToast();
 
+const accordionItems = computed(() => {
+	const items = [];
+
+	if (showPersons) {
+		items.push({
+			label: 'Persons',
+			icon: 'i-material-symbols-person',
+			slot: 'persons',
+		});
+	}
+
+	if (showLogins) {
+		items.push({
+			label: 'Logins',
+			icon: 'i-material-symbols-passkey',
+			slot: 'logins',
+		});
+	}
+
+	if (showSessions) {
+		items.push({
+			label: 'Sessions',
+			icon: 'i-material-symbols-security-rounded',
+			slot: 'sessions',
+		});
+	}
+
+	if (showBookings) {
+		items.push({
+			label: 'Bookings',
+			icon: 'i-material-symbols-calendar-clock-outline-rounded',
+			slot: 'bookings',
+		});
+	}
+
+	return items;
+});
+
 /**
  * Fetch Missing
  */
@@ -277,13 +362,13 @@ onMounted(() => {
 	}
 });
 
-const fetchingUsers = ref(false);
+const fetchingUser = ref(false);
 async function fetchUser() {
-	if (fetchingUsers.value) {
+	if (fetchingUser.value) {
 		return;
 	}
 
-	fetchingUsers.value = true;
+	fetchingUser.value = true;
 
 	try {
 		const { data } = await useFetch(`/api/admin/users/${userId}`, {
@@ -291,7 +376,7 @@ async function fetchUser() {
 		});
 
 		if (data.value === null) {
-			fetchingUsers.value = false;
+			fetchingUser.value = false;
 			toast.add({
 				title: 'Brugeren blev ikke fundet',
 			});
@@ -305,7 +390,7 @@ async function fetchUser() {
 		});
 	}
 
-	fetchingUsers.value = false;
+	fetchingUser.value = false;
 }
 
 const fetchingBookings = ref(false);

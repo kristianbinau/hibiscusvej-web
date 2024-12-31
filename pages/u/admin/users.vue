@@ -13,6 +13,18 @@
 			/>
 
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
+				<template #id-data="{ row }">
+					<UTooltip text="Klik for at se bruger">
+						<UBadge
+							@click="openUser(row.id)"
+							class="cursor-pointer select-none"
+							color="primary"
+							size="sm"
+							>{{ row.id }}</UBadge
+						>
+					</UTooltip>
+				</template>
+
 				<template #apartmentId-data="{ row }">
 					<UTooltip :text="`ID: ${row.apartmentId}`">
 						{{ convertApartmentIdToApartmentAdress(row.apartmentId) }}
@@ -64,6 +76,23 @@
 					</UTooltip>
 				</template>
 			</UTable>
+
+			<USlideover
+				v-model="isUserSlideOpen"
+				:ui="{
+					base: '!max-w-4xl',
+				}"
+			>
+				<AdminUser
+					v-if="selectedUserForSlide"
+					:userId="selectedUserForSlide.id"
+					:user="selectedUserForSlide"
+					:showPersons="true"
+					:showLogins="true"
+					:showSessions="true"
+					:showBookings="true"
+				/>
+			</USlideover>
 		</ClientOnly>
 	</section>
 </template>
@@ -214,6 +243,10 @@ async function fetch() {
 		}
 
 		adminUsersApiResponse.value = data.value;
+
+		setTimeout(() => {
+			openUser(adminUsersApiResponse.value.users[0].id);
+		}, 500);
 	} catch (error) {
 		toast.add({
 			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
@@ -349,6 +382,29 @@ async function unverifyUser(id: number) {
 	updatingVerificationUserIds.value = updatingVerificationUserIds.value.filter(
 		(userId) => userId !== id,
 	);
+}
+
+/**
+ * User Slideover
+ */
+const isUserSlideOpen = ref<boolean>(false);
+const selectedUserForSlide = ref<User | null>(null);
+
+function openUser(id: number) {
+	const user = usersJoined.value.find((user) => user.id === id);
+
+	if (!user) {
+		toast.add({
+			title: `Brugeren med ID: ${id} blev ikke fundet`,
+		});
+		return;
+	}
+
+	selectedUserForSlide.value = user;
+
+	nextTick(() => {
+		isUserSlideOpen.value = true;
+	});
 }
 </script>
 

@@ -120,8 +120,8 @@
 							<UFormGroup
 								class="mt-4"
 								label="Adgangskode"
-								help="Vi skal bruge din adgangskode for at bekræfte handlingen"
-								:error="wrongCurrentSessionPassword && 'Forkert adgangskode'"
+								help="Indtast din adgangskode for at bekræfte."
+								:error="wrongCurrentSessionPassword && 'Forkert adgangskode!'"
 								size="xs"
 							>
 								<UInput

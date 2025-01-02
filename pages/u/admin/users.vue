@@ -15,13 +15,13 @@
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
 				<template #id-data="{ row }">
 					<UTooltip text="Klik for at se bruger">
-						<UBadge
+						<UButton
 							@click="openUser(row.id)"
 							class="cursor-pointer select-none"
 							color="primary"
-							size="sm"
-							>{{ row.id }}</UBadge
-						>
+							icon="i-material-symbols-open-in-new"
+							:label="String(row.id)"
+						/>
 					</UTooltip>
 				</template>
 
@@ -32,18 +32,20 @@
 				</template>
 
 				<template #admin-data="{ row }">
-					<UButton
+					<UBadge
 						v-if="row.admin"
+						class="px-1.5"
+						size="lg"
 						icon="i-material-symbols-check-box-rounded"
-						size="sm"
 						color="green"
 						variant="soft"
 					/>
 
-					<UButton
+					<UBadge
 						v-else
+						class="px-1.5"
+						size="lg"
 						icon="i-material-symbols-check-box-outline-blank"
-						size="sm"
 						color="red"
 						variant="soft"
 					/>
@@ -54,24 +56,22 @@
 						v-if="row.verified !== 'Ikke verificeret'"
 						:text="row.verified"
 					>
-						<UButton
+						<UBadge
+							class="px-1.5"
+							size="lg"
 							icon="i-material-symbols-check-box-rounded"
-							size="sm"
 							color="green"
 							variant="soft"
-							:loading="updatingVerificationUserIds.includes(row.id)"
-							@click="unverifyUser(row.id)"
 						/>
 					</UTooltip>
 
-					<UTooltip v-else text="Klik for at verificere">
-						<UButton
+					<UTooltip v-else>
+						<UBadge
+							class="px-1.5"
+							size="lg"
 							icon="i-material-symbols-check-box-outline-blank"
-							size="sm"
 							color="red"
 							variant="soft"
-							:loading="updatingVerificationUserIds.includes(row.id)"
-							@click="verifyUser(row.id)"
 						/>
 					</UTooltip>
 				</template>
@@ -80,9 +80,11 @@
 			<USlideover
 				v-model="isUserSlideOpen"
 				:ui="{
-					base: '!max-w-4xl',
+					base: '!max-w-3xl',
 				}"
+				@close="atUserSlideClose()"
 			>
+				<!-- TODO: Implement Sync between AdminUser & Users page-->
 				<AdminUser
 					v-if="selectedUserForSlide"
 					:userId="selectedUserForSlide.id"
@@ -91,6 +93,7 @@
 					:showLogins="true"
 					:showSessions="true"
 					:showBookings="true"
+					@close="isUserSlideOpen = false"
 				/>
 			</USlideover>
 		</ClientOnly>
@@ -243,10 +246,6 @@ async function fetch() {
 		}
 
 		adminUsersApiResponse.value = data.value;
-
-		setTimeout(() => {
-			openUser(adminUsersApiResponse.value.users[0].id);
-		}, 500);
 	} catch (error) {
 		toast.add({
 			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
@@ -405,6 +404,11 @@ function openUser(id: number) {
 	nextTick(() => {
 		isUserSlideOpen.value = true;
 	});
+}
+
+function atUserSlideClose() {
+	selectedUserForSlide.value = null;
+	fetch();
 }
 </script>
 

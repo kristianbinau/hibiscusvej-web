@@ -8,8 +8,7 @@
 
 		<UNotifications />
 	</div>
-	
-	<USlideovers />
+
 	<ClientOnly>
 		<ServiceWorker />
 	</ClientOnly>

@@ -46,9 +46,10 @@ export default defineNuxtConfig({
 	},
 
 	runtimeConfig: {
-		jwtSecret: process.env.NUXT_JWT_SECRET,
+		jwtPrivateKey: process.env.NUXT_JWT_PRIVATE_KEY,
 		vapidPrivateKey: process.env.NUXT_VAPID_PRIVATE_KEY,
 		public: {
+			jwtPublicKey: process.env.NUXT_PUBLIC_JWT_PUBLIC_KEY,
 			vapidSubject: process.env.NUXT_PUBLIC_VAPID_SUBJECT,
 			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
 		},

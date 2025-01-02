@@ -37,17 +37,22 @@ async function generateRefreshToken(
 	isAdmin: boolean,
 	familyKey: string,
 ): Promise<string> {
-	const { alg, key } = getJWTSecret();
+	const { alg, key } = await getJWTPrivateKey();
 
-	return await new jose.SignJWT()
-		.setProtectedHeader({ alg })
-		.setIssuedAt()
-		.setIssuer(ISSUER)
-		.setAudience(isAdmin ? REFRESH_AUDIENCE_ADMIN : REFRESH_AUDIENCE)
-		.setSubject(subject.toString())
-		.setJti(familyKey)
-		.setExpirationTime(REFRESH_LIFETIME)
-		.sign(key);
+	try {
+		return await new jose.SignJWT()
+			.setProtectedHeader({ alg })
+			.setIssuedAt()
+			.setIssuer(ISSUER)
+			.setAudience(isAdmin ? REFRESH_AUDIENCE_ADMIN : REFRESH_AUDIENCE)
+			.setSubject(subject.toString())
+			.setJti(familyKey)
+			.setExpirationTime(REFRESH_LIFETIME)
+			.sign(key);
+	} catch (error) {
+		logError(LOG_MODULE, 'Failed to generate refresh token', error);
+		throw new Error('Failed to generate refresh token');
+	}
 }
 
 async function generateAccessToken(
@@ -55,21 +60,26 @@ async function generateAccessToken(
 	isAdmin: boolean,
 	familyKey: string,
 ): Promise<string> {
-	const { alg, key } = getJWTSecret();
+	const { alg, key } = await getJWTPrivateKey();
 
-	return await new jose.SignJWT()
-		.setProtectedHeader({ alg })
-		.setIssuedAt()
-		.setIssuer(ISSUER)
-		.setAudience(isAdmin ? ACCESS_AUDIENCE_ADMIN : ACCESS_AUDIENCE)
-		.setSubject(subject.toString())
-		.setJti(familyKey)
-		.setExpirationTime(ACCESS_LIFETIME)
-		.sign(key);
+	try {
+		return await new jose.SignJWT()
+			.setProtectedHeader({ alg })
+			.setIssuedAt()
+			.setIssuer(ISSUER)
+			.setAudience(isAdmin ? ACCESS_AUDIENCE_ADMIN : ACCESS_AUDIENCE)
+			.setSubject(subject.toString())
+			.setJti(familyKey)
+			.setExpirationTime(ACCESS_LIFETIME)
+			.sign(key);
+	} catch (error) {
+		logError(LOG_MODULE, 'Failed to generate access token', error);
+		throw new Error('Failed to generate access token');
+	}
 }
 
-export function verifyToken(token: string) {
-	const { key } = getJWTSecret();
+export async function verifyToken(token: string) {
+	const { key } = await getJWTPublicKey();
 
 	return jose.jwtVerify(token, key, {
 		issuer: ISSUER,
@@ -88,20 +98,40 @@ export function decodeToken(token: string): {
 	return JSON.parse(decoded);
 }
 
-function getJWTSecret() {
+async function getJWTPrivateKey() {
 	const runtimeConfig = useRuntimeConfig();
-	const jwtSecret = process.env.NUXT_JWT_SECRET || runtimeConfig.jwtSecret;
+	const jwtPrivateKey =
+		process.env.NUXT_JWT_PRIVATE_KEY || runtimeConfig.jwtPrivateKey;
 
-	if (!jwtSecret) {
-		logError(LOG_MODULE, 'JWT Secret undefined');
-		throw new Error('JWT Secret is undefined');
+	if (!jwtPrivateKey) {
+		logError(LOG_MODULE, 'JWT Private Key undefined');
+		throw new Error('JWT Private Key is undefined');
 	}
 
-	const key = new TextEncoder().encode(jwtSecret);
-	const alg = 'HS256';
+	try {
+		const privateKey = await jose.importPKCS8(jwtPrivateKey, 'PS256');
+		return { alg: 'PS256', key: privateKey };
+	} catch (error) {
+		logError(LOG_MODULE, 'JWT Private Key invalid', error);
+		throw new Error('JWT Private Key is invalid');
+	}
+}
 
-	return {
-		alg: alg,
-		key: key,
-	};
+async function getJWTPublicKey() {
+	const runtimeConfig = useRuntimeConfig();
+	const jwtPublicKey =
+		process.env.NUXT_PUBLIC_JWT_PUBLIC_KEY || runtimeConfig.jwtPublicKey;
+
+	if (!jwtPublicKey) {
+		logError(LOG_MODULE, 'JWT Public Key undefined');
+		throw new Error('JWT Public Key is undefined');
+	}
+
+	try {
+		const publicKey = await jose.importSPKI(jwtPublicKey, 'PS256');
+		return { alg: 'PS256', key: publicKey };
+	} catch (error) {
+		logError(LOG_MODULE, 'JWT Public Key invalid', error);
+		throw new Error('JWT Public Key is invalid');
+	}
 }

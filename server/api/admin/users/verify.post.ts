@@ -43,11 +43,13 @@ export default defineEventHandler(async (event) => {
 	/**
 	 * Notify Users
 	 */
-
 	const pushMessage = {
 		data: JSON.stringify({
 			title: 'Konto verificeret',
 			body: 'Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!',
+			tag: 'verification_update',
+			openLink: '/u',
+			silent: true,
 		}),
 		options: {
 			topic: 'verification_update',
@@ -57,6 +59,37 @@ export default defineEventHandler(async (event) => {
 	} as WebPushMessage;
 
 	await sendPushNotificationToUserIds(userIds, pushMessage);
+
+	/**
+	 * Notify Admins
+	 */
+	const admins = await useDrizzle()
+		.select()
+		.from(tables.users)
+		.where(eq(tables.users.admin, true))
+		.all();
+	const adminUserIds = admins.map((admin) => admin.id);
+
+	for (const userId of userIds) {
+		const topic = `admin_notify_new_user-${userId}`;
+
+		const pushMessage = {
+			data: JSON.stringify({
+				title: 'Ny bruger',
+				body: `Bruger ${userId} er blevet verificeret.`,
+				tag: topic,
+				openLink: `/admin/users?userId=${userId}`,
+				silent: true,
+			}),
+			options: {
+				topic: topic,
+				ttl: 86400,
+				urgency: 'normal' as const,
+			},
+		} as WebPushMessage;
+
+		await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+	}
 
 	return true;
 });

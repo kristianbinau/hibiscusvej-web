@@ -100,8 +100,8 @@ export default eventHandler(async (event) => {
 
 	// Try to create userPersons
 	let userPersons = [];
-	for (const person of body.persons) {
-		try {
+	try {
+		for (const person of body.persons) {
 			userPersons.push(
 				await useDrizzle()
 					.insert(tables.userPersons)
@@ -115,25 +115,50 @@ export default eventHandler(async (event) => {
 					})
 					.get(),
 			);
-		} catch (error) {
-			// Remove user, userLogin, and userPersons if userPerson fails
-			await useDrizzle()
-				.delete(tables.users)
-				.where(eq(tables.users.id, user.id));
-			await useDrizzle()
-				.delete(tables.userLogins)
-				.where(eq(tables.userLogins.userId, user.id));
-			await useDrizzle()
-				.delete(tables.userPersons)
-				.where(eq(tables.userPersons.userId, user.id));
-
-			logError(LOG_MODULE, 'Failed Create Persons', error);
-			throw createError({
-				statusCode: 500,
-				statusMessage: 'Internal Server Error',
-			});
 		}
+	} catch (error) {
+		// Remove user, userLogin, and userPersons if userPerson fails
+		await useDrizzle().delete(tables.users).where(eq(tables.users.id, user.id));
+		await useDrizzle()
+			.delete(tables.userLogins)
+			.where(eq(tables.userLogins.userId, user.id));
+		await useDrizzle()
+			.delete(tables.userPersons)
+			.where(eq(tables.userPersons.userId, user.id));
+
+		logError(LOG_MODULE, 'Failed Create Persons', error);
+		throw createError({
+			statusCode: 500,
+			statusMessage: 'Internal Server Error',
+		});
 	}
+
+	// Notify Admins
+	const admins = await useDrizzle()
+		.select()
+		.from(tables.users)
+		.where(eq(tables.users.admin, true))
+		.all();
+	const adminUserIds = admins.map((admin) => admin.id);
+
+	const topic = `admin_notify_new_user-${user.id}`;
+
+	const pushMessage = {
+		data: JSON.stringify({
+			title: 'Ny bruger',
+			body: 'Der er oprettet en ny bruger, der skal verificeres.',
+			tag: topic,
+			link: `/admin/users?userId=${user.id}`,
+			silent: true,
+		}),
+		options: {
+			topic: topic,
+			ttl: 86400,
+			urgency: 'normal' as const,
+		},
+	} as WebPushMessage;
+
+	await sendPushNotificationToUserIds(adminUserIds, pushMessage);
 
 	setResponseStatus(event, 201);
 	return true;

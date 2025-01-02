@@ -97,10 +97,47 @@ self.addEventListener('push', (event) => {
 
 	const data = event.data.json();
 
-	self.registration.showNotification(data.title, {
+	console.log('Data', data);
+
+	let options = {
 		body: data.body,
 		icon: '/favicon.svg',
-	});
+		badge: '/favicon.svg',
+	};
+
+	if (data.silent !== undefined) {
+		options.silent = data.silent;
+	}
+
+	if (data.tag !== undefined) {
+		options.tag = data.tag;
+		options.renotify = true;
+	}
+
+	if (data.openLink !== undefined) {
+		options.data = {
+			openLink: data.openLink,
+		};
+	}
+
+	console.log('Options', options);
+
+	self.registration.showNotification(data.title, options);
+});
+
+self.addEventListener('notificationclick', (event) => {
+	console.info('Notification Click!');
+
+	const clickedNotification = event.notification;
+	clickedNotification.close();
+
+	console.log('clickedNotification', clickedNotification);
+
+	if (clickedNotification.openLink !== undefined) {
+		self.Clients.openWindow(
+			`${self.location.origin}${clickedNotification.options.openLink}`,
+		);
+	}
 });
 
 /**

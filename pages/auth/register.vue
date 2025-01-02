@@ -183,10 +183,6 @@ definePageMeta({
 	middleware: 'guest-required',
 });
 
-defineRouteRules({
-	prerender: true,
-});
-
 useHead({
 	title: 'Registér',
 });

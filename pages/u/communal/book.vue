@@ -17,6 +17,7 @@
 			<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
 				<div>
 					<h1 class="text-primary text-2xl mt-2 mb-2">Book fælleslokalet</h1>
+					<p>{{ $config.public.vapidPublicKey }}</p>
 					<p>
 						Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
 						Du kan fjerne din booking indtil før den starter. <br />
@@ -268,7 +269,7 @@ async function onClickNotVerified() {
 		}
 	}
 
-	const pushSubscription = await subscribeUserToPush();
+	await subscribeUserToPush();
 }
 </script>
 

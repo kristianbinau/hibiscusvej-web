@@ -41,8 +41,4 @@
 useHead({
 	title: 'Forside',
 });
-
-defineRouteRules({
-	prerender: true,
-});
 </script>

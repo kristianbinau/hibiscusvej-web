@@ -42,23 +42,38 @@ export const usePush = () => {
 			return false;
 		}
 
-		const registration = await getServiceWorkerRegistration();
-		if (!registration) {
+		try {
+			const registration = await getServiceWorkerRegistration();
+			if (!registration) {
+				return false;
+			}
+
+			const subscription = await registration.pushManager.subscribe({
+				userVisibleOnly: true,
+				applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+			});
+
+			const res = await sendSubscriptionToServer(subscription);
+
+			if (!res) {
+				return false;
+			}
+
+			return true;
+		} catch (error) {
+			toast.add({
+				title: 'Der opstod en fejl under oprettelse af notifikationer',
+				actions: [
+					{
+						label: 'Genindlæs siden',
+						click: () => {
+							location.reload();
+						},
+					},
+				],
+			});
 			return false;
 		}
-
-		const subscription = await registration.pushManager.subscribe({
-			userVisibleOnly: true,
-			applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
-		});
-
-		const res = await sendSubscriptionToServer(subscription);
-
-		if (!res) {
-			return false;
-		}
-
-		return true;
 	}
 
 	function urlBase64ToUint8Array(base64String: string) {

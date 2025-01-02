@@ -4,11 +4,7 @@
 	</section>
 </template>
 
-<script lang="ts" setup>
-defineRouteRules({
-	prerender: true,
-});
-</script>
+<script lang="ts" setup></script>
 
 <style>
 @import url('~/assets/css/markdown.css');

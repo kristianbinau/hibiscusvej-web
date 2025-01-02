@@ -405,7 +405,8 @@
 								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 								<p class="text-xs">
 									Du er ved fjerne verificering af denne bruger. <br />
-									Ved at fjerne verificeringen, fjerner du brugerens adgang til systemet.
+									Ved at fjerne verificeringen, fjerner du brugerens adgang til
+									systemet.
 								</p>
 
 								<UButton

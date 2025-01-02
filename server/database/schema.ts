@@ -43,7 +43,7 @@ export const userLogins = sqliteTable(
 		userId: integer('user_id').notNull(),
 		email: text('email').notNull().unique(),
 		password: text('password').notNull(),
-		singleUse: integer('single_use', { mode: 'boolean'}).notNull(),
+		singleUse: integer('single_use', { mode: 'boolean' }).notNull(),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 	},

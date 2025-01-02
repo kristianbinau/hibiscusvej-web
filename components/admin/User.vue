@@ -304,7 +304,6 @@
 								color="amber"
 								icon="i-material-symbols-domain-verification-off-rounded"
 								:loading="verificationUpdateLoading"
-								size="lg"
 							>
 							</UButton>
 						</UTooltip>
@@ -340,7 +339,6 @@
 								color="red"
 								variant="soft"
 								class="flex-1"
-								size="lg"
 								block
 							/>
 						</UTooltip>
@@ -397,7 +395,6 @@
 								variant="soft"
 								color="green"
 								icon="i-material-symbols-domain-verification-rounded"
-								size="lg"
 								:loading="verificationUpdateLoading"
 							>
 							</UButton>

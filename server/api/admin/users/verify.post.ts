@@ -1,3 +1,10 @@
+import {
+	differenceInHours,
+	differenceInMinutes,
+	formatDuration,
+} from 'date-fns';
+import { da } from 'date-fns/locale';
+
 import { z } from 'zod';
 
 const LOG_MODULE = 'Api/Admin/Users/Verify';
@@ -45,11 +52,12 @@ export default defineEventHandler(async (event) => {
 	 */
 	const pushMessage = {
 		data: JSON.stringify({
-			title: 'Konto verificeret',
-			body: 'Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!',
-			tag: 'verification_update',
-			openLink: '/u',
-			silent: true,
+			title: 'Konto verificeret!',
+			options: {
+				body: 'Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!',
+				tag: 'verification_update',
+				silent: true,
+			},
 		}),
 		options: {
 			topic: 'verification_update',
@@ -63,32 +71,81 @@ export default defineEventHandler(async (event) => {
 	/**
 	 * Notify Admins
 	 */
-	const admins = await useDrizzle()
-		.select()
-		.from(tables.users)
-		.where(eq(tables.users.admin, true))
-		.all();
-	const adminUserIds = admins.map((admin) => admin.id);
+	try {
+		const admins = await useDrizzle()
+			.select()
+			.from(tables.users)
+			.where(eq(tables.users.admin, true))
+			.all();
+		const adminUserIds = admins.map((admin) => admin.id);
 
-	for (const userId of userIds) {
-		const topic = `admin_notify_new_user-${userId}`;
+		const verifiedByUserPerson = await useDrizzle()
+			.select()
+			.from(tables.userPersons)
+			.where(eq(tables.userPersons.userId, authAdmin.user.id))
+			.orderBy(asc(tables.userPersons.id))
+			.get();
 
-		const pushMessage = {
-			data: JSON.stringify({
-				title: 'Ny bruger',
-				body: `Bruger ${userId} er blevet verificeret.`,
-				tag: topic,
-				openLink: `/admin/users?userId=${userId}`,
-				silent: true,
-			}),
-			options: {
-				topic: topic,
-				ttl: 86400,
-				urgency: 'normal' as const,
-			},
-		} as WebPushMessage;
+		if (!verifiedByUserPerson) {
+			throw new Error('verifiedByUserPerson not found');
+		}
 
-		await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+		for (const userId of userIds) {
+			const verifiedUser = await useDrizzle()
+				.select()
+				.from(tables.users)
+				.where(eq(tables.users.id, userId))
+				.get();
+
+			if (!verifiedUser) {
+				throw new Error('verifiedUser not found');
+			}
+
+			const hoursSinceCreation = differenceInHours(now, verifiedUser.createdAt);
+			const minutesSinceCreation =
+				hoursSinceCreation === 0
+					? differenceInMinutes(now, verifiedUser.createdAt)
+					: 0;
+
+			const sinceText = formatDuration(
+				{
+					hours: hoursSinceCreation,
+					minutes: minutesSinceCreation,
+				},
+				{ locale: da },
+			);
+
+			const newUser = hoursSinceCreation < 48;
+
+			const topic = newUser
+				? `admin_notify_new_user-${userId}`
+				: `admin_notify_user_verification-${userId}`;
+			const title = newUser ? 'Ny bruger!' : 'Bruger verificeret!';
+			const body = newUser
+				? `${verifiedByUserPerson.name} har verificeret #${userId}, der blev oprettet for ${sinceText} siden.`
+				: `${verifiedByUserPerson.name} har verificeret #${userId}.`;
+
+			const pushMessage = {
+				data: JSON.stringify({
+					title: title,
+					options: {
+						body: body,
+						tag: topic,
+						openLink: `/u/admin/users?userId=${userId}`,
+						silent: true,
+					},
+				}),
+				options: {
+					topic: topic,
+					ttl: 86400,
+					urgency: 'normal' as const,
+				},
+			} as WebPushMessage;
+
+			await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+		}
+	} catch (error) {
+		logError(LOG_MODULE, 'Failed Notify Admins', error);
 	}
 
 	return true;

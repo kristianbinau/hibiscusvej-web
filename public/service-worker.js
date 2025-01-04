@@ -97,30 +97,11 @@ self.addEventListener('push', (event) => {
 
 	const data = event.data.json();
 
-	console.log('Data', data);
-
 	let options = {
-		body: data.body,
 		icon: '/favicon.svg',
-		badge: '/favicon.svg',
+		...data.options,
+		data: data.options,
 	};
-
-	if (data.silent !== undefined) {
-		options.silent = data.silent;
-	}
-
-	if (data.tag !== undefined) {
-		options.tag = data.tag;
-		options.renotify = true;
-	}
-
-	if (data.openLink !== undefined) {
-		options.data = {
-			openLink: data.openLink,
-		};
-	}
-
-	console.log('Options', options);
 
 	self.registration.showNotification(data.title, options);
 });
@@ -128,16 +109,41 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
 	console.info('Notification Click!');
 
-	const clickedNotification = event.notification;
-	clickedNotification.close();
+	const notification = event.notification;
+	let navigateToUrl = '/';
+	let definedUrl = false;
 
-	console.log('clickedNotification', clickedNotification);
-
-	if (clickedNotification.openLink !== undefined) {
-		self.Clients.openWindow(
-			`${self.location.origin}${clickedNotification.options.openLink}`,
-		);
+	if (typeof notification.data.openLink === 'string') {
+		definedUrl = true;
+		navigateToUrl = notification.data.openLink;
 	}
+
+	notification.close();
+
+	// Go through all clients, focus or open a new window.
+	event.waitUntil(
+		clients
+			.matchAll({
+				type: 'window',
+			})
+			.then((clientList) => {
+				for (const client of clientList) {
+					// If the client is a window and it's open, then we will try to focus on it.
+					if (definedUrl && client.url.endsWith(navigateToUrl)) {
+						// If we have a defined URL, then we will focus on the client if the URL matches.
+						return client.focus();
+					} else if (!definedUrl) {
+						// If we don't have a defined URL, then we will focus on the client no matter the URL.
+						return client.focus();
+					}
+				}
+
+				// If the client is not open, then we will open a new window.
+				if (clients.openWindow) {
+					return clients.openWindow(navigateToUrl);
+				}
+			}),
+	);
 });
 
 /**

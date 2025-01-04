@@ -133,32 +133,42 @@ export default eventHandler(async (event) => {
 		});
 	}
 
-	// Notify Admins
-	const admins = await useDrizzle()
-		.select()
-		.from(tables.users)
-		.where(eq(tables.users.admin, true))
-		.all();
-	const adminUserIds = admins.map((admin) => admin.id);
+	/**
+	 * Notify Admins
+	 */
+	try {
+		const admins = await useDrizzle()
+			.select()
+			.from(tables.users)
+			.where(eq(tables.users.admin, true))
+			.all();
+		const adminUserIds = admins.map((admin) => admin.id);
 
-	const topic = `admin_notify_new_user-${user.id}`;
+		const topic = `admin_notify_new_user-${user.id}`;
+		const title = 'Ny bruger!';
+		const body = `#${user.id} er blevet oprettet, og venter på verificering.`;
 
-	const pushMessage = {
-		data: JSON.stringify({
-			title: 'Ny bruger',
-			body: 'Der er oprettet en ny bruger, der skal verificeres.',
-			tag: topic,
-			link: `/admin/users?userId=${user.id}`,
-			silent: true,
-		}),
-		options: {
-			topic: topic,
-			ttl: 86400,
-			urgency: 'normal' as const,
-		},
-	} as WebPushMessage;
+		const pushMessage = {
+			data: JSON.stringify({
+				title: title,
+				options: {
+					body: body,
+					tag: topic,
+					link: `/u/admin/users?userId=${user.id}`,
+					silent: true,
+				},
+			}),
+			options: {
+				topic: topic,
+				ttl: 86400,
+				urgency: 'normal' as const,
+			},
+		} as WebPushMessage;
 
-	await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+		await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+	} catch (error) {
+		logError(LOG_MODULE, 'Failed Notify Admins', error);
+	}
 
 	setResponseStatus(event, 201);
 	return true;

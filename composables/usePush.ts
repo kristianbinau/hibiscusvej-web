@@ -76,6 +76,20 @@ export const usePush = () => {
 		}
 	}
 
+	async function getSubscription() {
+		if (!isSupported.value) {
+			return null;
+		}
+
+		const registration = await getServiceWorkerRegistration();
+		if (!registration) {
+			return null;
+		}
+
+		const subscription = await registration.pushManager.getSubscription();
+		return subscription;
+	}
+
 	function urlBase64ToUint8Array(base64String: string) {
 		var padding = '='.repeat((4 - (base64String.length % 4)) % 4);
 		var base64 = (base64String + padding)
@@ -119,5 +133,11 @@ export const usePush = () => {
 		}
 	}
 
-	return { isSupported, hasPermission, askPermission, subscribeUserToPush };
+	return {
+		isSupported,
+		hasPermission,
+		askPermission,
+		subscribeUserToPush,
+		getSubscription,
+	};
 };

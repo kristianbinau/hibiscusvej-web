@@ -2,22 +2,28 @@
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<ClientOnly>
 			<UAlert
-				v-if="currentUser && currentUser.user.verifiedAt === null"
+				v-if="!currentUserVerified"
 				title="Din konto er ikke verificeret!"
 				description="Du kan ikke booke fælleslokalet før din konto er verificeret. Bestyrelsen vil verificere din konto hurtigst muligt."
 				icon="i-material-symbols-edit-attributes-outline-rounded"
 				color="red"
 				variant="subtle"
 				class="mb-6 cursor-pointer select-none"
-				@click="onClickNotVerified"
+				:actions="[
+					{
+						label: 'Aktiver notifikationer',
+						icon: 'i-material-symbols-notification-add-outline-rounded',
+						variant: 'soft',
+						color: 'red',
+						click: subscribeToPush,
+						loading: subscribeToPushLoading,
+					},
+				]"
 			></UAlert>
-		</ClientOnly>
 
-		<ClientOnly>
 			<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
 				<div>
 					<h1 class="text-primary text-2xl mt-2 mb-2">Book fælleslokalet</h1>
-					<p>{{ $config.public.vapidPublicKey }}</p>
 					<p>
 						Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
 						Du kan fjerne din booking indtil før den starter. <br />
@@ -54,7 +60,7 @@
 					<UButton
 						:loading="onSubmitLoading"
 						@click="onSubmit"
-						:disabled="date === null || !hasReadTerms"
+						:disabled="date === null || !hasReadTerms || !currentUserVerified"
 						>Book</UButton
 					>
 				</div>
@@ -185,6 +191,12 @@ fetchBookingsThisMonth();
  */
 
 const currentUser = ref<CurrentUserResponse | null>(null);
+const currentUserVerified = computed(() => {
+	// We want to assume the user is verified, to not flicker the alert
+	if (!currentUser.value) return true;
+
+	return currentUser.value.user.verifiedAt !== null;
+});
 
 async function fetchCurrentUser() {
 	try {
@@ -256,8 +268,16 @@ async function onSubmit() {
 const { isSupported, hasPermission, askPermission, subscribeUserToPush } =
 	usePush();
 
-async function onClickNotVerified() {
+const subscribeToPushLoading = ref<boolean>(false);
+
+async function subscribeToPush() {
+	subscribeToPushLoading.value = true;
+
 	if (!isSupported.value) {
+		subscribeToPushLoading.value = false;
+		toast.add({
+			title: 'Notifikationer er ikke understøttet på denne enhed',
+		});
 		return;
 	}
 
@@ -265,11 +285,17 @@ async function onClickNotVerified() {
 		const permission = await askPermission();
 
 		if (!permission) {
+			subscribeToPushLoading.value = false;
+			toast.add({
+				title: 'Du har ikke givet tilladelse til at vi må sende notifikationer',
+			});
 			return;
 		}
 	}
 
 	await subscribeUserToPush();
+
+	subscribeToPushLoading.value = false;
 }
 </script>
 

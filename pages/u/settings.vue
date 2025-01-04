@@ -8,7 +8,11 @@
 		<ClientOnly>
 			<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-			<h2 class="text-lg mb-4">Kontaktpersoner</h2>
+			<h2 class="text-lg">Kontaktpersoner</h2>
+			<p class="text-sm mb-5">
+				Tilføj eller fjern personer der er tilknyttet din bruger.<br />
+				Minimum én person skal være tilknyttet, max 2 personer.
+			</p>
 
 			<div class="flex flex-col md:flex-row gap-4">
 				<UserPerson
@@ -56,7 +60,84 @@
 
 			<hr class="border-gray-200 dark:border-gray-800 mt-10 mb-5" />
 
-			<h2 class="text-lg mt-8 mb-4">Handlinger</h2>
+			<h2 class="text-lg mt-8">Notificationer</h2>
+			<p class="text-sm mb-5">
+				Aktiver notifikationer for at modtage beskeder fra os.<br />
+				Dette kan være opdateringer omkring din bruger, bookinger eller andet.
+			</p>
+
+			<div class="flex flex-col md:flex-row gap-4">
+				<UTooltip text="Klik for at aktivere notifikationer på denne enhed">
+					<UButton
+						icon="i-material-symbols-notification-add-outline-rounded"
+						label="Aktiver"
+						color="green"
+						variant="soft"
+						class="flex-1"
+						@click="subscribeToPush()"
+						:loading="subscribeToPushLoading"
+						block
+					/>
+				</UTooltip>
+
+				<UTooltip text="Klik for at deaktivere notifikationer på denne enhed">
+					<UButton
+						icon="i-material-symbols-notifications-off-outline-rounded"
+						label="Deaktiver"
+						color="red"
+						variant="soft"
+						class="flex-1"
+						@click="unsubscribeToPush()"
+						:loading="unsubscribeToPushLoading"
+						block
+					/>
+				</UTooltip>
+
+				<UPopover :popper="{ placement: 'top-start' }" overlay>
+					<UTooltip
+						text="Klik for at deaktivere notifikationer på alle enheder"
+					>
+						<UButton
+							icon="i-material-symbols-notifications-off-rounded"
+							label="Deaktiver alle"
+							color="red"
+							variant="soft"
+							class="flex-1"
+							:loading="unsubscribeToPushEverywhereLoading"
+							block
+						/>
+					</UTooltip>
+
+					<template #panel>
+						<div class="p-4">
+							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+							<p class="text-xs">
+								Du er ved at deaktivere notifikationer på alle enheder. <br />
+								Dette vil medføre, at du ikke længere modtager notifikationer.
+							</p>
+
+							<UButton
+								label="Godkend"
+								icon="i-material-symbols-check-circle-rounded"
+								color="red"
+								variant="soft"
+								size="xs"
+								@click="unsubscribeToPushEverywhere()"
+								:loading="unsubscribeToPushEverywhereLoading"
+								class="mt-4"
+							/>
+						</div>
+					</template>
+				</UPopover>
+			</div>
+
+			<hr class="border-gray-200 dark:border-gray-800 mt-10 mb-5" />
+
+			<h2 class="text-lg mt-8">Handlinger</h2>
+			<p class="text-sm mb-5">
+				Foretag handlinger der påvirker din bruger.<br />
+				Disse handlinger kan ikke fortrydes.
+			</p>
 
 			<div class="flex flex-col md:flex-row gap-4">
 				<UPopover :popper="{ placement: 'top-start' }" overlay>
@@ -150,6 +231,7 @@
 </template>
 
 <script lang="ts" setup>
+import { sub } from 'date-fns';
 import type { MeLogin, MePerson, Me } from '~/utils/types/settings';
 
 const toast = useToast();
@@ -279,6 +361,110 @@ async function fetchLogins() {
 	fetchingLogins.value = false;
 }
 fetchLogins();
+
+/**
+ * Push Notifications
+ */
+const {
+	isSupported,
+	hasPermission,
+	askPermission,
+	subscribeUserToPush,
+	getSubscription,
+} = usePush();
+
+const subscribeToPushLoading = ref<boolean>(false);
+
+async function subscribeToPush() {
+	subscribeToPushLoading.value = true;
+
+	if (!isSupported.value) {
+		subscribeToPushLoading.value = false;
+		toast.add({
+			title: 'Notifikationer er ikke understøttet på denne enhed',
+		});
+		return;
+	}
+
+	if (!hasPermission.value) {
+		const permission = await askPermission();
+
+		if (!permission) {
+			subscribeToPushLoading.value = false;
+			toast.add({
+				title: 'Du har ikke givet tilladelse til at vi må sende notifikationer',
+			});
+			return;
+		}
+	}
+
+	await subscribeUserToPush();
+
+	subscribeToPushLoading.value = false;
+}
+
+const unsubscribeToPushLoading = ref<boolean>(false);
+
+async function unsubscribeToPush() {
+	unsubscribeToPushLoading.value = true;
+
+	try {
+		const subscription = await getSubscription();
+
+		if (!subscription) {
+			toast.add({
+				title: 'Du modtager ikke notifikationer på denne enhed',
+			});
+			return;
+		}
+
+		const res = await $fetch('/api/push/unsubscribe', {
+			method: 'DELETE',
+			body: {
+				subscription: subscription.toJSON(),
+			},
+		});
+
+		if (res) {
+			toast.add({
+				title: 'Du modtager ikke længere notifikationer på denne enhed',
+			});
+		}
+	} catch (error: any) {
+		toast.add({
+			title: 'Der skete en fejl ved afmelding af notifikationer',
+		});
+	}
+
+	unsubscribeToPushLoading.value = false;
+}
+
+const unsubscribeToPushEverywhereLoading = ref<boolean>(false);
+
+async function unsubscribeToPushEverywhere() {
+	unsubscribeToPushEverywhereLoading.value = true;
+
+	try {
+		const res = await $fetch('/api/push/unsubscribe', {
+			method: 'DELETE',
+			query: {
+				everywhere: true,
+			},
+		});
+
+		if (res) {
+			toast.add({
+				title: 'Du modtager ikke længere notifikationer på nogen enheder',
+			});
+		}
+	} catch (error: any) {
+		toast.add({
+			title: 'Der skete en fejl ved afmelding af notifikationer',
+		});
+	}
+
+	unsubscribeToPushEverywhereLoading.value = false;
+}
 
 /**
  * Account Actions

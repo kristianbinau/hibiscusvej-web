@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
 	const body = await readValidatedBody(event, schema.parse);
 
 	const pushSubscription = body.subscription;
+
 	const subscription = await useDrizzle()
 		.select()
 		.from(tables.userSubscriptions)

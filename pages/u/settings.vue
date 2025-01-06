@@ -422,7 +422,7 @@ async function unsubscribeToPush() {
 		}
 
 		const res = await $fetch('/api/push/unsubscribe', {
-			method: 'DELETE',
+			method: 'POST',
 			body: {
 				subscription: subscription.toJSON(),
 			},
@@ -449,7 +449,7 @@ async function unsubscribeToPushEverywhere() {
 
 	try {
 		const res = await $fetch('/api/push/unsubscribe', {
-			method: 'DELETE',
+			method: 'POST',
 			query: {
 				everywhere: true,
 			},
@@ -485,8 +485,8 @@ async function deleteAccount() {
 	try {
 		const passwordHash = await hash(currentSessionPassword.value);
 
-		const res = await $fetch('/api/users/me', {
-			method: 'DELETE',
+		const res = await $fetch('/api/users/me/delete', {
+			method: 'POST',
 			body: {
 				currentSessionPassword: passwordHash,
 			},

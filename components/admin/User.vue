@@ -668,8 +668,8 @@ async function deleteUser() {
 		const id = userId;
 		const passwordHash = await hash(currentSessionPassword.value);
 
-		const res = await $fetch(`/api/admin/users/${userId}`, {
-			method: 'DELETE',
+		const res = await $fetch(`/api/admin/users/${userId}/delete`, {
+			method: 'POST',
 			body: {
 				currentSessionPassword: passwordHash,
 			},

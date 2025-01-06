@@ -23,7 +23,7 @@
 		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.38.3",
 		"jose": "^5.9.6",
-		"nuxt": "^3.15.0",
+		"nuxt": "^3.15.1",
 		"v-calendar": "^3.1.2",
 		"vue": "latest",
 		"vue-router": "latest",

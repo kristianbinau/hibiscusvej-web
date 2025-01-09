@@ -24,6 +24,62 @@ export const useAuthUser = async (event: H3Event<EventHandlerRequest>) => {
 	};
 };
 
+export const useAuthValidatedUser = async (
+	event: H3Event<EventHandlerRequest>,
+	currentSessionPassword: string,
+) => {
+	const authUser = await useAuthUser(event);
+
+	const currentSession = await useDrizzle()
+		.select()
+		.from(tables.userSessions)
+		.where(eq(tables.userSessions.tokenFamily, authUser.session.family))
+		.get();
+
+	if (!currentSession) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
+	const currentLogin = await useDrizzle()
+		.select()
+		.from(tables.userLogins)
+		.where(eq(tables.userLogins.id, currentSession.userLoginId))
+		.get();
+
+	if (!currentLogin) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
+	// If currentSessionPassword does not match, return 401 Unauthorized
+	const passwordMatch = await comparePassword(
+		currentSessionPassword,
+		currentLogin.password,
+	);
+	if (!passwordMatch) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
+	return {
+		...authUser,
+		session: {
+			...authUser.session,
+			id: currentSession.id,
+		},
+		login: {
+			id: currentLogin.id,
+		},
+	};
+};
+
 export const useAuthAdmin = async (event: H3Event<EventHandlerRequest>) => {
 	const authUser = await useAuthUser(event);
 
@@ -36,6 +92,62 @@ export const useAuthAdmin = async (event: H3Event<EventHandlerRequest>) => {
 
 	return {
 		...authUser,
+	};
+};
+
+export const useAuthValidatedAdmin = async (
+	event: H3Event<EventHandlerRequest>,
+	currentSessionPassword: string,
+) => {
+	const authAdmin = await useAuthAdmin(event);
+
+	const currentSession = await useDrizzle()
+		.select()
+		.from(tables.userSessions)
+		.where(eq(tables.userSessions.tokenFamily, authAdmin.session.family))
+		.get();
+
+	if (!currentSession) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
+	const currentLogin = await useDrizzle()
+		.select()
+		.from(tables.userLogins)
+		.where(eq(tables.userLogins.id, currentSession.userLoginId))
+		.get();
+
+	if (!currentLogin) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
+	// If currentSessionPassword does not match, return 401 Unauthorized
+	const passwordMatch = await comparePassword(
+		currentSessionPassword,
+		currentLogin.password,
+	);
+	if (!passwordMatch) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
+	return {
+		...authAdmin,
+		session: {
+			...authAdmin.session,
+			id: currentSession.id,
+		},
+		login: {
+			id: currentLogin.id,
+		},
 	};
 };
 

@@ -13,51 +13,16 @@ const bodySchema = z.object({
 const ADMIN_ACTION = 'DeleteUser';
 
 export default eventHandler(async (event) => {
-	const authAdmin = await useAuthAdmin(event);
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 	const body = await readValidatedBody(event, bodySchema.parse);
+	const authAdmin = await useAuthValidatedAdmin(
+		event,
+		body.currentSessionPassword,
+	);
 
 	const now = new Date();
 
 	const userId = params.id;
-
-	const currentSession = await useDrizzle()
-		.select()
-		.from(tables.userSessions)
-		.where(eq(tables.userSessions.tokenFamily, authAdmin.session.family))
-		.get();
-
-	if (!currentSession) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		});
-	}
-
-	const currentLogin = await useDrizzle()
-		.select()
-		.from(tables.userLogins)
-		.where(eq(tables.userLogins.id, currentSession.userLoginId))
-		.get();
-
-	if (!currentLogin) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		});
-	}
-
-	// If currentSessionPassword does not match, return 401 Unauthorized
-	const passwordMatch = await comparePassword(
-		body.currentSessionPassword,
-		currentLogin.password,
-	);
-	if (!passwordMatch) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		});
-	}
 
 	await anonymizeUser(userId);
 

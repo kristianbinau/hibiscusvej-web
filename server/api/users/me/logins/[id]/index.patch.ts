@@ -13,49 +13,14 @@ const bodySchema = z.object({
 });
 
 export default eventHandler(async (event) => {
-	const authUser = await useAuthUser(event);
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 	const body = await readValidatedBody(event, bodySchema.parse);
+	const authUser = await useAuthValidatedUser(
+		event,
+		body.currentSessionPassword,
+	);
 
 	const id = params.id;
-
-	const currentSession = await useDrizzle()
-		.select()
-		.from(tables.userSessions)
-		.where(and(eq(tables.userSessions.tokenFamily, authUser.session.family)))
-		.get();
-
-	if (!currentSession) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		});
-	}
-
-	const currentLogin = await useDrizzle()
-		.select()
-		.from(tables.userLogins)
-		.where(eq(tables.userLogins.id, currentSession.userLoginId))
-		.get();
-
-	if (!currentLogin) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		});
-	}
-
-	// If currentSessionPassword does not match, return 401 Unauthorized
-	const passwordMatch = await comparePassword(
-		body.currentSessionPassword,
-		currentLogin.password,
-	);
-	if (!passwordMatch) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		});
-	}
 
 	const userLogin = await useDrizzle()
 		.select()

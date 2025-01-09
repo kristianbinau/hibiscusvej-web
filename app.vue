@@ -27,7 +27,7 @@ useHead({
 		{
 			name: 'description',
 			content: 'Informationer omkring studieboligerne ved Hibiscusvej',
-		}
+		},
 	],
 	htmlAttrs: {
 		lang: 'da',

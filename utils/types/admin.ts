@@ -10,6 +10,10 @@ export type User = {
 	persons: AdminUsersApiResponse['userPersons'];
 } & AdminUsersApiResponse['users'][0];
 
+export type UserSession = User['sessions'][0];
+export type UserLogin = User['logins'][0];
+export type UserPerson = User['persons'][0];
+
 export type Booking = AdminBookingsApiResponse['communalBookings'][0];
 
 export type Apartment = ApartmentsApiResponse[0];

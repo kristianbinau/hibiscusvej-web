@@ -49,7 +49,7 @@ export default eventHandler(async (event) => {
 			.set({
 				password: hashedTempPassword,
 				singleUse: true,
-        updatedAt: now,
+				updatedAt: now,
 			})
 			.where(eq(tables.userLogins.id, loginId))
 			.returning()

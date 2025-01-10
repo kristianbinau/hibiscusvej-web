@@ -20,7 +20,7 @@
 					</UFormGroup>
 
 					<UFormGroup label="Password" name="password" class="mt-3" required>
-						<UInput v-model="state.password" type="password" />
+						<Password v-model="state.password" />
 					</UFormGroup>
 
 					<template #footer>
@@ -63,6 +63,7 @@ useHead({
 });
 
 const { hash } = useHash();
+const toast = useToast();
 
 const schema = z.object({
 	email: z.string(),
@@ -98,8 +99,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			},
 		});
 
-		if (res) {
+		if (res && 'singleUse' in res && res.singleUse === true) {
+			toast.add({
+				title: 'Engangskode brugt!',
+				description:
+					'Da du har brugt en engangskode, er du blevet videresendt for at oprette en ny adgangskode.',
+				timeout: 10000,
+			});
+			await navigateTo(`/auth/reset?loginId=${res.loginId}`);
+		} else if (res && 'accessToken' in res) {
 			await navigateTo('/u');
+		} else {
+			toast.add({
+				title: 'Fejl!',
+				description: 'Der skete en fejl, prøv igen.',
+			});
 		}
 	} catch (error: any) {
 		if (error.statusCode === 401) {
@@ -113,6 +127,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 					message: 'Email eller kodeord er forkert',
 				},
 			]);
+		} else {
+			toast.add({
+				title: 'Fejl!',
+				description: 'Der skete en fejl, prøv igen.',
+			});
 		}
 	}
 

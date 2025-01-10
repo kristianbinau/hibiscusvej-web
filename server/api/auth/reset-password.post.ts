@@ -3,8 +3,9 @@ import { z } from 'zod';
 const LOG_MODULE = 'Api/Auth/Login';
 
 const schema = z.object({
-	email: z.string(),
-	password: z.string(),
+	loginId: z.number(),
+	singleUsePassword: z.string(),
+	newPassword: z.string(),
 });
 
 export default eventHandler(async (event) => {
@@ -14,7 +15,7 @@ export default eventHandler(async (event) => {
 	const userLogin = await useDrizzle()
 		.select()
 		.from(tables.userLogins)
-		.where(eq(tables.userLogins.email, body.email))
+		.where(eq(tables.userLogins.id, body.loginId))
 		.get();
 	if (!userLogin) {
 		throw createError({
@@ -23,9 +24,17 @@ export default eventHandler(async (event) => {
 		});
 	}
 
+	// If UserLogin is not single use, return 401 Unauthorized
+	if (!userLogin.singleUse) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized',
+		});
+	}
+
 	// If Password does not match, return 401 Unauthorized
 	const passwordMatch = await comparePassword(
-		body.password,
+		body.singleUsePassword,
 		userLogin.password,
 	);
 	if (!passwordMatch) {
@@ -53,51 +62,19 @@ export default eventHandler(async (event) => {
 		});
 	}
 
-	// If UserLogin is singleUse, return loginId and singleUse
-	if (userLogin.singleUse) {
-		return {
-			loginId: userLogin.id,
-			singleUse: true,
-		};
-	}
-
-	// Try to generate tokens
 	try {
-		const { refreshToken, accessToken } = await generateTokens(
-			user.id,
-			user.admin,
-			null,
-		);
-		const decodedRefreshToken = (await verifyToken(refreshToken)) as {
-			payload: { exp: number; jti: string };
-		};
+		const hashedPassword = await hashPassword(body.newPassword);
 
-		// Add refreshToken to UserSession table
 		await useDrizzle()
-			.insert(tables.userSessions)
-			.values({
-				userLoginId: userLogin.id,
-				refreshToken: refreshToken,
-				tokenFamily: decodedRefreshToken.payload.jti,
-				expiredAt: new Date(decodedRefreshToken.payload.exp * 1000),
-				createdAt: new Date(),
+			.update(tables.userLogins)
+			.set({
+				password: hashedPassword,
+				singleUse: false,
 				updatedAt: new Date(),
 			})
-			.get();
+			.where(eq(tables.userLogins.id, userLogin.id));
 
-		// Set refreshToken cookie
-		setCookie(event, REFRESH_COOKIE_NAME, refreshToken, {
-			httpOnly: true,
-			secure: true,
-			sameSite: 'strict',
-			path: '/api/auth/refresh',
-			maxAge: decodedRefreshToken.payload.exp - Math.floor(Date.now() / 1000),
-		});
-
-		// Return accessToken
-		return {
-			accessToken: accessToken,
-		};
+		return true;
 	} catch (error) {
 		logError(LOG_MODULE, 'Failed Login Response', error);
 		throw createError({

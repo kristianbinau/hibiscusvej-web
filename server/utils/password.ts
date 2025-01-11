@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { subtle, getRandomValues } from "uncrypto";
+import { subtle, getRandomValues } from 'uncrypto';
 
 export const hashPassword = async (password: string) => {
 	return bcrypt.hash(password, 10);

@@ -1,4 +1,5 @@
 import * as jose from 'jose';
+import { randomUUID } from 'uncrypto';
 
 const LOG_MODULE = 'Utils/JWT';
 
@@ -21,7 +22,7 @@ export async function generateTokens(
 	refreshToken: string;
 	accessToken: string;
 }> {
-	const familyKey = family || crypto.randomUUID();
+	const familyKey = family || randomUUID();
 
 	const refreshToken = await generateRefreshToken(userId, isAdmin, familyKey);
 	const accessToken = await generateAccessToken(userId, isAdmin, familyKey);

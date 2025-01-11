@@ -3,7 +3,6 @@
 		v-model="model"
 		:type="visible ? 'text' : 'password'"
 		:ui="{ icon: { trailing: { pointer: '' } } }"
-		:model-modifiers="{ trim: true }"
 	>
 		<template #trailing>
 			<UIcon

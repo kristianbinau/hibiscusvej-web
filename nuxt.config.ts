@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
 	compatibilityDate: '2024-12-12',
 	devtools: { enabled: true },
-	modules: ['@nuxt/ui', '@nuxt/content', '@nuxthub/core', 'nuxt-bugsnag'],
+	modules: ['@nuxt/ui', '@nuxt/content', '@nuxthub/core'],
 	ui: {
 		global: true,
 	},
@@ -13,11 +13,6 @@ export default defineNuxtConfig({
 	nitro: {
 		experimental: {
 			tasks: true,
-		},
-	},
-	bugsnag: {
-		config: {
-			apiKey: 'b86797924743a234e2a0d8f46ec9ce29',
 		},
 	},
 

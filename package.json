@@ -19,6 +19,7 @@
 		"@nuxt/ui": "^2.20.0",
 		"@nuxthub/core": "^0.8.10",
 		"@popperjs/core": "^2.11.8",
+		"@sentry/nuxt": "^8.48.0",
 		"bcryptjs": "^2.4.3",
 		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.38.3",

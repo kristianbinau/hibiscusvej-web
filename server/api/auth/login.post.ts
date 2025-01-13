@@ -53,6 +53,14 @@ export default eventHandler(async (event) => {
 		});
 	}
 
+	// If UserLogin is singleUse, return loginId and singleUse
+	if (userLogin.singleUse) {
+		return {
+			loginId: userLogin.id,
+			singleUse: true,
+		};
+	}
+
 	// Try to generate tokens
 	try {
 		const { refreshToken, accessToken } = await generateTokens(
@@ -91,7 +99,7 @@ export default eventHandler(async (event) => {
 			accessToken: accessToken,
 		};
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Generate Tokens', error);
+		logError(LOG_MODULE, 'Failed Login Response', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

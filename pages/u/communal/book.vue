@@ -8,7 +8,7 @@
 				icon="i-material-symbols-edit-attributes-outline-rounded"
 				color="red"
 				variant="subtle"
-				class="mb-6 cursor-pointer select-none"
+				class="mb-6"
 				:actions="[
 					{
 						label: 'Aktiver notifikationer',

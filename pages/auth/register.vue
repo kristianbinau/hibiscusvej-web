@@ -58,7 +58,7 @@
 						eager-validation
 						required
 					>
-						<UInput v-model="state.password" type="password" />
+						<Password v-model="state.password" />
 					</UFormGroup>
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
@@ -299,6 +299,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 					},
 				],
 			});
+		} else {
+			toast.add({
+				title: 'Fejl!',
+				description: 'Der skete en fejl, prøv igen.',
+			});
 		}
 	} catch (error: any) {
 		if (error.statusCode === 422) {
@@ -316,6 +321,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 					path: 'email',
 				},
 			]);
+		} else {
+			toast.add({
+				title: 'Fejl!',
+				description: 'Der skete en fejl, prøv igen.',
+			});
 		}
 	}
 

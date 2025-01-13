@@ -95,6 +95,7 @@
 
 				<UPopover :popper="{ placement: 'top-start' }" overlay>
 					<UTooltip
+						class="w-full"
 						text="Klik for at deaktivere notifikationer på alle enheder"
 					>
 						<UButton
@@ -141,7 +142,7 @@
 
 			<div class="flex flex-col md:flex-row gap-4">
 				<UPopover :popper="{ placement: 'top-start' }" overlay>
-					<UTooltip text="Klik for at logge ud på alle enheder">
+					<UTooltip class="w-full" text="Klik for at logge ud på alle enheder">
 						<UButton
 							icon="i-material-symbols-key-off-outline-rounded"
 							label="Log ud på alle enheder"
@@ -175,7 +176,10 @@
 				</UPopover>
 
 				<UPopover :popper="{ placement: 'top-start' }" overlay>
-					<UTooltip text="Klik for at permanent slette din bruger">
+					<UTooltip
+						class="w-full"
+						text="Klik for at permanent slette din bruger"
+					>
 						<UButton
 							icon="i-material-symbols-delete-outline-rounded"
 							label="Slet bruger"
@@ -231,7 +235,6 @@
 </template>
 
 <script lang="ts" setup>
-import { sub } from 'date-fns';
 import type { MeLogin, MePerson, Me } from '~/utils/types/settings';
 
 const toast = useToast();
@@ -419,7 +422,7 @@ async function unsubscribeToPush() {
 		}
 
 		const res = await $fetch('/api/push/unsubscribe', {
-			method: 'DELETE',
+			method: 'POST',
 			body: {
 				subscription: subscription.toJSON(),
 			},
@@ -446,7 +449,7 @@ async function unsubscribeToPushEverywhere() {
 
 	try {
 		const res = await $fetch('/api/push/unsubscribe', {
-			method: 'DELETE',
+			method: 'POST',
 			query: {
 				everywhere: true,
 			},
@@ -482,8 +485,8 @@ async function deleteAccount() {
 	try {
 		const passwordHash = await hash(currentSessionPassword.value);
 
-		const res = await $fetch('/api/users/me', {
-			method: 'DELETE',
+		const res = await $fetch('/api/users/me/delete', {
+			method: 'POST',
 			body: {
 				currentSessionPassword: passwordHash,
 			},

@@ -21,14 +21,17 @@ useHead({
 	},
 	meta: [
 		{
-			name: 'Hibiscusvej Afdelingsbestyrelse',
-			content: 'Informationer omkring studieboligerne ved Hibiscusvej',
+			name: 'apple-mobile-web-app-title',
+			content: 'Hibiscusvej 2-30',
 		},
 		{
-			name: 'apple-mobile-web-app-title',
-			content: 'Hibiscusvej',
+			name: 'description',
+			content: 'Informationer omkring studieboligerne ved Hibiscusvej',
 		},
 	],
+	htmlAttrs: {
+		lang: 'da',
+	},
 	link: [
 		{
 			rel: 'icon',

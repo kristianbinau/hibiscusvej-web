@@ -6,7 +6,40 @@
 		</div>
 
 		<ClientOnly>
-			<UTable :loading="fetching" :rows="rows" :columns="columns"></UTable>
+			<UTable :loading="fetching" :rows="rows" :columns="columns">
+				<template #userId-data="{ row }">
+					<UTooltip text="Klik for at se bruger">
+						<UButton
+							@click="openUser(row.userId)"
+							class="cursor-pointer select-none"
+							color="primary"
+							icon="i-material-symbols-open-in-new"
+							:label="String(row.userId)"
+						/>
+					</UTooltip>
+				</template>
+			</UTable>
+
+			<USlideover
+				v-model="isUserSlideOpen"
+				:ui="{
+					base: '!max-w-3xl',
+				}"
+				@close="atUserSlideClose()"
+			>
+				<!-- TODO: Implement Sync between AdminUser & Users page-->
+				<AdminUser
+					v-if="selectedUserIdForSlide"
+					:userId="selectedUserIdForSlide"
+					:bookings="response.communalBookings"
+					:showPersons="true"
+					:showLogins="true"
+					:showSessions="true"
+					:showBookings="true"
+					:showRepremands="true"
+					@close="isUserSlideOpen = false"
+				/>
+			</USlideover>
 		</ClientOnly>
 	</section>
 </template>
@@ -76,6 +109,25 @@ async function fetch() {
 	fetching.value = false;
 }
 fetch();
+
+/**
+ * User Slideover
+ */
+const isUserSlideOpen = ref<boolean>(false);
+const selectedUserIdForSlide = ref<number | null>(null);
+
+function openUser(id: number) {
+	selectedUserIdForSlide.value = id;
+
+	nextTick(() => {
+		isUserSlideOpen.value = true;
+	});
+}
+
+function atUserSlideClose() {
+	selectedUserIdForSlide.value = null;
+	fetch();
+}
 </script>
 
 <style></style>

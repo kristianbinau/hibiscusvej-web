@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 const LOG_MODULE = 'Api/Users/Me/Persons/[id]/Delete';
 
-const schema = z.object({
+const routeSchema = z.object({
 	id: z.coerce.number(),
 });
 
 export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const params = await getValidatedRouterParams(event, schema.parse);
+	const params = await getValidatedRouterParams(event, routeSchema.parse);
 
 	const id = params.id;
 

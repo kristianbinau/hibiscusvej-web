@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-const schema = z.object({
+const querySchema = z.object({
 	everywhere: z.coerce.boolean().optional(),
 });
 
 export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const query = await getValidatedQuery(event, schema.parse);
+	const query = await getValidatedQuery(event, querySchema.parse);
 
 	const everywhere = query.everywhere ?? false;
 

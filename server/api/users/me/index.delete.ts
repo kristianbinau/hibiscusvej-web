@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-const schema = z.object({
+const bodySchema = z.object({
 	currentSessionPassword: z.string(),
 });
 
 export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 
 	const userId = authUser.user.id;
 

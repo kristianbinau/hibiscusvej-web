@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-const schema = z.object({
+const routeSchema = z.object({
 	id: z.coerce.number(),
 });
 
 export default defineEventHandler(async (event) => {
 	await useAuthAdmin(event);
-	const params = await getValidatedRouterParams(event, schema.parse);
+	const params = await getValidatedRouterParams(event, routeSchema.parse);
 
 	const id = params.id;
 

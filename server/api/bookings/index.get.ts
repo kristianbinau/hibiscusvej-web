@@ -1,14 +1,14 @@
 import { startOfMonth, endOfMonth } from 'date-fns';
 import { z } from 'zod';
 
-const schema = z.object({
+const querySchema = z.object({
 	year: z.coerce.number().min(2024),
 	month: z.coerce.number().min(1).max(12),
 });
 
 export default eventHandler(async (event) => {
 	await useAuthUser(event);
-	const query = await getValidatedQuery(event, schema.parse);
+	const query = await getValidatedQuery(event, querySchema.parse);
 
 	const year = query.year;
 	const month = query.month;

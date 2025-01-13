@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 const LOG_MODULE = 'Api/Admin/Users/Verify';
 
-const schema = z.object({
+const bodySchema = z.object({
 	userIds: z.array(z.number()),
 });
 
@@ -17,7 +17,7 @@ const ADMIN_ACTION = 'VerifyUsers';
 
 export default defineEventHandler(async (event) => {
 	const authAdmin = await useAuthAdmin(event);
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 
 	const userIds = body.userIds;
 	const now = new Date();

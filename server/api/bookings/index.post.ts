@@ -4,7 +4,7 @@ import { endOfYesterday, isAfter, addDays } from 'date-fns';
 
 const LOG_MODULE = 'Api/Booking/Create';
 
-const schema = z.object({
+const bodySchema = z.object({
 	date: z.string().date(),
 });
 
@@ -12,7 +12,7 @@ const maxConsecutiveDays = 2;
 
 export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 
 	const user = await useDrizzle()
 		.select()

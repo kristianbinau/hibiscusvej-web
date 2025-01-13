@@ -11,13 +11,13 @@ const pushSubscriptionJSON = z.custom<PushSubscriptionJSON>((val) => {
 	);
 });
 
-const schema = z.object({
+const bodySchema = z.object({
 	subscription: pushSubscriptionJSON,
 });
 
 export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 
 	const pushSubscription = body.subscription;
 

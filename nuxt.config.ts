@@ -21,6 +21,10 @@ export default defineNuxtConfig({
 		},
 	},
 
+	sourcemap: {
+		client: true,
+	},
+
 	experimental: {
 		inlineRouteRules: true,
 	},

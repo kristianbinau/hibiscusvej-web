@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const LOG_MODULE = 'Api/Auth/Register';
 
-const schema = z.object({
+const bodySchema = z.object({
 	apartmentId: z.number(),
 	email: z.string().email(),
 	password: z.string(),
@@ -19,7 +19,7 @@ const schema = z.object({
 });
 
 export default eventHandler(async (event) => {
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 
 	// If Email is already in use, return 409 Conflict
 	const userByEmail = await useDrizzle()

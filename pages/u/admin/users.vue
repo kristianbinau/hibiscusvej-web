@@ -93,6 +93,7 @@
 					:showLogins="true"
 					:showSessions="true"
 					:showBookings="true"
+					:showRepremands="true"
 					@close="isUserSlideOpen = false"
 				/>
 			</USlideover>

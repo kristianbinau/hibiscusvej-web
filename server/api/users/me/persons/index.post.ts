@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const LOG_MODULE = 'Api/Users/Me/Persons/[id]/Post';
 
-const schema = z.object({
+const bodySchema = z.object({
 	name: z.string().min(1).max(255),
 	email: z.string().email().min(1).max(255),
 	phone: z.string().min(1).max(255),
@@ -10,7 +10,7 @@ const schema = z.object({
 
 export default eventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 
 	// If User already has 2 persons, return 400 Bad Request - Cannot create more than 2 persons
 	const count = await useDrizzle().$count(

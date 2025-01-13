@@ -2,14 +2,14 @@ import { z } from 'zod';
 
 const LOG_MODULE = 'Api/Auth/Login';
 
-const schema = z.object({
+const bodySchema = z.object({
 	loginId: z.number(),
 	singleUsePassword: z.string(),
 	newPassword: z.string(),
 });
 
 export default eventHandler(async (event) => {
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 
 	// If UserLogin w/ Email is not found, return 401 Unauthorized
 	const userLogin = await useDrizzle()

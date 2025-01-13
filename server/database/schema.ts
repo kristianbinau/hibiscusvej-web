@@ -98,6 +98,23 @@ export const userSettings = sqliteTable(
 	],
 );
 
+export const userRepremands = sqliteTable(
+	'user_repremands',
+	{
+		id: integer('id').primaryKey({ autoIncrement: true }),
+		userId: integer('user_id').notNull(),
+		type: text('type', { enum: ['ban', 'warning'] }).notNull(),
+		reason: text('reason').notNull(),
+		expiresAt: integer('expires_at', { mode: 'timestamp' }),
+		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+	},
+	(repremand) => [
+		index('user_repremands_user_idx').on(repremand.userId),
+		index('user_repremands_type_idx').on(repremand.type),
+	],
+);
+
 export const apartments = sqliteTable(
 	'apartments',
 	{

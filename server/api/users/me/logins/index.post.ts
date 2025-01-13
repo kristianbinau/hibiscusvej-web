@@ -2,14 +2,14 @@ import { z } from 'zod';
 
 const LOG_MODULE = 'Api/Users/Me/Logins/[id]/Post';
 
-const schema = z.object({
+const bodySchema = z.object({
 	email: z.string().email(),
 	password: z.string(),
 	currentSessionPassword: z.string(),
 });
 
 export default eventHandler(async (event) => {
-	const body = await readValidatedBody(event, schema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
 	const authUser = await useAuthValidatedUser(
 		event,
 		body.currentSessionPassword,

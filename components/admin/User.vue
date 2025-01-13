@@ -101,6 +101,14 @@
 					:bookings="bookings"
 				/>
 			</template>
+
+			<template #repremands>
+				<AdminUserRepremands
+					v-if="showRepremands"
+					:userId="userId"
+					:repremands="repremands"
+				/>
+			</template>
 		</UAccordion>
 
 		<template #footer>
@@ -242,21 +250,32 @@
 </template>
 
 <script lang="ts" setup>
-import type { Booking, User } from '~/utils/types/admin';
+import type { Booking, User, UserRepremand } from '~/utils/types/admin';
 
 const emit = defineEmits(['close']);
 
-const { userId, showPersons, showLogins, showSessions, showBookings } =
-	defineProps<{
-		userId: number;
-		showPersons: boolean;
-		showLogins: boolean;
-		showSessions: boolean;
-		showBookings: boolean;
-	}>();
+const {
+	userId,
+	showPersons,
+	showLogins,
+	showSessions,
+	showBookings,
+	showRepremands,
+} = defineProps<{
+	userId: number;
+	showPersons: boolean;
+	showLogins: boolean;
+	showSessions: boolean;
+	showBookings: boolean;
+	showRepremands: boolean;
+}>();
 
 const user = defineModel<User>('user', { required: false, type: Object });
 const bookings = defineModel<Booking[]>('bookings', {
+	required: false,
+	type: Array,
+});
+const repremands = defineModel<UserRepremand[]>('repremands', {
 	required: false,
 	type: Array,
 });
@@ -295,6 +314,14 @@ const accordionItems = computed(() => {
 			label: 'Bookings',
 			icon: 'i-material-symbols-calendar-clock-outline-rounded',
 			slot: 'bookings',
+		});
+	}
+
+	if (showRepremands) {
+		items.push({
+			label: 'Repremands',
+			icon: 'i-material-symbols-warning-outline-rounded',
+			slot: 'repremands',
 		});
 	}
 

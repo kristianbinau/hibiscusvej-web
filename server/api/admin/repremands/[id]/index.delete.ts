@@ -11,16 +11,16 @@ const bodySchema = z.object({
 });
 
 export default eventHandler(async (event) => {
-	const authAdmin = await useAuthAdmin(event);
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
-    const body = await readValidatedBody(event, bodySchema.parse);
+	const body = await readValidatedBody(event, bodySchema.parse);
+	await useAuthValidatedAdmin(event, body.currentSessionPassword);
 
 	const id = params.id;
 
 	try {
 		await useDrizzle()
 			.delete(tables.userRepremands)
-			.where(and(eq(tables.userRepremands.id, id)));
+			.where(eq(tables.userRepremands.id, id));
 	} catch (error) {
 		logError(LOG_MODULE, `Failed Delete of UserRepremandId: ${id}`, error);
 		throw createError({

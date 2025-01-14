@@ -181,7 +181,7 @@
 						text="Klik for at permanent slette din bruger"
 					>
 						<UButton
-							icon="i-material-symbols-delete-outline-rounded"
+							icon="i-material-symbols-delete-forever-outline-rounded"
 							label="Slet bruger"
 							color="red"
 							variant="soft"

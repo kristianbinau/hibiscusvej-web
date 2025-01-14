@@ -1,5 +1,5 @@
 <template>
-	<UCard class="mb-4 last:mb-0">
+	<UCard class="mb-4">
 		<template #header>
 			<h4 class="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
 				Login ID: {{ login.id }}

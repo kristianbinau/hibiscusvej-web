@@ -156,7 +156,7 @@
 					<UPopover :popper="{ placement: 'top-end' }" overlay>
 						<UTooltip text="Klik for at permanent slette brugeren">
 							<UButton
-								icon="i-material-symbols-delete-outline-rounded"
+								icon="i-material-symbols-delete-forever-outline-rounded"
 								color="red"
 								variant="soft"
 								class="flex-1"

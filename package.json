@@ -16,7 +16,7 @@
 		"@block65/webcrypto-web-push": "^1.0.2",
 		"@date-fns/utc": "^2.1.0",
 		"@nuxt/content": "^2.13.4",
-		"@nuxt/ui": "^2.20.0",
+		"@nuxt/ui": "^2.21.0",
 		"@nuxthub/core": "^0.8.11",
 		"@popperjs/core": "^2.11.8",
 		"@sentry/nuxt": "^8.48.0",

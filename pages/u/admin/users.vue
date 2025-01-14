@@ -118,6 +118,7 @@ useHead({
 });
 
 const toast = useToast();
+const { query } = useRoute();
 
 const columns = [
 	{
@@ -166,6 +167,12 @@ const columns = [
 		sortable: true,
 	},
 ];
+
+onMounted(() => {
+	if (query.userId) {
+		openUser(Number(query.userId));
+	}
+});
 
 const rows = computed(() => {
 	return usersJoined.value.map((user) => {

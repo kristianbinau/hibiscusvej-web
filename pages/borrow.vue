@@ -6,13 +6,13 @@
 
 <script lang="ts" setup>
 defineRouteRules({
-  prerender: true
-})
+	prerender: true,
+});
 
-const route = useRoute()
+const route = useRoute();
 const { data: page } = await useAsyncData(route.path, () => {
-  return queryCollection('content').path(route.path).first()
-})
+	return queryCollection('content').path(route.path).first();
+});
 </script>
 
 <style>

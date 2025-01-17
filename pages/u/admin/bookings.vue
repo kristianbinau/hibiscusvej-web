@@ -87,7 +87,6 @@ const columns = [
 ];
 
 const rows = computed(() => {
-
 	return bookingsJoined.value.map((booking) => {
 		return {
 			...booking,

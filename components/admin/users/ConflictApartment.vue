@@ -40,32 +40,31 @@
 				class="mb-6"
 			/>
 
-			<UCard v-if="selectedConflict === undefined">
-				<template #header>
-					<USkeleton class="h-8" />
-				</template>
-				<USkeleton class="h-12" />
-				<template #footer>
-					<USkeleton class="h-8" />
-				</template>
-			</UCard>
+			<div class="flex flex-col gap-4">
+				<UCard v-if="selectedConflict === undefined">
+					<template #header>
+						<USkeleton class="h-8" />
+					</template>
+					<USkeleton class="h-12" />
+					<template #footer>
+						<USkeleton class="h-8" />
+					</template>
+				</UCard>
 
-			<AdminUser
-				v-else
-				v-for="user in selectedConflict.users"
-				:key="user.id"
-				:user-id="user.id"
-				:user="user"
-				:show-bookings="true"
-				:show-persons="true"
-				:show-sessions="true"
-				:show-logins="true"
-				class="mb-4"
-			/>
-
-			<template #footer>
-				<USkeleton class="h-8" />
-			</template>
+				<AdminUser
+					v-else
+					v-for="user in selectedConflict.users"
+					:key="user.id"
+					:user-id="user.id"
+					:user="user"
+					:show-bookings="true"
+					:show-persons="true"
+					:show-sessions="true"
+					:show-logins="true"
+					:show-repremands="true"
+					class="mb-4 border rounded-md border-gray-200 dark:border-gray-800"
+				/>
+			</div>
 		</UCard>
 	</USlideover>
 </template>

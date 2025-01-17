@@ -58,10 +58,44 @@ useHead({
 
 const toast = useToast();
 
-const columns = undefined;
+const columns = [
+	{
+		key: 'id',
+		label: 'ID',
+		sortable: true,
+	},
+	{
+		key: 'userId',
+		label: 'UserId',
+		sortable: true,
+	},
+	{
+		key: 'date',
+		label: 'Dato',
+		sortable: true,
+	},
+	{
+		key: 'createdAt',
+		label: 'Oprettet',
+		sortable: true,
+	},
+	{
+		key: 'updatedAt',
+		label: 'Opdateret',
+		sortable: true,
+	},
+];
 
 const rows = computed(() => {
-	return bookingsJoined.value;
+
+	return bookingsJoined.value.map((booking) => {
+		return {
+			...booking,
+			date: new Date(booking.from).toLocaleDateString(),
+			createdAt: new Date(booking.createdAt).toLocaleString(),
+			updatedAt: new Date(booking.updatedAt).toLocaleString(),
+		};
+	});
 });
 
 /**

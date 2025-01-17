@@ -1,5 +1,10 @@
 <template>
-	<USlideover v-model="isOpen">
+	<USlideover
+		v-model="isOpen"
+		:ui="{
+			base: '!max-w-3xl',
+		}"
+	>
 		<UCard
 			class="flex flex-col flex-1"
 			:ui="{

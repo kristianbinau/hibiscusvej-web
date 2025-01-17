@@ -184,7 +184,6 @@ async function fetchBookingsThisMonth() {
 
 	fetchingBookings.value = false;
 }
-fetchBookingsThisMonth();
 
 /**
  * Current User
@@ -207,10 +206,12 @@ async function fetchCurrentUser() {
 				title: 'Der skete en fejl ved hentning af brugeroplysninger',
 			});
 			currentUser.value = null;
+			navigateTo('/u');
 			return;
 		}
 
 		currentUser.value = data.value;
+		fetchBookingsThisMonth(); // We need CurrentUser to fetch bookings
 	} catch (error) {
 		toast.add({
 			title: 'Der skete en fejl ved hentning af brugeroplysninger',

@@ -3,9 +3,9 @@ export default defineNuxtConfig({
 	compatibilityDate: '2024-12-12',
 	devtools: { enabled: true },
 	modules: [
+		'@nuxthub/core',
 		'@nuxt/ui',
 		'@nuxt/content',
-		'@nuxthub/core',
 		'@sentry/nuxt/module',
 	],
 	ui: {
@@ -15,30 +15,23 @@ export default defineNuxtConfig({
 		database: true,
 		cache: true,
 	},
+	content: {
+		database: {
+			type: 'd1',
+			binding: 'DB',
+		},
+	},
 	nitro: {
 		experimental: {
 			tasks: true,
 		},
 	},
-
 	sourcemap: {
 		client: true,
 	},
-
 	experimental: {
 		inlineRouteRules: true,
 	},
-
-	/**
-	 * Waiting for fix in NuxtHub
-	 * @see https://github.com/nuxt-hub/core/issues/293
-	 */
-	/*
-	typescript: {
-		typeCheck: true,
-	},
-	*/
-
 	routeRules: {
 		'/u': {
 			redirect: {
@@ -53,7 +46,6 @@ export default defineNuxtConfig({
 			},
 		},
 	},
-
 	runtimeConfig: {
 		jwtSecret: process.env.NUXT_JWT_SECRET,
 		vapidPrivateKey: process.env.NUXT_VAPID_PRIVATE_KEY,
@@ -62,4 +54,13 @@ export default defineNuxtConfig({
 			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
 		},
 	},
+	/**
+	 * Waiting for fix in NuxtHub
+	 * @see https://github.com/nuxt-hub/core/issues/293
+	 */
+	/*
+	typescript: {
+		typeCheck: true,
+	},
+	*/
 });

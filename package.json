@@ -17,14 +17,14 @@
 		"@date-fns/utc": "^2.1.0",
 		"@nuxt/content": "^3.0.0",
 		"@nuxt/ui": "^2.21.0",
-		"@nuxthub/core": "^0.8.11",
+		"@nuxthub/core": "^0.8.14",
 		"@popperjs/core": "^2.11.8",
-		"@sentry/nuxt": "^8.50.0",
+		"@sentry/nuxt": "^8.51.0",
 		"bcryptjs": "^2.4.3",
 		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.38.4",
 		"jose": "^5.9.6",
-		"nuxt": "^3.15.2",
+		"nuxt": "^3.15.3",
 		"ohash": "^1.1.4",
 		"uncrypto": "^0.1.3",
 		"v-calendar": "^3.1.2",
@@ -33,14 +33,14 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"@iconify-json/material-symbols": "^1.2.12",
-		"@iconify-json/mdi": "^1.2.2",
+		"@iconify-json/material-symbols": "^1.2.13",
+		"@iconify-json/mdi": "^1.2.3",
 		"@types/bcryptjs": "^2.4.6",
 		"drizzle-kit": "^0.30.2",
 		"prettier": "3.4.2",
 		"typescript": "^5.7.3",
 		"vue-tsc": "^2.2.0",
-		"wrangler": "^3.101.0"
+		"wrangler": "^3.105.1"
 	},
 	"volta": {
 		"node": "22.11.0"

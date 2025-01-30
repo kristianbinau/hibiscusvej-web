@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 		'@nuxt/ui',
 		'@nuxt/content',
 		'@sentry/nuxt/module',
+		'@kristianbinau/nuxt-maintenance-mode',
 	],
 	ui: {
 		global: true,
@@ -14,6 +15,10 @@ export default defineNuxtConfig({
 	hub: {
 		database: true,
 		cache: true,
+	},
+	maintenanceMode: {
+		enabled: true,
+		include: ['/u*', '/auth*'],
 	},
 	content: {
 		database: {

@@ -347,7 +347,7 @@ async function fetchUser() {
 	fetchingUser.value = true;
 
 	try {
-		const { data } = await useFetch(`/api/admin/users/${userId}`, {
+		const { data } = await useFetch(`/api/app/admin/users/${userId}`, {
 			server: false,
 		});
 
@@ -385,7 +385,7 @@ async function verifyUser() {
 	try {
 		const id = userId;
 
-		const res = await $fetch('/api/admin/users/verify', {
+		const res = await $fetch('/api/app/admin/users/verify', {
 			method: 'POST',
 			body: {
 				userIds: [id],
@@ -427,7 +427,7 @@ async function unverifyUser() {
 	try {
 		const id = userId;
 
-		const res = await $fetch('/api/admin/users/unverify', {
+		const res = await $fetch('/api/app/admin/users/unverify', {
 			method: 'POST',
 			body: {
 				userIds: [id],
@@ -473,7 +473,7 @@ async function deleteUser() {
 		const id = userId;
 		const passwordHash = await hash(currentSessionPassword.value);
 
-		const res = await $fetch(`/api/admin/users/${userId}/delete`, {
+		const res = await $fetch(`/api/app/admin/users/${userId}/delete`, {
 			method: 'POST',
 			body: {
 				currentSessionPassword: passwordHash,

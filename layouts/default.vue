@@ -38,15 +38,20 @@ const links = [
 			icon: 'i-material-symbols-tools-power-drill',
 			to: '/borrow',
 		},
-		{
-			badge: {
-				icon: 'i-material-symbols-key-outline-rounded',
-				label: 'Login',
-				size: 'md',
-				color: 'primary',
-			},
-			to: '/auth/login',
-		},
 	],
 ];
+
+const config = useRuntimeConfig();
+
+if (!config.public.maintenanceModeEnabled) {
+	links[1].push({
+		badge: {
+			icon: 'i-material-symbols-key-outline-rounded',
+			label: 'Login',
+			size: 'md',
+			color: 'primary',
+		},
+		to: '/auth/login',
+	});
+}
 </script>

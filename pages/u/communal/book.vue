@@ -75,7 +75,7 @@ import type { Page } from 'v-calendar/dist/types/src/utils/page.js';
 import { format, isSameDay } from 'date-fns';
 
 import type { InternalApi } from 'nitropack';
-type CurrentUserResponse = InternalApi['/api/users/me']['get'];
+type CurrentUserResponse = InternalApi['/api/app/users/me']['get'];
 
 definePageMeta({
 	layout: 'logged-in',
@@ -153,7 +153,7 @@ async function fetchBookingsThisMonth() {
 	fetchingBookings.value = true;
 
 	try {
-		const { data } = await useFetch('/api/bookings', {
+		const { data } = await useFetch('/api/app/bookings', {
 			params: {
 				year: year.value.toString(),
 				month: month.value.toString(),
@@ -199,7 +199,7 @@ const currentUserVerified = computed(() => {
 
 async function fetchCurrentUser() {
 	try {
-		const { data } = await useFetch('/api/users/me');
+		const { data } = await useFetch('/api/app/users/me');
 
 		if (data.value === null) {
 			toast.add({
@@ -232,7 +232,7 @@ async function onSubmit() {
 	onSubmitLoading.value = true;
 
 	try {
-		const res = await $fetch('/api/bookings', {
+		const res = await $fetch('/api/app/bookings', {
 			method: 'POST',
 			body: {
 				// Formatted as 2024-12-24

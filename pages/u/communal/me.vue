@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import type { InternalApi } from 'nitropack';
-type BookingsMeApiResponse = InternalApi['/api/bookings/me']['get'];
+type BookingsMeApiResponse = InternalApi['/api/app/bookings/me']['get'];
 
 import { isAfter } from 'date-fns';
 
@@ -83,7 +83,7 @@ async function fetchMyBookings() {
 	fetchingBookings.value = true;
 
 	try {
-		const { data } = await useFetch('/api/bookings/me');
+		const { data } = await useFetch('/api/app/bookings/me');
 
 		if (data.value === null) {
 			fetchingBookings.value = false;
@@ -108,7 +108,7 @@ fetchMyBookings();
  */
 async function deleteBooking(id: number) {
 	try {
-		const res = await $fetch(`/api/bookings/${id}`, {
+		const res = await $fetch(`/api/app/bookings/${id}`, {
 			method: 'DELETE',
 		});
 

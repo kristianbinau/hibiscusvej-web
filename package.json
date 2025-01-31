@@ -15,7 +15,7 @@
 	"dependencies": {
 		"@block65/webcrypto-web-push": "^1.0.2",
 		"@date-fns/utc": "^2.1.0",
-		"@kristianbinau/nuxt-maintenance-mode": "^0.0.2",
+		"@kristianbinau/nuxt-maintenance-mode": "^0.0.3",
 		"@nuxt/content": "^3.0.1",
 		"@nuxt/ui": "^2.21.0",
 		"@nuxthub/core": "^0.8.15",

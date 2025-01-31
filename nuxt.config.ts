@@ -17,8 +17,7 @@ export default defineNuxtConfig({
 		cache: true,
 	},
 	maintenanceMode: {
-		enabled: true,
-		include: ['/u*', '/auth*'],
+		include: ['/u*', '/auth*', '/api/app/*'],
 	},
 	content: {
 		database: {
@@ -57,6 +56,7 @@ export default defineNuxtConfig({
 		public: {
 			vapidSubject: process.env.NUXT_PUBLIC_VAPID_SUBJECT,
 			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
+			maintenanceModeEnabled: process.env.NUXT_PUBLIC_MAINTENANCE_MODE_ENABLED,
 		},
 	},
 	/**

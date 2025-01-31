@@ -1,10 +1,10 @@
 import type { InternalApi } from 'nitropack';
-export type AdminUsersApiResponse = InternalApi['/api/admin/users']['get'];
+export type AdminUsersApiResponse = InternalApi['/api/app/admin/users']['get'];
 export type AdminBookingsApiResponse =
-	InternalApi['/api/admin/bookings']['get'];
+	InternalApi['/api/app/admin/bookings']['get'];
 export type AdminUserRepremandsApiResponse =
-	InternalApi['/api/admin/users/:id/repremands']['get'];
-export type ApartmentsApiResponse = InternalApi['/api/apartments']['get'];
+	InternalApi['/api/app/admin/users/:id/repremands']['get'];
+export type ApartmentsApiResponse = InternalApi['/api/app/apartments']['get'];
 
 export type User = {
 	sessions: AdminUsersApiResponse['userSessions'];

@@ -81,7 +81,7 @@ if (authUser.value && authUser.value.user.admin) {
 
 async function logout() {
 	try {
-		const res = await $fetch('/api/auth/logout', {
+		const res = await $fetch('/api/app/auth/logout', {
 			method: 'POST',
 		});
 

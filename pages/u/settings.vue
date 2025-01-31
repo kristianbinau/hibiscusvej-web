@@ -258,7 +258,7 @@ async function fetchMe() {
 	fetchingMe.value = true;
 
 	try {
-		const { data } = await useFetch('/api/users/me');
+		const { data } = await useFetch('/api/app/users/me');
 
 		if (data.value === null) {
 			fetchingMe.value = false;
@@ -289,7 +289,7 @@ async function fetchPersons() {
 	fetchingPersons.value = true;
 
 	try {
-		const { data } = await useFetch('/api/users/me/persons');
+		const { data } = await useFetch('/api/app/users/me/persons');
 
 		if (data.value === null) {
 			fetchingPersons.value = false;
@@ -345,7 +345,7 @@ async function fetchLogins() {
 	fetchingLogins.value = true;
 
 	try {
-		const { data } = await useFetch('/api/users/me/logins');
+		const { data } = await useFetch('/api/app/users/me/logins');
 
 		if (data.value === null) {
 			fetchingLogins.value = false;
@@ -421,7 +421,7 @@ async function unsubscribeToPush() {
 			return;
 		}
 
-		const res = await $fetch('/api/push/unsubscribe', {
+		const res = await $fetch('/api/app/push/unsubscribe', {
 			method: 'POST',
 			body: {
 				subscription: subscription.toJSON(),
@@ -448,7 +448,7 @@ async function unsubscribeToPushEverywhere() {
 	unsubscribeToPushEverywhereLoading.value = true;
 
 	try {
-		const res = await $fetch('/api/push/unsubscribe', {
+		const res = await $fetch('/api/app/push/unsubscribe', {
 			method: 'POST',
 			query: {
 				everywhere: true,
@@ -485,7 +485,7 @@ async function deleteAccount() {
 	try {
 		const passwordHash = await hash(currentSessionPassword.value);
 
-		const res = await $fetch('/api/users/me/delete', {
+		const res = await $fetch('/api/app/users/me/delete', {
 			method: 'POST',
 			body: {
 				currentSessionPassword: passwordHash,
@@ -518,7 +518,7 @@ async function logoutEverywhere() {
 	logoutEverywhereLoading.value = true;
 
 	try {
-		const res = await $fetch('/api/auth/logout', {
+		const res = await $fetch('/api/app/auth/logout', {
 			method: 'POST',
 			query: {
 				everywhere: true,

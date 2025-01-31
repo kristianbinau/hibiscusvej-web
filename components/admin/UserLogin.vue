@@ -96,7 +96,7 @@ async function resetPassword() {
 		const passwordHash = await hash(currentSessionPassword.value);
 
 		const data = await $fetch(
-			`/api/admin/users/${login.value.userId}/reset-password`,
+			`/api/app/admin/users/${login.value.userId}/reset-password`,
 			{
 				method: 'POST',
 				body: {

@@ -53,7 +53,7 @@ async function fetchBookings() {
 	fetchingBookings.value = true;
 
 	try {
-		const data = await $fetch(`/api/admin/users/${userId}/bookings`);
+		const data = await $fetch(`/api/app/admin/users/${userId}/bookings`);
 
 		if (data === null) {
 			fetchingBookings.value = false;

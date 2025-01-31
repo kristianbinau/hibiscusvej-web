@@ -289,7 +289,7 @@ async function refreshTokens(event) {
 	});
 
 	let accessToken;
-	let refreshResponse = await fetch(`/api/auth/refresh`, {
+	let refreshResponse = await fetch(`/api/app/auth/refresh`, {
 		method: 'POST',
 		signal: controller.signal,
 		credentials: 'include',
@@ -376,9 +376,9 @@ function addAuthHeaderToRequest(request, accessToken) {
  */
 function isAuthorizeUrls(url) {
 	const urlsExact = [
-		'/api/auth/login',
-		'/api/auth/register',
-		'/api/auth/refresh',
+		'/api/app/auth/login',
+		'/api/app/auth/register',
+		'/api/app/auth/refresh',
 	];
 
 	return matchUrls(url, urlsExact);
@@ -392,7 +392,7 @@ function isAuthorizeUrls(url) {
  * @return {boolean}
  */
 function isUnauthorizeUrls(url) {
-	const urlsExact = ['/api/auth/logout'];
+	const urlsExact = ['/api/app/auth/logout'];
 
 	return matchUrls(url, urlsExact);
 }

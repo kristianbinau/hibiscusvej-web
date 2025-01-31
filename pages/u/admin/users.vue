@@ -240,7 +240,7 @@ async function fetch() {
 	fetching.value = true;
 
 	try {
-		const { data } = await useFetch('/api/admin/users');
+		const { data } = await useFetch('/api/app/admin/users');
 
 		if (data.value === null) {
 			fetching.value = false;
@@ -271,7 +271,7 @@ fetch();
 const apartments = ref<Apartment[]>([]);
 async function fetchApartments() {
 	try {
-		const { data } = await useFetch('/api/apartments');
+		const { data } = await useFetch('/api/app/apartments');
 
 		if (data.value === null) {
 			toast.add({
@@ -315,7 +315,7 @@ async function verifyUser(id: number) {
 	await new Promise((resolve) => setTimeout(resolve, 500));
 
 	try {
-		const res = await $fetch('/api/admin/users/verify', {
+		const res = await $fetch('/api/app/admin/users/verify', {
 			method: 'POST',
 			body: {
 				userIds: [id],
@@ -357,7 +357,7 @@ async function unverifyUser(id: number) {
 	await new Promise((resolve) => setTimeout(resolve, 500));
 
 	try {
-		const res = await $fetch('/api/admin/users/unverify', {
+		const res = await $fetch('/api/app/admin/users/unverify', {
 			method: 'POST',
 			body: {
 				userIds: [id],

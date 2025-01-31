@@ -107,7 +107,7 @@ export const usePush = () => {
 
 	async function sendSubscriptionToServer(subscription: PushSubscription) {
 		try {
-			const res = await $fetch('/api/push/subscribe', {
+			const res = await $fetch('/api/app/push/subscribe', {
 				method: 'POST',
 				body: {
 					subscription: subscription.toJSON(),

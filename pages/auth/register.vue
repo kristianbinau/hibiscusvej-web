@@ -274,7 +274,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 	try {
 		const passwordHash = await hash(event.data.password);
 
-		const res = await $fetch('/api/auth/register', {
+		const res = await $fetch('/api/app/auth/register', {
 			method: 'POST',
 			body: {
 				apartmentId: event.data.apartmentId,
@@ -338,7 +338,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 const apartments = ref<{ id: number; address: string }[]>([]);
 
 async function fetchApartments() {
-	const { data } = await useFetch('/api/apartments');
+	const { data } = await useFetch('/api/app/apartments');
 
 	if (data.value === null) return;
 

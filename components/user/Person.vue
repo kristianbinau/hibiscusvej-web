@@ -177,7 +177,7 @@ async function onDelete() {
 	onDeleteLoading.value = true;
 
 	try {
-		const res = await $fetch(`/api/users/me/persons/${person.value.id}`, {
+		const res = await $fetch(`/api/app/users/me/persons/${person.value.id}`, {
 			method: 'DELETE',
 		});
 
@@ -198,7 +198,7 @@ async function onDelete() {
 }
 
 async function createPerson(event: FormSubmitEvent<Schema>) {
-	const res = await $fetch(`/api/users/me/persons`, {
+	const res = await $fetch(`/api/app/users/me/persons`, {
 		method: 'POST',
 		body: {
 			name: event.data.name,
@@ -228,7 +228,7 @@ async function updatePerson(event: FormSubmitEvent<Schema>) {
 		return;
 	}
 
-	const res = await $fetch(`/api/users/me/persons/${person.value.id}`, {
+	const res = await $fetch(`/api/app/users/me/persons/${person.value.id}`, {
 		method: 'PATCH',
 		body: {
 			name: event.data.name,

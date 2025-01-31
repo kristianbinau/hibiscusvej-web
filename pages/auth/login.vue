@@ -91,7 +91,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 	try {
 		const passwordHash = await hash(event.data.password);
 
-		const res = await $fetch('/api/auth/login', {
+		const res = await $fetch('/api/app/auth/login', {
 			method: 'POST',
 			body: {
 				email: event.data.email,

@@ -121,7 +121,7 @@ async function fetch() {
 	fetching.value = true;
 
 	try {
-		const { data } = await useFetch('/api/admin/bookings');
+		const { data } = await useFetch('/api/app/admin/bookings');
 
 		if (data.value === null) {
 			fetching.value = false;

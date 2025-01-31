@@ -53,7 +53,7 @@ async function fetchRepremands() {
 	fetchingRepremands.value = true;
 
 	try {
-		const data = await $fetch(`/api/admin/users/${userId}/repremands`);
+		const data = await $fetch(`/api/app/admin/users/${userId}/repremands`);
 
 		if (data === null) {
 			fetchingRepremands.value = false;

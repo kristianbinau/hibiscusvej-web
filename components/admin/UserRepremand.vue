@@ -286,7 +286,7 @@ async function deleteRepremand() {
 		const id = repremand.value.id;
 		const passwordHash = await hash(currentSessionPassword.value);
 
-		const res = await $fetch(`/api/admin/repremands/${id}/delete`, {
+		const res = await $fetch(`/api/app/admin/repremands/${id}/delete`, {
 			method: 'POST',
 			body: {
 				currentSessionPassword: passwordHash,

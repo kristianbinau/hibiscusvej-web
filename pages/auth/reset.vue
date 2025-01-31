@@ -117,7 +117,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		const singleUseHash = await hash(event.data.singleUsePassword);
 		const newHash = await hash(event.data.newPassword);
 
-		const res = await $fetch('/api/auth/reset-password', {
+		const res = await $fetch('/api/app/auth/reset-password', {
 			method: 'POST',
 			body: {
 				loginId: loginId,

@@ -57,6 +57,7 @@ export default defineNuxtConfig({
 			vapidSubject: process.env.NUXT_PUBLIC_VAPID_SUBJECT,
 			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
 			maintenanceModeEnabled: process.env.NUXT_PUBLIC_MAINTENANCE_MODE_ENABLED,
+			maintenanceModeBypassSecret: process.env.NUXT_PUBLIC_MAINTENANCE_MODE_BYPASS_SECRET,
 		},
 	},
 	/**

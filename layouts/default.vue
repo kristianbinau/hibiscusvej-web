@@ -41,9 +41,8 @@ const links = [
 	],
 ];
 
-const config = useRuntimeConfig();
-
-if (!config.public.maintenanceModeEnabled) {
+const { isUnderMaintenance } = useMaintenance('/auth/login');
+if (!isUnderMaintenance.value) {
 	links[1].push({
 		badge: {
 			icon: 'i-material-symbols-key-outline-rounded',

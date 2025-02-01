@@ -232,20 +232,22 @@ async function onSubmit() {
 	onSubmitLoading.value = true;
 
 	try {
+		const bookAsDate = date.value;
+
 		const res = await $fetch('/api/app/bookings', {
 			method: 'POST',
 			body: {
 				// Formatted as 2024-12-24
-				date: format(date.value, 'yyyy-MM-dd'),
+				date: format(bookAsDate, 'yyyy-MM-dd'),
 			},
 		});
 
 		if (res) {
 			toast.add({
-				title: `Du har booket fælleslokalet - ${date.value.toLocaleDateString()}`,
+				title: `Du har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
 			});
 
-			myBookingsThisMonth.value.push(date.value);
+			myBookingsThisMonth.value.push(bookAsDate);
 			date.value = null;
 		}
 	} catch (error: any) {

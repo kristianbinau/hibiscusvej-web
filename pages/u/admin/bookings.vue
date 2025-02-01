@@ -6,6 +6,8 @@
 		</div>
 
 		<ClientOnly>
+			<AdminBookingSystemForm />
+
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
 				<template #userId-data="{ row }">
 					<UTooltip text="Klik for at se bruger">

@@ -58,7 +58,7 @@
 					</UCheckbox>
 
 					<UButton
-						:loading="onSubmitLoading"
+						:loading="onSubmitLoading || statusBookingsThisMonth === 'pending'"
 						@click="onSubmit"
 						:disabled="date === null || !hasReadTerms || !currentUserVerified"
 						>Book</UButton
@@ -74,9 +74,6 @@ import type { AttributeConfig } from 'v-calendar/dist/types/src/utils/attribute.
 import type { Page } from 'v-calendar/dist/types/src/utils/page.js';
 import { format, isSameDay } from 'date-fns';
 
-import type { InternalApi } from 'nitropack';
-type CurrentUserResponse = InternalApi['/api/app/users/me']['get'];
-
 definePageMeta({
 	layout: 'logged-in',
 	middleware: 'auth-required',
@@ -90,8 +87,8 @@ const toast = useToast();
 
 const hasReadTerms = ref(false);
 const date = ref<Date | null>(null);
-const year = ref<number>(new Date().getFullYear());
-const month = ref<number>(new Date().getMonth() + 1);
+const year = ref<string>(new Date().getFullYear().toString());
+const month = ref<string>((new Date().getMonth() + 1).toString());
 
 watch(date, async (newDate) => {
 	if (newDate) {
@@ -135,61 +132,51 @@ function onDidMove(pages: Page[]) {
 
 	if (!firstPage) return;
 
-	year.value = firstPage.year;
-	month.value = firstPage.month;
+	year.value = firstPage.year.toString();
+	month.value = firstPage.month.toString();
 
-	fetchBookingsThisMonth();
+	refreshBookingsThisMonth();
 }
 
 /**
  * Bookings
  */
 
-const bookingsThisMonth = ref<Date[]>([]);
-const myBookingsThisMonth = ref<Date[]>([]);
-const fetchingBookings = ref(true);
+const bookingsThisMonth = computed<Date[]>(() => {
+	if (dataBookingsThisMonth.value === null) return [];
 
-async function fetchBookingsThisMonth() {
-	fetchingBookings.value = true;
-
-	try {
-		const { data } = await useFetch('/api/app/bookings', {
-			params: {
-				year: year.value.toString(),
-				month: month.value.toString(),
-			},
+	return dataBookingsThisMonth.value
+		.filter((booking) => booking.userId !== currentUser.value?.user.id)
+		.map((booking) => {
+			return new Date(booking.from);
 		});
+});
+const myBookingsThisMonth = computed<Date[]>(() => {
+	if (dataBookingsThisMonth.value === null) return [];
 
-		if (data.value === null) {
-			fetchingBookings.value = false;
-			return;
-		}
-
-		bookingsThisMonth.value = data.value
-			.filter((booking) => booking.userId !== currentUser.value?.user.id)
-			.map((booking) => {
-				return new Date(booking.from);
-			});
-		myBookingsThisMonth.value = data.value
-			.filter((booking) => booking.userId === currentUser.value?.user.id)
-			.map((booking) => {
-				return new Date(booking.from);
-			});
-	} catch (error) {
-		toast.add({
-			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
+	return dataBookingsThisMonth.value
+		.filter((booking) => booking.userId === currentUser.value?.user.id)
+		.map((booking) => {
+			return new Date(booking.from);
 		});
-		fetchingBookings.value = false;
-	}
+});
 
-	fetchingBookings.value = false;
-}
+const {
+	data: dataBookingsThisMonth,
+	refresh: refreshBookingsThisMonth,
+	status: statusBookingsThisMonth,
+} = await useFetch('/api/app/bookings', {
+	params: {
+		year: year,
+		month: month,
+	},
+	immediate: false,
+});
 
 /**
  * Current User
  */
 
-const currentUser = ref<CurrentUserResponse | null>(null);
 const currentUserVerified = computed(() => {
 	// We want to assume the user is verified, to not flicker the alert
 	if (!currentUser.value) return true;
@@ -197,28 +184,18 @@ const currentUserVerified = computed(() => {
 	return currentUser.value.user.verifiedAt !== null;
 });
 
-async function fetchCurrentUser() {
-	try {
-		const { data } = await useFetch('/api/app/users/me');
-
-		if (data.value === null) {
-			toast.add({
-				title: 'Der skete en fejl ved hentning af brugeroplysninger',
-			});
-			currentUser.value = null;
-			navigateTo('/u');
-			return;
-		}
-
-		currentUser.value = data.value;
-		fetchBookingsThisMonth(); // We need CurrentUser to fetch bookings
-	} catch (error) {
+const { data: currentUser } = await useFetch('/api/app/users/me', {
+	server: false,
+	onResponse: () => {
+		refreshBookingsThisMonth();
+	},
+	onResponseError: () => {
 		toast.add({
 			title: 'Der skete en fejl ved hentning af brugeroplysninger',
 		});
-	}
-}
-fetchCurrentUser();
+		navigateTo('/u');
+	},
+});
 
 /**
  * Submit

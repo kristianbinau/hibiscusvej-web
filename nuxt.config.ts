@@ -61,13 +61,7 @@ export default defineNuxtConfig({
 				process.env.NUXT_PUBLIC_MAINTENANCE_MODE_BYPASS_SECRET,
 		},
 	},
-	/**
-	 * Waiting for fix in NuxtHub
-	 * @see https://github.com/nuxt-hub/core/issues/293
-	 */
-	/*
 	typescript: {
 		typeCheck: true,
 	},
-	*/
 });

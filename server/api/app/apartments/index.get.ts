@@ -1,5 +1,3 @@
 export default cachedEventHandler(async () => {
-	const apartments = await useDrizzle().select().from(tables.apartments).all();
-
-	return apartments;
+	return await useDrizzle().select().from(tables.apartments).all();
 }, cacheOneWeek());

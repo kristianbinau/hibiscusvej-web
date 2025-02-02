@@ -9,7 +9,9 @@
 </template>
 
 <script setup lang="ts">
-const links = [
+import type { HorizontalNavigationLink } from '#ui/types';
+
+const links: HorizontalNavigationLink[] | HorizontalNavigationLink[][] = [
 	[
 		{
 			label: 'Hibiscusvej 2-30',
@@ -21,6 +23,7 @@ const links = [
 	[
 		{
 			badge: {
+				// @ts-ignore
 				icon: 'i-material-symbols-arrow-back-rounded',
 				label: 'Tilbage',
 				variant: 'subtle',

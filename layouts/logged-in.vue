@@ -44,6 +44,7 @@ const links: HorizontalNavigationLink[][] = [
 		},
 		{
 			badge: {
+				// @ts-ignore
 				icon: 'i-material-symbols-settings-account-box-rounded',
 				variant: 'subtle',
 				size: 'md',
@@ -53,6 +54,7 @@ const links: HorizontalNavigationLink[][] = [
 		},
 		{
 			badge: {
+				// @ts-ignore
 				icon: 'i-material-symbols-key-off-outline-rounded',
 				variant: 'subtle',
 				label: 'Logout',
@@ -67,6 +69,7 @@ const links: HorizontalNavigationLink[][] = [
 if (authUser.value && authUser.value.user.admin) {
 	const link: HorizontalNavigationLink = {
 		badge: {
+			// @ts-ignore
 			icon: 'i-material-symbols-admin-panel-settings-rounded',
 			variant: 'subtle',
 			size: 'md',

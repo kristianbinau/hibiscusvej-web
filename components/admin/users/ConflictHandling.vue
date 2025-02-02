@@ -36,7 +36,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { Apartment, User } from '~/utils/types/admin';
+import type { User } from '~/utils/types/admin';
+import type { Apartment } from '~/utils/types/global';
 
 const props = defineProps<{
 	users: User[];

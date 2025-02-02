@@ -70,7 +70,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { Apartment, ConfictingApartment } from '~/utils/types/admin';
+import type { ConfictingApartment } from '~/utils/types/admin';
+import type { Apartment } from '~/utils/types/global';
 
 const isOpen = defineModel({ required: true, type: Boolean });
 

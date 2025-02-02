@@ -44,6 +44,7 @@ const links = [
 const { isUnderMaintenance } = useMaintenance('/auth/login');
 if (!isUnderMaintenance.value) {
 	links[1].push({
+		// @ts-ignore
 		badge: {
 			icon: 'i-material-symbols-key-outline-rounded',
 			label: 'Login',

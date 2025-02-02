@@ -177,6 +177,7 @@
 <script lang="ts" setup>
 import { z } from 'zod';
 import type { Form, FormSubmitEvent } from '#ui/types';
+import type { Apartment } from '~/utils/types/global';
 
 definePageMeta({
 	layout: 'minimal',
@@ -342,7 +343,7 @@ async function fetchApartments() {
 
 	if (data.value === null) return;
 
-	apartments.value = data.value.map((apartment) => {
+	apartments.value = data.value.map((apartment: Apartment) => {
 		let address = `${apartment.street} ${apartment.number}`;
 		if (apartment.floor && apartment.door) {
 			address += `, ${apartment.floor}, ${apartment.door}`;

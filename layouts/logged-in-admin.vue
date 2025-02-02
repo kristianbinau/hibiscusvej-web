@@ -42,6 +42,7 @@ const links: HorizontalNavigationLink[][] = [
 		},
 		{
 			badge: {
+				// @ts-ignore
 				icon: 'i-material-symbols-backspace-rounded',
 				variant: 'subtle',
 				label: 'Tilbage',

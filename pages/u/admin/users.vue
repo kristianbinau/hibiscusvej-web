@@ -102,11 +102,8 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-	AdminUsersApiResponse,
-	User,
-	Apartment,
-} from '~/utils/types/admin';
+import type { AdminUsersApiResponse, User } from '~/utils/types/admin';
+import type { Apartment } from '~/utils/types/global';
 
 definePageMeta({
 	layout: 'logged-in-admin',
@@ -293,7 +290,7 @@ fetchApartments();
 
 function convertApartmentIdToApartmentAdress(apartmentId: number) {
 	const apartment = apartments.value.find(
-		(apartment) => apartment.id === apartmentId,
+		(apartment: Apartment) => apartment.id === apartmentId,
 	);
 
 	if (!apartment) return 'Ukendt lejlighed';

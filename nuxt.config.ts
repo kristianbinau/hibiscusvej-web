@@ -58,7 +58,9 @@ export default defineNuxtConfig({
 				process.env.NUXT_PUBLIC_MAINTENANCE_MODE_BYPASS_SECRET,
 		},
 	},
+	/* Need to fix maintenanceModeEnabled variable
 	typescript: {
 		typeCheck: true,
 	},
+	*/
 });

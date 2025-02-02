@@ -27,10 +27,6 @@
 </template>
 
 <script lang="ts" setup>
-defineRouteRules({
-	prerender: true,
-});
-
 const { data: chairman } = await useAsyncData('collection-chairman', () => {
 	return queryCollection('board').where('type', '=', 'chairman').first();
 });

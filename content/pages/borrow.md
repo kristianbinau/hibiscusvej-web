@@ -1,4 +1,5 @@
 ---
+path: "/borrow"
 title: 'Lån & Leje'
 description: 'Lån og leje af fællesfaciliteter'
 ---

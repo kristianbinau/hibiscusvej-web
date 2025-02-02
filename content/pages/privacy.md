@@ -1,4 +1,5 @@
 ---
+path: "/privacy"
 title: 'Privatlivspolitik'
 description: 'Beskrivelse af, hvordan vi indsamler, bruger og beskytter dine oplysninger.'
 ---

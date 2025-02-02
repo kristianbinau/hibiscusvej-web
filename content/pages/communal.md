@@ -1,4 +1,5 @@
 ---
+path: "/communal"
 title: 'Fælleslokale'
 description: 'Regler og information om fælleslokalet'
 ---

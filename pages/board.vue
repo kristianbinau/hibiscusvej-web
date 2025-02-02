@@ -44,9 +44,7 @@ const { data: deputies } = await useAsyncData('collection-deputies', () => {
 });
 </script>
 
-<style lang="css" scoped>
-
-</style>
+<style lang="css" scoped></style>
 <style>
 @import url('~/assets/css/markdown.css');
 </style>

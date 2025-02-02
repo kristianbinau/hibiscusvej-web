@@ -17,10 +17,12 @@ export default defineContentConfig({
 				name: z.string(),
 				termStartYear: z.number(),
 				termEndYear: z.number(),
-        links: z.array(z.object({
-          label: z.string(),
-          url: z.string(),
-        })),
+				links: z.array(
+					z.object({
+						label: z.string(),
+						url: z.string(),
+					}),
+				),
 				body: z.object({
 					type: z.string(),
 					children: z.any(),

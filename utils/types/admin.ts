@@ -20,8 +20,6 @@ export type UserRepremand = AdminUserRepremandsApiResponse['repremands'][0];
 
 export type Booking = AdminBookingsApiResponse['communalBookings'][0];
 
-
-
 export type ConfictingApartment = {
 	apartmentId: Apartment['id'];
 	users: User[];

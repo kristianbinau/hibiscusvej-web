@@ -11,8 +11,8 @@ defineRouteRules({
 
 const route = useRoute();
 const { data: page } = await useAsyncData(route.path, () => {
-  return queryCollection('pages').path(route.path).first()
-})
+	return queryCollection('pages').path(route.path).first();
+});
 </script>
 
 <style>

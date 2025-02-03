@@ -287,9 +287,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 		if (res) {
 			toast.add({
+				icon: 'i-material-symbols-person-check',
 				title: 'Konto oprettet',
 				description: 'Skal vi tage dig til login siden?',
-				icon: 'i-material-symbols-person-check',
 				timeout: 20000,
 				actions: [
 					{
@@ -302,8 +302,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			});
 		} else {
 			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
 				title: 'Fejl!',
-				description: 'Der skete en fejl, prøv igen.',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: () => onSubmit(event),
+					},
+				],
 			});
 		}
 	} catch (error: any) {
@@ -324,8 +331,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			]);
 		} else {
 			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
 				title: 'Fejl!',
-				description: 'Der skete en fejl, prøv igen.',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: () => onSubmit(event),
+					},
+				],
 			});
 		}
 	}

@@ -94,9 +94,16 @@ async function fetchMyBookings() {
 		myBookings.value = data.value;
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: fetchMyBookings,
+				},
+			],
 		});
-		fetchingBookings.value = false;
 	}
 
 	fetchingBookings.value = false;
@@ -118,12 +125,22 @@ async function deleteBooking(id: number) {
 			);
 
 			toast.add({
-				title: 'Booking slettet',
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: 'Booking blev slettet',
 			});
 		}
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved sletning af booking',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: () => deleteBooking(id),
+				},
+			],
 		});
 		return false;
 	}

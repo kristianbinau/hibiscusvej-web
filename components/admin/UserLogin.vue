@@ -108,8 +108,17 @@ async function resetPassword() {
 
 		if (data === null) {
 			toast.add({
-				title: 'Der opstod en fejl under nulstilling af kodeordet',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: resetPassword,
+					},
+				],
 			});
+			return;
 		}
 
 		toast.remove(`reset-password-${login.value.id}`);
@@ -138,7 +147,15 @@ async function resetPassword() {
 		currentSessionPassword.value = '';
 	} catch (error: any) {
 		toast.add({
-			title: 'Der opstod en fejl under nulstilling af kodeordet',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der opstod en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: resetPassword,
+				},
+			],
 		});
 	}
 

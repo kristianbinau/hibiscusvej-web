@@ -58,7 +58,15 @@ async function fetchRepremands() {
 		if (data === null) {
 			fetchingRepremands.value = false;
 			toast.add({
-				title: 'Brugeren blev ikke fundet',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: fetchRepremands,
+					},
+				],
 			});
 			return;
 		}
@@ -66,7 +74,15 @@ async function fetchRepremands() {
 		repremands.value = data.repremands as UserRepremand[];
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: fetchRepremands,
+				},
+			],
 		});
 	}
 

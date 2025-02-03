@@ -128,6 +128,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 		if (res) {
 			toast.add({
+				icon: 'i-material-symbols-check-circle-outline-rounded',
 				title: 'Adgangskode ændret!',
 				description: 'Du kan nu logge ind med din nye adgangskode.',
 			});
@@ -135,8 +136,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			await navigateTo('/auth/login');
 		} else {
 			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
 				title: 'Fejl!',
-				description: 'Der skete en fejl, prøv igen.',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: () => onSubmit(event),
+					},
+				],
 			});
 		}
 	} catch (error: any) {
@@ -149,8 +157,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			]);
 		} else {
 			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
 				title: 'Fejl!',
-				description: 'Der skete en fejl, prøv igen.',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: () => onSubmit(event),
+					},
+				],
 			});
 		}
 	}

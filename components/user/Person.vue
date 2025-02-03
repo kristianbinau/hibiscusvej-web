@@ -158,7 +158,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			);
 		} else {
 			toast.add({
-				title: 'Der skete en fejl ved opdatering af kontaktpersonen',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
 			});
 		}
 	}
@@ -183,14 +185,24 @@ async function onDelete() {
 
 		if (res) {
 			toast.add({
-				title: 'Kontaktpersonen blev slettet',
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: 'Kontaktpersonen blev slettet',
 			});
 		}
 
 		emit('delete');
 	} catch (error: any) {
 		toast.add({
-			title: 'Der skete en fejl ved sletning af kontaktpersonen',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: onDelete,
+				},
+			],
 		});
 	}
 
@@ -218,7 +230,9 @@ async function createPerson(event: FormSubmitEvent<Schema>) {
 		person.value.updatedAt = resPerson.updatedAt;
 
 		toast.add({
-			title: 'Kontaktpersonen blev oprettet',
+			icon: 'i-material-symbols-check-circle-outline-rounded',
+			title: 'Success!',
+			description: 'Kontaktpersonen blev oprettet',
 		});
 	}
 }
@@ -243,7 +257,9 @@ async function updatePerson(event: FormSubmitEvent<Schema>) {
 		person.value.phone = event.data.phone;
 
 		toast.add({
-			title: 'Kontaktpersonen blev opdateret',
+			icon: 'i-material-symbols-check-circle-outline-rounded',
+			title: 'Success!',
+			description: 'Kontaktpersonen blev opdateret',
 		});
 	}
 }

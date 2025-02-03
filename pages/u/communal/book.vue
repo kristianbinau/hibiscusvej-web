@@ -101,12 +101,20 @@ watch(date, async (newDate) => {
 		);
 
 		if (alreadyBooked) {
-			toast.add({ title: 'Der er allerede en booking den dag' });
+			toast.add({
+				icon: 'i-material-symbols-warning-outline-rounded',
+				title: 'Advarsel!',
+				description: 'Der er allerede en booking den dag',
+			});
 			date.value = null;
 		}
 
 		if (alreadyBookedByUser) {
-			toast.add({ title: 'Du har allerede booket den dag' });
+			toast.add({
+				icon: 'i-material-symbols-warning-outline-rounded',
+				title: 'Advarsel!',
+				description: 'Du har allerede en booking den dag',
+			});
 			date.value = null;
 		}
 	}
@@ -184,18 +192,29 @@ const currentUserVerified = computed(() => {
 	return currentUser.value.user.verifiedAt !== null;
 });
 
-const { data: currentUser } = await useFetch('/api/app/users/me', {
-	server: false,
-	onResponse: () => {
-		refreshBookingsThisMonth();
+const { data: currentUser, refresh: currentUserRefresh } = await useFetch(
+	'/api/app/users/me',
+	{
+		server: false,
+		onResponse: () => {
+			refreshBookingsThisMonth();
+		},
+		onResponseError: () => {
+			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: () => currentUserRefresh(),
+					},
+				],
+			});
+			navigateTo('/u');
+		},
 	},
-	onResponseError: () => {
-		toast.add({
-			title: 'Der skete en fejl ved hentning af brugeroplysninger',
-		});
-		navigateTo('/u');
-	},
-});
+);
 
 /**
  * Submit
@@ -221,7 +240,9 @@ async function onSubmit() {
 
 		if (res) {
 			toast.add({
-				title: `Du har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: `Du har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
 			});
 
 			myBookingsThisMonth.value.push(bookAsDate);
@@ -229,12 +250,36 @@ async function onSubmit() {
 		}
 	} catch (error: any) {
 		if (error.statusCode === 409) {
-			toast.add({ title: 'Der er allerede en booking i det tidsrum' });
+			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Mislykkes!',
+				description: 'Der er allerede en booking i det tidsrum',
+			});
 		} else {
 			if (error.statusMessage) {
-				toast.add({ title: error.statusMessage });
+				toast.add({
+					icon: 'i-material-symbols-error-outline-rounded',
+					title: 'Fejl!',
+					description: error.statusMessage,
+					actions: [
+						{
+							label: 'Prøv igen',
+							click: onSubmit,
+						},
+					],
+				});
 			} else {
-				toast.add({ title: 'Der skete en fejl' });
+				toast.add({
+					icon: 'i-material-symbols-error-outline-rounded',
+					title: 'Fejl!',
+					description: 'Der skete en fejl...',
+					actions: [
+						{
+							label: 'Prøv igen',
+							click: onSubmit,
+						},
+					],
+				});
 			}
 		}
 	}
@@ -256,7 +301,9 @@ async function subscribeToPush() {
 	if (!isSupported.value) {
 		subscribeToPushLoading.value = false;
 		toast.add({
-			title: 'Notifikationer er ikke understøttet på denne enhed',
+			icon: 'i-material-symbols-warning-outline-rounded',
+			title: 'Advarsel!',
+			description: 'Notifikationer er ikke understøttet på denne enhed',
 		});
 		return;
 	}
@@ -267,7 +314,10 @@ async function subscribeToPush() {
 		if (!permission) {
 			subscribeToPushLoading.value = false;
 			toast.add({
-				title: 'Du har ikke givet tilladelse til at vi må sende notifikationer',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description:
+					'Du har ikke givet tilladelse til at vi må sende notifikationer',
 			});
 			return;
 		}

@@ -269,7 +269,15 @@ async function fetchMe() {
 		me.value = data.value['user'];
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af brugerdata, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Genindlæs siden',
+					click: () => reloadNuxtApp(),
+				},
+			],
 		});
 		fetchingMe.value = false;
 	}
@@ -300,7 +308,15 @@ async function fetchPersons() {
 		persons.value = data.value['persons'];
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af brugerdata, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Genindlæs siden',
+					click: () => reloadNuxtApp(),
+				},
+			],
 		});
 		fetchingPersons.value = false;
 	}
@@ -356,7 +372,15 @@ async function fetchLogins() {
 		logins.value = data.value['logins'];
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af brugerdata, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Genindlæs siden',
+					click: () => reloadNuxtApp(),
+				},
+			],
 		});
 		fetchingLogins.value = false;
 	}
@@ -384,7 +408,9 @@ async function subscribeToPush() {
 	if (!isSupported.value) {
 		subscribeToPushLoading.value = false;
 		toast.add({
-			title: 'Notifikationer er ikke understøttet på denne enhed',
+			icon: 'i-material-symbols-warning-outline-rounded',
+			title: 'Advarel!',
+			description: 'Notifikationer er ikke understøttet på denne enhed',
 		});
 		return;
 	}
@@ -395,7 +421,10 @@ async function subscribeToPush() {
 		if (!permission) {
 			subscribeToPushLoading.value = false;
 			toast.add({
-				title: 'Du har ikke givet tilladelse til at vi må sende notifikationer',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description:
+					'Du har ikke givet tilladelse til at vi må sende notifikationer',
 			});
 			return;
 		}
@@ -416,7 +445,9 @@ async function unsubscribeToPush() {
 
 		if (!subscription) {
 			toast.add({
-				title: 'Du modtager ikke notifikationer på denne enhed',
+				icon: 'i-material-symbols-info-outline-rounded',
+				title: 'Info!',
+				description: 'Du modtager ikke notifikationer på denne enhed',
 			});
 			return;
 		}
@@ -430,12 +461,22 @@ async function unsubscribeToPush() {
 
 		if (res) {
 			toast.add({
-				title: 'Du modtager ikke længere notifikationer på denne enhed',
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Succes!',
+				description: 'Du modtager ikke længere notifikationer på denne enhed',
 			});
 		}
 	} catch (error: any) {
 		toast.add({
-			title: 'Der skete en fejl ved afmelding af notifikationer',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: unsubscribeToPush,
+				},
+			],
 		});
 	}
 
@@ -457,12 +498,22 @@ async function unsubscribeToPushEverywhere() {
 
 		if (res) {
 			toast.add({
-				title: 'Du modtager ikke længere notifikationer på nogen enheder',
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Succes!',
+				description: 'Du modtager ikke længere notifikationer på nogen enheder',
 			});
 		}
 	} catch (error: any) {
 		toast.add({
-			title: 'Der skete en fejl ved afmelding af notifikationer',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: unsubscribeToPushEverywhere,
+				},
+			],
 		});
 	}
 
@@ -496,7 +547,9 @@ async function deleteAccount() {
 			await logoutEverywhere();
 
 			toast.add({
-				title: 'Din bruger blev slettet, og du er blevet logget ud.',
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Succes!',
+				description: 'Din bruger blev slettet, og du er blevet logget ud.',
 			});
 		}
 	} catch (error: any) {
@@ -504,7 +557,15 @@ async function deleteAccount() {
 			wrongCurrentSessionPassword.value = true;
 		} else {
 			toast.add({
-				title: 'Der skete en fejl ved sletning af brugeren',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: deleteAccount,
+					},
+				],
 			});
 		}
 	}
@@ -530,7 +591,15 @@ async function logoutEverywhere() {
 		}
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved logout, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Genindlæs siden',
+					click: () => reloadNuxtApp(),
+				},
+			],
 		});
 	}
 

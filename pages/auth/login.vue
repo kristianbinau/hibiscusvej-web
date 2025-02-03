@@ -101,6 +101,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 		if (res && 'singleUse' in res && res.singleUse === true) {
 			toast.add({
+				icon: 'i-material-symbols-info-outline-rounded',
 				title: 'Engangskode brugt!',
 				description:
 					'Da du har brugt en engangskode, er du blevet videresendt for at oprette en ny adgangskode.',
@@ -111,8 +112,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			await navigateTo('/u');
 		} else {
 			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
 				title: 'Fejl!',
-				description: 'Der skete en fejl, prøv igen.',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: () => onSubmit(event),
+					},
+				],
 			});
 		}
 	} catch (error: any) {
@@ -129,8 +137,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			]);
 		} else {
 			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
 				title: 'Fejl!',
-				description: 'Der skete en fejl, prøv igen.',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: () => onSubmit(event),
+					},
+				],
 			});
 		}
 	}

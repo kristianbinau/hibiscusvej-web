@@ -253,7 +253,15 @@ async function fetch() {
 		adminUsersApiResponse.value = data.value;
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Genindlæs siden',
+					click: () => reloadNuxtApp(),
+				},
+			],
 		});
 	}
 
@@ -270,19 +278,18 @@ async function fetchApartments() {
 	try {
 		const { data } = await useFetch('/api/app/apartments');
 
-		if (data.value === null) {
-			toast.add({
-				title:
-					'Der er ingen lejligheder? Dette er en fejl, kontakt system administrator',
-			});
-
-			return;
-		}
-
 		apartments.value = data.value;
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af lejligheder, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: fetchApartments,
+				},
+			],
 		});
 	}
 }
@@ -323,7 +330,9 @@ async function verifyUser(id: number) {
 			toast.remove(`user-unverified-${id}`);
 			toast.add({
 				id: `user-verified-${id}`,
-				title: `Du har verificeret brugeren med ID: ${id}`,
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: `Du har verificeret brugeren med ID: ${id}`,
 				timeout: 10000,
 				actions: [
 					{
@@ -337,7 +346,15 @@ async function verifyUser(id: number) {
 		}
 	} catch (error: any) {
 		toast.add({
-			title: 'Der skete en fejl ved verificering af bruger',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: () => verifyUser(id),
+				},
+			],
 		});
 	}
 
@@ -365,7 +382,9 @@ async function unverifyUser(id: number) {
 			toast.remove(`user-verified-${id}`);
 			toast.add({
 				id: `user-unverified-${id}`,
-				title: `Du har fjernet verificeringen af brugeren med ID: ${id}`,
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: `Du har fjernet verificeringen af brugeren med ID: ${id}`,
 				timeout: 10000,
 				actions: [
 					{
@@ -379,7 +398,15 @@ async function unverifyUser(id: number) {
 		}
 	} catch (error: any) {
 		toast.add({
-			title: 'Der skete en fejl ved fjernelse af verificering af bruger',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: () => unverifyUser(id),
+				},
+			],
 		});
 	}
 
@@ -399,7 +426,15 @@ function openUser(id: number) {
 
 	if (!user) {
 		toast.add({
-			title: `Brugeren med ID: ${id} blev ikke fundet`,
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: `Brugeren med ID: ${id} blev ikke fundet`,
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: () => openUser(id),
+				},
+			],
 		});
 		return;
 	}

@@ -47,12 +47,20 @@ watch(date, async (newDate) => {
 		);
 
 		if (alreadyBooked) {
-			toast.add({ title: 'Der er allerede en booking den dag' });
+			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Mislykkes!',
+				description: 'Der er allerede en booking på den dag',
+			});
 			date.value = null;
 		}
 
 		if (alreadyBookedByUser) {
-			toast.add({ title: 'Du har allerede booket den dag' });
+			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Mislykkes!',
+				description: 'Systemet har allerede booket på den dag',
+			});
 			date.value = null;
 		}
 	}
@@ -142,7 +150,9 @@ async function onSubmit() {
 
 		if (res) {
 			toast.add({
-				title: `Systemet har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: `Systemet har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
 			});
 
 			myBookingsThisMonth.value.push(bookAsDate);
@@ -150,12 +160,36 @@ async function onSubmit() {
 		}
 	} catch (error: any) {
 		if (error.statusCode === 409) {
-			toast.add({ title: 'Der er allerede en booking i det tidsrum' });
+			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Mislykkes!',
+				description: 'Der er allerede en booking på den dag',
+			});
 		} else {
 			if (error.statusMessage) {
-				toast.add({ title: error.statusMessage });
+				toast.add({
+					icon: 'i-material-symbols-error-outline-rounded',
+					title: 'Fejl!',
+					description: error.statusMessage,
+					actions: [
+						{
+							label: 'Prøv igen',
+							click: onSubmit,
+						},
+					],
+				});
 			} else {
-				toast.add({ title: 'Der skete en fejl' });
+				toast.add({
+					icon: 'i-material-symbols-error-outline-rounded',
+					title: 'Fejl!',
+					description: 'Der skete en fejl...',
+					actions: [
+						{
+							label: 'Prøv igen',
+							click: onSubmit,
+						},
+					],
+				});
 			}
 		}
 	}

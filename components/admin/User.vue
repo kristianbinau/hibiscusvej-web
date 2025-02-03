@@ -354,7 +354,15 @@ async function fetchUser() {
 		if (data.value === null) {
 			fetchingUser.value = false;
 			toast.add({
-				title: 'Brugeren blev ikke fundet',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Brugeren blev ikke fundet',
+				actions: [
+					{
+						label: 'Luk',
+						click: () => emit('close'),
+					},
+				],
 			});
 			return;
 		}
@@ -362,7 +370,15 @@ async function fetchUser() {
 		user.value = data.value as User;
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af brugeren, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: fetchUser,
+				},
+			],
 		});
 	}
 
@@ -396,7 +412,9 @@ async function verifyUser() {
 			toast.remove(`user-unverified-${id}`);
 			toast.add({
 				id: `user-verified-${id}`,
-				title: `Du har verificeret brugeren med ID: ${id}`,
+				icon: 'i-material-symbols-check-circle-rounded',
+				title: 'Success!',
+				description: `Du har verificeret brugeren med ID: ${id}`,
 				timeout: 10000,
 				actions: [
 					{
@@ -410,7 +428,15 @@ async function verifyUser() {
 		}
 	} catch (error: any) {
 		toast.add({
-			title: 'Der skete en fejl ved verificering af bruger',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: verifyUser,
+				},
+			],
 		});
 	}
 
@@ -438,7 +464,9 @@ async function unverifyUser() {
 			toast.remove(`user-verified-${id}`);
 			toast.add({
 				id: `user-unverified-${id}`,
-				title: `Du har fjernet verificeringen af brugeren med ID: ${id}`,
+				icon: 'i-material-symbols-check-circle-rounded',
+				title: 'Success!',
+				description: `Du har fjernet verificeringen af brugeren med ID: ${id}`,
 				timeout: 10000,
 				actions: [
 					{
@@ -452,7 +480,15 @@ async function unverifyUser() {
 		}
 	} catch (error: any) {
 		toast.add({
-			title: 'Der skete en fejl ved fjernelse af verificering af bruger',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: unverifyUser,
+				},
+			],
 		});
 	}
 
@@ -484,7 +520,9 @@ async function deleteUser() {
 			currentSessionPassword.value = '';
 
 			toast.add({
-				title: `Du har slettet brugeren med ID: ${id}`,
+				icon: 'i-material-symbols-check-circle-rounded',
+				title: `Success!`,
+				description: `Du har slettet brugeren med ID: ${id}`,
 				timeout: 10000,
 			});
 
@@ -495,7 +533,15 @@ async function deleteUser() {
 			wrongCurrentSessionPassword.value = true;
 		} else {
 			toast.add({
-				title: 'Der skete en fejl ved sletning af bruger',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: deleteUser,
+					},
+				],
 			});
 		}
 	}

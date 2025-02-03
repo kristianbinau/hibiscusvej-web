@@ -239,7 +239,9 @@ async function saveRepremand(event: FormSubmitEvent<Schema>) {
 		// TODO: Update repremand
 
 		toast.add({
-			title: 'Repremand opdateret',
+			icon: 'i-material-symbols-check-circle-outline-rounded',
+			title: 'Success!',
+			description: 'Repremand er blevet opdateret!',
 		});
 
 		repremand.value.type = state.type!;
@@ -260,7 +262,9 @@ async function saveRepremand(event: FormSubmitEvent<Schema>) {
 			);
 		} else {
 			toast.add({
-				title: 'Der skete en fejl ved opdatering, prøv igen',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der opstod en fejl...',
 			});
 		}
 	}
@@ -297,7 +301,9 @@ async function deleteRepremand() {
 			currentSessionPassword.value = '';
 
 			toast.add({
-				title: `Du har slettet repremand med ID: ${id}`,
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: `Du har slettet repremand med ID: ${id}`,
 				timeout: 10000,
 			});
 		}
@@ -306,7 +312,15 @@ async function deleteRepremand() {
 			wrongCurrentSessionPassword.value = true;
 		} else {
 			toast.add({
-				title: 'Der skete en fejl ved sletning af repremand',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der opstod en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: deleteRepremand,
+					},
+				],
 			});
 		}
 	}

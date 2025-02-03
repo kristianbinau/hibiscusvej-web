@@ -136,9 +136,16 @@ async function fetch() {
 		response.value = data.value;
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Genindlæs siden',
+					click: () => reloadNuxtApp(),
+				},
+			],
 		});
-		fetching.value = false;
 	}
 
 	fetching.value = false;

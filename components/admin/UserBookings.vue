@@ -58,7 +58,15 @@ async function fetchBookings() {
 		if (data === null) {
 			fetchingBookings.value = false;
 			toast.add({
-				title: 'Brugeren blev ikke fundet',
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						click: fetchBookings,
+					},
+				],
 			});
 			return;
 		}
@@ -66,7 +74,15 @@ async function fetchBookings() {
 		bookings.value = data.bookings as Booking[];
 	} catch (error) {
 		toast.add({
-			title: 'Der skete en fejl ved hentning af bookings, genindlæs siden',
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: fetchBookings,
+				},
+			],
 		});
 	}
 

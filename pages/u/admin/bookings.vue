@@ -20,6 +20,46 @@
 						/>
 					</UTooltip>
 				</template>
+
+				<template #actions-data="{ row }">
+					<UPopover
+						class="mr-auto"
+						:popper="{ placement: 'top-start' }"
+						overlay
+					>
+						<UTooltip text="Klik for at fjerne booking">
+							<UButton
+								size="md"
+								label="Slet denne booking"
+								color="red"
+								variant="soft"
+								:disabled="isAfter(now, row.fromDate)"
+								:loading="deleteBookingLoading"
+							/>
+						</UTooltip>
+
+						<template #panel>
+							<div class="p-4">
+								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+								<p class="text-xs">
+									Du er ved fjerne denne booking. <br />
+									Er du sikker på at du vil fjerne denne booking?
+								</p>
+
+								<UButton
+									label="Godkend"
+									icon="i-material-symbols-check-circle-rounded"
+									color="red"
+									variant="soft"
+									size="xs"
+									@click="deleteBooking(row.id)"
+									:loading="deleteBookingLoading"
+									class="mt-4"
+								/>
+							</div>
+						</template>
+					</UPopover>
+				</template>
 			</UTable>
 
 			<USlideover
@@ -49,6 +89,8 @@
 <script lang="ts" setup>
 import type { AdminBookingsApiResponse } from '~/utils/types/admin';
 
+import { isAfter } from 'date-fns';
+
 definePageMeta({
 	layout: 'logged-in-admin',
 	middleware: 'admin-required',
@@ -59,6 +101,7 @@ useHead({
 });
 
 const toast = useToast();
+const now = ref(new Date());
 
 const columns = [
 	{
@@ -86,6 +129,10 @@ const columns = [
 		label: 'Opdateret',
 		sortable: true,
 	},
+	{
+		key: 'actions',
+		label: 'Handlinger',
+	},
 ];
 
 const rows = computed(() => {
@@ -95,6 +142,7 @@ const rows = computed(() => {
 			date: new Date(booking.from).toLocaleDateString(),
 			createdAt: new Date(booking.createdAt).toLocaleString(),
 			updatedAt: new Date(booking.updatedAt).toLocaleString(),
+			actions: booking.id,
 		};
 	});
 });
@@ -151,6 +199,48 @@ async function fetch() {
 	fetching.value = false;
 }
 fetch();
+
+/**
+ * Delete Bookings
+ */
+
+const deleteBookingLoading = ref<boolean>(false);
+
+async function deleteBooking(id: number) {
+	deleteBookingLoading.value = true;
+
+	try {
+		const res = await $fetch(`/api/app/admin/bookings/${id}/delete`, {
+			method: 'POST',
+		});
+
+		if (res) {
+			response.value.communalBookings = response.value.communalBookings.filter(
+				(booking) => booking.id !== id,
+			);
+
+			toast.add({
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: 'Booking blev slettet',
+			});
+		}
+	} catch (error) {
+		toast.add({
+			icon: 'i-material-symbols-error-outline-rounded',
+			title: 'Fejl!',
+			description: 'Der skete en fejl...',
+			actions: [
+				{
+					label: 'Prøv igen',
+					click: () => deleteBooking(id),
+				},
+			],
+		});
+	}
+
+	deleteBookingLoading.value = false;
+}
 
 /**
  * User Slideover

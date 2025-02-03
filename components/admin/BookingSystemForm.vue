@@ -4,6 +4,8 @@
 			<h2 class="text-lg flex justify-between">
 				System Booking <UBadge color="amber">Warning</UBadge>
 			</h2>
+
+			<p>Book som system.</p>
 		</template>
 
 		<DatePicker

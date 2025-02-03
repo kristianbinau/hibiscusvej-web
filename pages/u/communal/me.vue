@@ -11,14 +11,43 @@
 		<ClientOnly>
 			<UTable :loading="fetchingBookings" :rows="rows" :columns="columns">
 				<template #id-data="{ row }">
-					<UButton
-						size="md"
-						label="Slet denne booking"
-						color="red"
-						variant="soft"
-						:disabled="isAfter(now, row.fromDate)"
-						@click="deleteBooking(row.id)"
-					/>
+					<UPopover
+						class="mr-auto"
+						:popper="{ placement: 'top-start' }"
+						overlay
+					>
+						<UTooltip text="Klik for at fjerne booking">
+							<UButton
+								size="md"
+								label="Slet denne booking"
+								color="red"
+								variant="soft"
+								:disabled="isAfter(now, row.fromDate)"
+								:loading="deleteBookingLoading"
+							/>
+						</UTooltip>
+
+						<template #panel>
+							<div class="p-4">
+								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+								<p class="text-xs">
+									Du er ved fjerne denne booking. <br />
+									Er du sikker på at du vil fjerne denne booking?
+								</p>
+
+								<UButton
+									label="Godkend"
+									icon="i-material-symbols-check-circle-rounded"
+									color="red"
+									variant="soft"
+									size="xs"
+									@click="deleteBooking(row.id)"
+									:loading="deleteBookingLoading"
+									class="mt-4"
+								/>
+							</div>
+						</template>
+					</UPopover>
 				</template>
 			</UTable>
 		</ClientOnly>
@@ -113,7 +142,12 @@ fetchMyBookings();
 /**
  * Delete Bookings
  */
+
+const deleteBookingLoading = ref<boolean>(false);
+
 async function deleteBooking(id: number) {
+	deleteBookingLoading.value = true;
+
 	try {
 		const res = await $fetch(`/api/app/bookings/${id}`, {
 			method: 'DELETE',
@@ -142,10 +176,9 @@ async function deleteBooking(id: number) {
 				},
 			],
 		});
-		return false;
 	}
 
-	return true;
+	deleteBookingLoading.value = false;
 }
 </script>
 

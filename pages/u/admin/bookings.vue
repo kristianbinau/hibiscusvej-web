@@ -6,16 +6,23 @@
 		</div>
 
 		<ClientOnly>
-			<AdminBookingSystemForm />
-
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
 				<template #userId-data="{ row }">
-					<UTooltip text="Klik for at se bruger">
+					<UTooltip v-if="row.userId !== 0" text="Klik for at se bruger">
 						<UButton
 							@click="openUser(row.userId)"
 							class="cursor-pointer select-none"
 							color="primary"
 							icon="i-material-symbols-open-in-new"
+							:label="String(row.userId)"
+						/>
+					</UTooltip>
+
+					<UTooltip v-else text="System bruger">
+						<UButton
+							class="cursor-pointer select-none"
+							color="primary"
+							icon="i-material-symbols-verified-user-outline-rounded"
 							:label="String(row.userId)"
 						/>
 					</UTooltip>

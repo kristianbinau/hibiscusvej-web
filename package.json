@@ -16,11 +16,11 @@
 		"@block65/webcrypto-web-push": "^1.0.2",
 		"@date-fns/utc": "^2.1.0",
 		"@kristianbinau/nuxt-maintenance-mode": "^0.0.4",
-		"@nuxt/content": "^3.0.1",
+		"@nuxt/content": "^3.1.0",
 		"@nuxt/ui": "^2.21.0",
-		"@nuxthub/core": "^0.8.15",
+		"@nuxthub/core": "^0.8.16",
 		"@popperjs/core": "^2.11.8",
-		"@sentry/nuxt": "^8.53.0",
+		"@sentry/nuxt": "^8.54.0",
 		"bcryptjs": "^2.4.3",
 		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.39.1",
@@ -41,7 +41,7 @@
 		"prettier": "3.4.2",
 		"typescript": "^5.7.3",
 		"vue-tsc": "^2.2.0",
-		"wrangler": "^3.107.2"
+		"wrangler": "^3.107.3"
 	},
 	"volta": {
 		"node": "22.11.0"

@@ -10,6 +10,7 @@
 				v-if="usersJoined.length > 0"
 				:users="usersJoined"
 				:apartments="apartments"
+				@update="atConflictHandlingClose"
 			/>
 
 			<UTable :loading="fetching" :rows="rows" :columns="columns">
@@ -94,6 +95,7 @@
 					:showSessions="true"
 					:showBookings="true"
 					:showRepremands="true"
+					:showClose="true"
 					@close="isUserSlideOpen = false"
 				/>
 			</USlideover>
@@ -448,6 +450,10 @@ function openUser(id: number) {
 
 function atUserSlideClose() {
 	selectedUserForSlide.value = null;
+	fetch();
+}
+
+function atConflictHandlingClose() {
 	fetch();
 }
 </script>

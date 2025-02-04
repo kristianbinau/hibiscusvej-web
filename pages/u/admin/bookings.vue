@@ -86,6 +86,7 @@
 					:showSessions="true"
 					:showBookings="true"
 					:showRepremands="true"
+					:showClose="true"
 					@close="isUserSlideOpen = false"
 				/>
 			</USlideover>

@@ -39,6 +39,8 @@
 import type { User } from '~/utils/types/admin';
 import type { Apartment } from '~/utils/types/global';
 
+const emit = defineEmits(['update']);
+
 const props = defineProps<{
 	users: User[];
 	apartments: Apartment[];
@@ -76,6 +78,13 @@ const usersWithDuplicateApartments: Ref<
 	);
 
 	return usersWithDuplicateApartments.filter((item) => item.users.length > 1);
+});
+
+// When ApartmentConflict is closed, emit('update')
+watch(isOpenApartmentConfict, () => {
+	if (!isOpenApartmentConfict.value) {
+		emit('update');
+	}
 });
 
 /**
@@ -125,6 +134,13 @@ const usersWithDuplicatePersons: Ref<
 	);
 
 	return withoutDuplicateApartments.filter((item) => item.users.length > 1);
+});
+
+// When PersonConflict is closed, emit('update')
+watch(isOpenPersonConfict, () => {
+	if (!isOpenPersonConfict.value) {
+		emit('update');
+	}
 });
 </script>
 

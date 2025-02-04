@@ -17,6 +17,7 @@
 					ID: {{ user.id }}
 				</h3>
 				<UButton
+					v-if="showClose"
 					color="gray"
 					variant="ghost"
 					icon="i-heroicons-x-mark-20-solid"
@@ -259,7 +260,7 @@
 <script lang="ts" setup>
 import type { Booking, User, UserRepremand } from '~/utils/types/admin';
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'userDeleted']);
 
 const {
 	userId,
@@ -268,6 +269,7 @@ const {
 	showSessions,
 	showBookings,
 	showRepremands,
+	showClose,
 } = defineProps<{
 	userId: number;
 	showPersons: boolean;
@@ -275,6 +277,7 @@ const {
 	showSessions: boolean;
 	showBookings: boolean;
 	showRepremands: boolean;
+	showClose: boolean;
 }>();
 
 const user = defineModel<User>('user', { required: false, type: Object });
@@ -534,6 +537,7 @@ async function deleteUser() {
 			});
 
 			emit('close');
+			emit('userDeleted', id);
 		}
 	} catch (error: any) {
 		if (error.status === 401) {

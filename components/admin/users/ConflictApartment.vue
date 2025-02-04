@@ -31,6 +31,15 @@
 				</div>
 			</template>
 
+			<p
+				v-if="conflicting.length !== 1"
+				class="text-sm text-gray-600 dark:text-gray-400 mb-4"
+			>
+				Dette er en liste over lejligheder, hvor der er flere brugere
+				tilknyttet. <br />
+				Vælg en lejlighed for at se konflikten.
+			</p>
+
 			<USelect
 				v-model="selectedConflict"
 				:options="confictsOptions"
@@ -39,6 +48,28 @@
 				placeholder="Vælg konflikt.."
 				class="mb-6"
 			/>
+
+			<template v-if="selectedConflict !== undefined">
+				<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+					Lejligheden har følgende brugere tilknyttet:
+					{{ selectedConflict.users.map((user) => '#' + user.id).join(', ') }}
+					<br />
+					Der må kun være en bruger tilknyttet, og konflikten skal løses. <br />
+				</p>
+				<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+					En konflikt kan løses ved at slette en bruger. <br />
+					Det er vigtigt at vælge den rigtige bruger, da det ikke kan fortrydes.
+				</p>
+
+				<UAlert
+					icon="i-material-symbols-warning-outline-rounded"
+					color="amber"
+					variant="subtle"
+					title="Vigtigt!"
+					description="Hvis du er itvivl om hvilken bruger der skal slettes, så kontakt resten af bestyrelsen."
+					class="my-6"
+				/>
+			</template>
 
 			<div class="flex flex-col gap-4">
 				<UCard v-if="selectedConflict === undefined">
@@ -51,19 +82,39 @@
 					</template>
 				</UCard>
 
-				<AdminUser
+				<div
 					v-else
 					v-for="user in selectedConflict.users"
 					:key="user.id"
-					:user-id="user.id"
-					:user="user"
-					:show-bookings="true"
-					:show-persons="true"
-					:show-sessions="true"
-					:show-logins="true"
-					:show-repremands="true"
-					class="mb-4 border rounded-md border-gray-200 dark:border-gray-800"
-				/>
+					class="relative border rounded-md border-gray-200 dark:border-gray-800 mb-4 h-min"
+				>
+					<AdminUser
+						:user-id="user.id"
+						:user="user"
+						:show-bookings="true"
+						:show-persons="true"
+						:show-sessions="true"
+						:show-logins="true"
+						:show-repremands="true"
+						:show-close="false"
+						@user-deleted="handleUserDeleted"
+						class="select-none !h-auto transition-all"
+						:class="{
+							'pointer-events-none blur-sm animate-pulse':
+								deletedUsersIds.includes(user.id),
+						}"
+					/>
+
+					<UAlert
+						v-if="deletedUsersIds.includes(user.id)"
+						icon="i-material-symbols-delete-forever-outline-rounded"
+						color="red"
+						variant="subtle"
+						title="Slettet!"
+						description="Brugeren er blevet slettet fra lejligheden."
+						class="absolute top-32 inset-x-3 w-3/4 mx-auto"
+					/>
+				</div>
 			</div>
 		</UCard>
 	</USlideover>
@@ -108,6 +159,18 @@ const confictsOptions = computed(() => {
 	}
 	return items;
 });
+
+/**
+ * User Deletion
+ */
+
+const deletedUsersIds = ref<number[]>([]);
+
+function handleUserDeleted(userId: number) {
+	if (deletedUsersIds.value.includes(userId)) return;
+
+	deletedUsersIds.value.push(userId);
+}
 </script>
 
 <style scoped></style>

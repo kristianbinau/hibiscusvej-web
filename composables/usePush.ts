@@ -8,7 +8,10 @@ export const usePush = () => {
 	const hasPermission = ref(false);
 
 	onMounted(() => {
-		isSupported.value = 'serviceWorker' in navigator && 'PushManager' in window;
+		isSupported.value =
+			'serviceWorker' in navigator &&
+			'PushManager' in window &&
+			'Notification' in window;
 		hasPermission.value = Notification.permission === 'granted';
 	});
 

@@ -12,7 +12,8 @@ export const usePush = () => {
 			'serviceWorker' in navigator &&
 			'PushManager' in window &&
 			'Notification' in window;
-		hasPermission.value = Notification.permission === 'granted';
+		hasPermission.value =
+			isSupported.value && Notification.permission === 'granted';
 	});
 
 	async function askPermission() {

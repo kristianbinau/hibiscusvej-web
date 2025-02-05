@@ -10,19 +10,23 @@ export const useServiceWorker = () => {
 		if (!('serviceWorker' in navigator)) {
 			const route = useRoute();
 
-			watch(route, () => {
-				if (route.path.includes('/auth/')) {
-					useToast().add({
-						id: 'doesnt-support-login',
-						icon: 'i-material-symbols-warning-outline-rounded',
-						title: 'Advarsel!',
-						description:
-							'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
-						color: 'red',
-						timeout: 0,
-					});
-				}
-			});
+			watch(
+				route,
+				() => {
+					if (route.path.includes('/auth/')) {
+						useToast().add({
+							id: 'doesnt-support-login',
+							icon: 'i-material-symbols-warning-outline-rounded',
+							title: 'Advarsel!',
+							description:
+								'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
+							color: 'red',
+							timeout: 0,
+						});
+					}
+				},
+				{ immediate: true },
+			);
 
 			throw new Error('serviceWorker not supported');
 		}

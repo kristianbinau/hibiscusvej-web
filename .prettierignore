@@ -4,3 +4,4 @@ dist
 .data
 .output
 server/database/migrations/meta
+LICENSE

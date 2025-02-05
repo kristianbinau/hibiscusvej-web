@@ -20,6 +20,7 @@ De oplysninger, vi typisk indsamler, kan omfatte:
 - Navn
 - E-mailadresse
 - Telefonnummer
+- Adresse
 
 ## Brug af oplysninger
 
@@ -27,6 +28,7 @@ Vi bruger dine oplysninger til at:
 
 - Identificere dig som bruger.
 - Kontakte dig vedrørende brug af fællesfaciliteter.
+- Verificere at du er berettiget til at bruge fællesfaciliteter.
 
 Vi deler ikke dine personoplysninger med tredjeparter, medmindre det er lovpligtigt, eller du har givet os dit udtrykkelige samtykke.
 

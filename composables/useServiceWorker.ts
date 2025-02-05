@@ -7,8 +7,25 @@ export const useServiceWorker = () => {
 	 * @see https://stackoverflow.com/a/67612740
 	 */
 	async function registerServiceWorker(tryOnce = false) {
-		if (!('serviceWorker' in navigator))
+		if (!('serviceWorker' in navigator)) {
+			const route = useRoute();
+
+			watch(route, () => {
+				if (route.path.includes('/auth/')) {
+					useToast().add({
+						id: 'doesnt-support-login',
+						icon: 'i-material-symbols-warning-outline-rounded',
+						title: 'Advarsel!',
+						description:
+							'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
+						color: 'red',
+						timeout: 0,
+					});
+				}
+			});
+
 			throw new Error('serviceWorker not supported');
+		}
 
 		const url = new URL(`/service-worker.js`, location).toString();
 		//console.info('Registering worker');

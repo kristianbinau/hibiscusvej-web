@@ -145,7 +145,7 @@ export default eventHandler(async (event) => {
 			httpOnly: true,
 			secure: true,
 			sameSite: 'strict',
-			path: '/api/auth/refresh',
+			path: '/api/app/auth/refresh',
 			maxAge:
 				newDecodedRefreshToken.payload.exp - Math.floor(Date.now() / 1000),
 		});

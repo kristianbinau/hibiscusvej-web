@@ -25,7 +25,7 @@ export default eventHandler(async (event) => {
 	const userByEmail = await useDrizzle()
 		.select()
 		.from(tables.userLogins)
-		.where(eq(tables.userLogins.email, body.email))
+		.where(eq(tables.userLogins.email, body.email.toLowerCase()))
 		.get();
 	if (userByEmail) {
 		throw createError({
@@ -79,7 +79,7 @@ export default eventHandler(async (event) => {
 			.insert(tables.userLogins)
 			.values({
 				userId: user.id,
-				email: body.email,
+				email: body.email.toLowerCase(),
 				password: hashedPassword,
 				singleUse: false,
 				createdAt: now,

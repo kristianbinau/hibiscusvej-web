@@ -14,7 +14,7 @@ export default eventHandler(async (event) => {
 	const userLogin = await useDrizzle()
 		.select()
 		.from(tables.userLogins)
-		.where(eq(tables.userLogins.email, body.email))
+		.where(eq(tables.userLogins.email, body.email.toLowerCase()))
 		.get();
 	if (!userLogin) {
 		throw createError({

@@ -19,7 +19,7 @@ const links = [
 	[
 		{
 			label: 'Hibiscusvej 2-30',
-			labelClass: ' hidden sm:text-2xl sm:block',
+			labelClass: ' hidden text-2xl md:block',
 			icon: 'Logo',
 			iconClass: 'sm:h-6 sm:w-6',
 			to: '/',
@@ -37,6 +37,12 @@ const links = [
 			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-tools-power-drill',
 			to: '/borrow',
+		},
+		{
+			label: 'Parkering',
+			labelClass: 'hidden sm:block',
+			icon: 'i-material-symbols-car-tag',
+			to: '/parking',
 		},
 		{
 			label: 'Kontakt',

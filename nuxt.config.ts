@@ -15,6 +15,7 @@ export default defineNuxtConfig({
 	hub: {
 		database: true,
 		cache: true,
+		blob: true,
 	},
 	maintenanceMode: {
 		include: ['/u*', '/auth*', '/api/app/*'],

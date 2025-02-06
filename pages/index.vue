@@ -2,6 +2,15 @@
 	<section
 		class="lg:w-2/4 lg:px-0 px-4 mx-auto flex flex-col items-center text-center gap-4 mt-6"
 	>
+		<Video
+			src="static/google-earth-video.mp4"
+			type="video/mp4"
+			:muted="true"
+			:autoplay="true"
+			:loop="true"
+			class="w-full"
+		/>
+
 		<h1 class="text-primary text-4xl mb-2">Velkommen til Hibiscusvej</h1>
 
 		<p>
@@ -11,7 +20,6 @@
 		</p>
 		<p>
 			Hop ind på vores
-
 			<ULink
 				to="https://www.facebook.com/groups/692711287862071"
 				:external="true"

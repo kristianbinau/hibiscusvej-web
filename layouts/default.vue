@@ -38,6 +38,12 @@ const links = [
 			icon: 'i-material-symbols-tools-power-drill',
 			to: '/borrow',
 		},
+		{
+			label: 'Kontakt',
+			labelClass: 'hidden sm:block',
+			icon: 'i-material-symbols-phone-enabled',
+			to: '/contact',
+		},
 	],
 ];
 

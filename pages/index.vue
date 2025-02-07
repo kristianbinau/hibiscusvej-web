@@ -1,47 +1,51 @@
 <template>
 	<section
-		class="lg:w-2/4 lg:px-0 px-4 mx-auto flex flex-col items-center text-center gap-4 mt-6"
+		class="relative lg:px-0 px-4 flex flex-col items-center text-center gap-4 mt-6"
 	>
-		<Video
-			src="static/google-earth-video.mp4"
-			type="video/mp4"
+		<video
 			:muted="true"
 			:autoplay="true"
 			:loop="true"
-			class="w-full"
-		/>
+			class="w-dvw rounded-lg"
+		>
+			<source src="https://storage.hibiscusvej.dk/google-earth-video.mp4" type="video/mp4" />
+		</video>
 
-		<h1 class="text-primary text-4xl mb-2">Velkommen til Hibiscusvej</h1>
+		<section
+			class="lg:absolute lg:mt-0 -bottom-16 xl:bottom-0 z-30 mt-2 bg-gray-100 dark:bg-gray-900 p-4 rounded-tl-lg rounded-tr-lg"
+		>
+			<h1 class="text-primary text-4xl mb-2">Velkommen til Hibiscusvej</h1>
 
-		<p>
-			Denne side er styret af boligens frivillige bestyrelse.<br />
-			Informationer omkring boligen, leje af lokale og lån af udstyr kan findes
-			under de tilsvarende menu punkter.
-		</p>
-		<p>
-			Hop ind på vores
-			<ULink
-				to="https://www.facebook.com/groups/692711287862071"
-				:external="true"
-				target="_blank"
-				class="text-primary underline hover:text-primary-500"
-				>facebook gruppe</ULink
-			>
-			for at komme i kontakt med resten af boligen.
-		</p>
+			<p>
+				Denne side er styret af boligens frivillige bestyrelse.<br />
+				Informationer omkring boligen, leje af lokale og lån af udstyr kan
+				findes under de tilsvarende menu punkter.
+			</p>
+			<p>
+				Hop ind på vores
+				<ULink
+					to="https://www.facebook.com/groups/692711287862071"
+					:external="true"
+					target="_blank"
+					class="text-primary underline hover:text-primary-500"
+					>facebook gruppe</ULink
+				>
+				for at komme i kontakt med resten af boligen.
+			</p>
 
-		<p>
-			Bestyrelsen kan kontaktes via mail:
+			<p>
+				Bestyrelsen kan kontaktes via mail:
 
-			<ULink
-				to="mailto:hibiscusvejbestyrelse@outlook.dk"
-				:external="true"
-				target="_blank"
-				class="text-primary underline hover:text-primary-500"
-			>
-				hibiscusvejbestyrelse@outlook.dk</ULink
-			>
-		</p>
+				<ULink
+					to="mailto:hibiscusvejbestyrelse@outlook.dk"
+					:external="true"
+					target="_blank"
+					class="text-primary underline hover:text-primary-500"
+				>
+					hibiscusvejbestyrelse@outlook.dk</ULink
+				>
+			</p>
+		</section>
 	</section>
 </template>
 

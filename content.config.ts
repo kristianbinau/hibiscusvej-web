@@ -30,5 +30,17 @@ export default defineContentConfig({
 				}),
 			}),
 		}),
+		guide: defineCollection({
+			source: 'guide/**.md',
+			type: 'data',
+			schema: z.object({
+				path: z.string(),
+				body: z.object({
+					type: z.string(),
+					children: z.any(),
+					toc: z.any(),
+				}),
+			}),
+		}),
 	},
 });

@@ -39,8 +39,3 @@ const { data: deputies } = await useAsyncData('collection-deputies', () => {
 	return queryCollection('board').where('type', '=', 'deputy').all();
 });
 </script>
-
-<style lang="css" scoped></style>
-<style>
-@import url('~/assets/css/markdown.css');
-</style>

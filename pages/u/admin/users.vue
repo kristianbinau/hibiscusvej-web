@@ -6,7 +6,7 @@
 		</div>
 
 		<ClientOnly>
-			<AdminUsersConflictHandling
+			<AdminConflictHandling
 				v-if="usersJoined.length > 0"
 				:users="usersJoined"
 				:apartments="apartments"

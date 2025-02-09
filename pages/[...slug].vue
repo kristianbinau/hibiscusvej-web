@@ -10,7 +10,3 @@ const { data: page } = await useAsyncData(route.path, () => {
 	return queryCollection('pages').path(route.path).first();
 });
 </script>
-
-<style>
-@import url('~/assets/css/markdown.css');
-</style>

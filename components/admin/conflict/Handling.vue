@@ -10,7 +10,7 @@
 		@click="isOpenApartmentConfict = true"
 	/>
 
-	<AdminUsersConflictApartment
+	<AdminConflictApartment
 		v-if="usersWithDuplicateApartments.length > 0"
 		v-model="isOpenApartmentConfict"
 		:conflicting="usersWithDuplicateApartments"
@@ -28,7 +28,7 @@
 		@click="isOpenPersonConfict = true"
 	></UAlert>
 
-	<AdminUsersConflictPerson
+	<AdminConflictPerson
 		v-if="usersWithDuplicatePersons.length > 0"
 		v-model="isOpenPersonConfict"
 		:conflicting="usersWithDuplicatePersons"

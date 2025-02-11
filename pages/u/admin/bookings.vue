@@ -37,7 +37,8 @@
 						<UTooltip text="Klik for at fjerne booking">
 							<UButton
 								size="md"
-								label="Slet denne booking"
+								icon="i-material-symbols-delete-outline"
+								label="Slet"
 								color="red"
 								variant="soft"
 								:disabled="isAfter(now, row.fromDate)"

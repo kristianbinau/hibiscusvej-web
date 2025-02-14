@@ -1,39 +1,34 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	compatibilityDate: '2024-12-12',
-	devtools: { enabled: true },
 	modules: [
 		'@nuxthub/core',
+		'@nuxtjs/seo',
 		'@nuxt/ui',
 		'@nuxt/content',
-		'@sentry/nuxt/module',
 		'@kristianbinau/nuxt-maintenance-mode',
 	],
-	ui: {
-		global: true,
+
+	// We only want to use the Sentry module in production
+	$production: {
+		modules: ['@sentry/nuxt/module'],
 	},
-	hub: {
-		database: true,
-		cache: true,
-		blob: true,
-	},
-	maintenanceMode: {
-		include: ['/u*', '/auth*', '/api/app/*'],
-	},
-	content: {
-		database: {
-			type: 'd1',
-			binding: 'DB',
-		},
-	},
+
+	/**
+	 * Options
+	 */
+
 	nitro: {
 		experimental: {
 			tasks: true,
 		},
 	},
+
 	sourcemap: {
+		// Used for Sentry
 		client: true,
 	},
+
 	routeRules: {
 		'/u': {
 			redirect: {
@@ -47,21 +42,64 @@ export default defineNuxtConfig({
 				statusCode: 302,
 			},
 		},
+		// Disable robots & sitemap
+		'/u/**': { robots: false },
+		'/auth/reset': { robots: false },
+		'/board': { robots: false },
 	},
+
 	runtimeConfig: {
 		jwtSecret: process.env.NUXT_JWT_SECRET,
 		vapidPrivateKey: process.env.NUXT_VAPID_PRIVATE_KEY,
 		public: {
 			vapidSubject: process.env.NUXT_PUBLIC_VAPID_SUBJECT,
 			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
+			// @ts-ignore
 			maintenanceModeEnabled: process.env.NUXT_PUBLIC_MAINTENANCE_MODE_ENABLED,
 			maintenanceModeBypassSecret:
 				process.env.NUXT_PUBLIC_MAINTENANCE_MODE_BYPASS_SECRET,
 		},
 	},
-	/* Need to fix maintenanceModeEnabled variable
+
+	devtools: { enabled: true },
+
 	typescript: {
 		typeCheck: true,
 	},
-	*/
+
+	/**
+	 * Modules
+	 */
+
+	ui: {
+		global: true,
+	},
+
+	hub: {
+		database: true,
+		cache: true,
+		blob: true,
+	},
+
+	maintenanceMode: {
+		include: ['/u*', '/auth*', '/api/app/*'],
+	},
+
+	content: {
+		// @ts-ignore
+		database: {
+			type: 'd1',
+			binding: 'DB',
+		},
+	},
+
+	site: { url: 'https://hibiscusvej.dk', name: 'Hibiscsuvej 2-30' },
+
+	ogImage: {
+		enabled: false,
+	},
+
+	schemaOrg: {
+		enabled: false,
+	},
 });

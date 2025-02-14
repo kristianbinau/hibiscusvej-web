@@ -19,6 +19,7 @@
 		"@nuxt/content": "^3.1.1",
 		"@nuxt/ui": "^2.21.0",
 		"@nuxthub/core": "^0.8.17",
+		"@nuxtjs/seo": "^2.1.1",
 		"@popperjs/core": "^2.11.8",
 		"@sentry/nuxt": "^9.1.0",
 		"bcryptjs": "^3.0.0",

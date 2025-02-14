@@ -1,14 +1,17 @@
 import { z } from 'zod';
 import { defineCollection, defineContentConfig } from '@nuxt/content';
+import { asSitemapCollection } from '@nuxtjs/sitemap/content';
 
 const BOARD_TYPES = ['chairman, member, deputy'] as const;
 
 export default defineContentConfig({
 	collections: {
-		pages: defineCollection({
-			source: 'pages/**',
-			type: 'page',
-		}),
+		pages: defineCollection(
+			asSitemapCollection({
+				source: 'pages/**',
+				type: 'page',
+			}),
+		),
 		board: defineCollection({
 			source: 'board/**.md',
 			type: 'data',

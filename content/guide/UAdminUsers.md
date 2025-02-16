@@ -3,38 +3,43 @@ path: '/u/admin/users'
 ---
 
 ## Admin: Users
-This page is used to manage users in the system.   
+
+This page is used to manage users in the system.  
 You can inspect, edit, verify, and delete users from this page.
 
 ### Conflicts
+
 The User page has a built-in conflict detection system.  
 If there are any conflicts, a red badge will appear.
 
 Conflicts often need to be investigated before action should be taken.  
 Consult with the other admins before taking action.
 
-*Types of conflicts:*
+_Types of conflicts:_
+
 - **Apartment Conflict**: Multiple users are associated with the same apartment.
-    - *This is a problem because the system is designed to have one user per apartment.*
-    - *Cause:* **User has moved out, and a new user has moved in.**
-        - The old user should be deleted.
-    - *Cause:* **2 people are living in the same apartment, and both have an account.**
-        - The 2 people should share an account.
-        - Possibly contact old account to verify.
-        - The new user should be deleted.
-    - *Cause:* **Someone tries to impersonate another user.**
-        - Compare the users, and possibly contact the users to verify.
-        - Often the new user should be deleted.
+  - _This is a problem because the system is designed to have one user per apartment._
+  - _Cause:_ **User has moved out, and a new user has moved in.**
+    - The old user should be deleted.
+  - _Cause:_ **2 people are living in the same apartment, and both have an account.**
+    - The 2 people should share an account.
+    - Possibly contact old account to verify.
+    - The new user should be deleted.
+  - _Cause:_ **Someone tries to impersonate another user.**
+    - Compare the users, and possibly contact the users to verify.
+    - Often the new user should be deleted.
 - **Person Conflict**: Multiple users have the same person.
-    - *This is a problem because this might be someone trying to impersonate another user.*
-    - *Cause:* **Someone tries to impersonate another user.**
-        - Compare the users, and possibly contact the users to verify.
-        - Often the new user should be deleted.
+  - _This is a problem because this might be someone trying to impersonate another user._
+  - _Cause:_ **Someone tries to impersonate another user.**
+    - Compare the users, and possibly contact the users to verify.
+    - Often the new user should be deleted.
 
 ### User List
+
 The user list is a table that displays all users in the system.
 
 #### Columns
+
 - **ID**: The unique identifier for the user.
 - **Apartment**: The apartment the user is associated with.
 - **isAdmin**: Whether the user is an admin or not.
@@ -48,17 +53,20 @@ The user list is a table that displays all users in the system.
 These columns can be sorted by clicking on the column header.
 
 #### Actions
-Clicking on a UserId will open the `UserDetails`*Slideout*.  
 
-##### `UserDetails`*Slideout*
+Clicking on a UserId will open the `UserDetails`_Slideout_.
+
+##### `UserDetails`_Slideout_
+
 This slideout allows you to view and edit the user.
 It's here that you can verify the user, and delete the user.
 
 You shouldn't worry about clicking on any buttons, as all buttons will ask for confirmation before performing any action.
 
 #### Deleted Users
+
 Deleted users is hidden, and can only be viewed by an system administator in the database.
 
 #### Giving Admin Rights
-Giving admin rights is done by an system administator in the database.
 
+Giving admin rights is done by an system administator in the database.

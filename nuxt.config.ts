@@ -6,6 +6,7 @@ export default defineNuxtConfig({
 		'@nuxtjs/seo',
 		'@nuxt/ui',
 		'@nuxt/content',
+		'@nuxt/test-utils/module',
 		'@kristianbinau/nuxt-maintenance-mode',
 	],
 
@@ -61,7 +62,9 @@ export default defineNuxtConfig({
 		},
 	},
 
-	devtools: { enabled: true },
+	devtools: {
+		enabled: true,
+	},
 
 	typescript: {
 		typeCheck: true,
@@ -93,7 +96,10 @@ export default defineNuxtConfig({
 		},
 	},
 
-	site: { url: 'https://hibiscusvej.dk', name: 'Hibiscsuvej 2-30' },
+	site: {
+		url: 'https://hibiscusvej.dk',
+		name: 'Hibiscsuvej 2-30',
+	},
 
 	ogImage: {
 		enabled: false,

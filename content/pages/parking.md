@@ -17,7 +17,7 @@ Vær opmærksom på, at der er en enkelt plads, som er i blå zone, som vi ikke 
 
 ## Parkeringstilladelse
 
-Parkeringstilladelsen kan fås ved at skrive til [ab@abodense.dk](mailto:ab@abodense.dk). 
+Parkeringstilladelsen kan fås ved at skrive til [ab@abodense.dk](mailto:ab@abodense.dk).
 
 Det er gratis, og du kan selv opdatere din nummerplade, hvis du skifter bil.  
 Det er kun tilladt at have en parkeringstilladelse pr. lejlighed.

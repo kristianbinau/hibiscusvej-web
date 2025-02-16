@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "nuxt build",
 		"dev": "nuxt dev",
+		"test": "vitest",
 		"generate": "nuxt generate",
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
@@ -37,10 +38,14 @@
 	"devDependencies": {
 		"@iconify-json/material-symbols": "^1.2.14",
 		"@iconify-json/mdi": "^1.2.3",
+		"@nuxt/test-utils": "^3.15.4",
 		"@types/bcryptjs": "^2.4.6",
+		"@vue/test-utils": "^2.4.6",
 		"drizzle-kit": "^0.30.4",
+		"playwright-core": "^1.50.1",
 		"prettier": "3.5.1",
 		"typescript": "^5.7.3",
+		"vitest": "^3.0.5",
 		"vue-tsc": "^2.2.0",
 		"wrangler": "^3.108.1"
 	},

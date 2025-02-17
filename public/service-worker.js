@@ -6,6 +6,10 @@
  */
 importScripts('/js/lib/localforage.min.js');
 
+localforage.config({
+    name: 'service-worker-auth-storage',
+});
+
 /**
  * ExecutionLock
  * Acts as a lock, that can pause execution until lock is unlocked.

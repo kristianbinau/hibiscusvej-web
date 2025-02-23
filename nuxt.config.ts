@@ -88,14 +88,6 @@ export default defineNuxtConfig({
 		include: ['/u*', '/auth*', '/api/app/*'],
 	},
 
-	content: {
-		// @ts-ignore
-		database: {
-			type: 'd1',
-			binding: 'DB',
-		},
-	},
-
 	site: {
 		url: 'https://hibiscusvej.dk',
 		name: 'Hibiscsuvej 2-30',

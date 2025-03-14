@@ -3,27 +3,27 @@ section.markdown-content {
 }
 
 section.markdown-content h1:not(.markdown-exclude) {
-	@apply text-primary text-4xl mt-5 mb-4;
+	@apply text-(--ui-primary) text-4xl mt-5 mb-4;
 }
 
 section.markdown-content h2:not(.markdown-exclude) {
-	@apply text-primary text-2xl mt-5 mb-4;
+	@apply text-(--ui-primary) text-2xl mt-5 mb-4;
 }
 
 section.markdown-content h3:not(.markdown-exclude) {
-	@apply text-primary text-xl mt-5 mb-4;
+	@apply text-(--ui-primary) text-xl mt-5 mb-4;
 }
 
 section.markdown-content h4:not(.markdown-exclude) {
-	@apply text-primary text-lg mt-5 mb-4;
+	@apply text-(--ui-primary) text-lg mt-5 mb-4;
 }
 
 section.markdown-content h5:not(.markdown-exclude) {
-	@apply text-primary text-base mt-5 mb-4;
+	@apply text-(--ui-primary) text-base mt-5 mb-4;
 }
 
 section.markdown-content h6:not(.markdown-exclude) {
-	@apply text-primary text-sm mt-5 mb-4;
+	@apply text-(--ui-primary) text-sm mt-5 mb-4;
 }
 
 section.markdown-content h1:not(.markdown-exclude) a,
@@ -36,11 +36,11 @@ section.markdown-content h6:not(.markdown-exclude) a {
 }
 
 section.markdown-content p:not(.markdown-exclude) {
-	@apply text-gray-700 dark:text-gray-300 mb-3;
+	@apply text-neutral-700 dark:text-neutral-300 mb-3;
 }
 
 section.markdown-content a:not(.markdown-exclude) {
-	@apply text-primary underline hover:text-primary-500;
+	@apply text-(--ui-primary) underline ;
 }
 
 section.markdown-content ul:not(.markdown-exclude) {
@@ -52,7 +52,7 @@ section.markdown-content ol:not(.markdown-exclude) {
 }
 
 section.markdown-content li:not(.markdown-exclude) {
-	@apply text-gray-700 dark:text-gray-300 mb-3;
+	@apply text-neutral-700 dark:text-neutral-300 mb-3;
 }
 
 section.markdown-content img:not(.markdown-exclude) {

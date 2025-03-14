@@ -8,7 +8,7 @@
 					to="https://www.abodense.dk/dept/0128/index"
 					:external="true"
 					target="_blank"
-					class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+					class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 				>
 					Gartnerbyen
 				</ULink>
@@ -16,14 +16,14 @@
 					to="mailto:hibiscusvejbestyrelse@outlook.dk"
 					:external="true"
 					target="_blank"
-					class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+					class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 				>
 					hibiscusvejbestyrelse@outlook.dk
 				</ULink>
 
 				<ULink
 					to="/privacy"
-					class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+					class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 				>
 					Privatlivspolitik
 				</ULink>
@@ -34,7 +34,7 @@
 					to="https://www.facebook.com/groups/692711287862071"
 					:external="true"
 					target="_blank"
-					class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+					class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 				>
 					<UIcon name="i-mdi-facebook-box" class="w-8 h-8" />
 				</ULink>
@@ -42,7 +42,7 @@
 					to="https://github.com/kristianbinau/hibiscusvej-web"
 					:external="true"
 					target="_blank"
-					class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+					class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 				>
 					<UIcon name="i-mdi-github" class="w-8 h-8" />
 				</ULink>

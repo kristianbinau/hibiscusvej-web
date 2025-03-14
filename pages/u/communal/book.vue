@@ -6,7 +6,7 @@
 				title="Din konto er ikke verificeret!"
 				description="Du kan ikke booke fælleslokalet før din konto er verificeret. Bestyrelsen vil verificere din konto hurtigst muligt."
 				icon="i-material-symbols-edit-attributes-outline-rounded"
-				color="red"
+				color="error"
 				variant="subtle"
 				class="mb-6"
 				:actions="[
@@ -15,7 +15,7 @@
 						icon: 'i-material-symbols-notification-add-outline-rounded',
 						variant: 'soft',
 						color: 'red',
-						click: subscribeToPush,
+						onClick:subscribeToPush,
 						loading: subscribeToPushLoading,
 					},
 				]"
@@ -23,14 +23,14 @@
 
 			<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
 				<div>
-					<h1 class="text-primary text-2xl mt-2 mb-2">Book fælleslokalet</h1>
+					<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Book fælleslokalet</h1>
 					<p>
 						Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
 						Du kan fjerne din booking indtil før den starter. <br />
 						Dine bookinger kan ses under
 						<ULink
 							to="/u/communal/me"
-							class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+							class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 							>Mine bookinger</ULink
 						>.
 					</p>
@@ -50,7 +50,7 @@
 								<ULink
 									to="/communal"
 									target="_blank"
-									class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+									class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 									>reglerne</ULink
 								>.
 							</span>
@@ -207,7 +207,7 @@ const { data: currentUser, refresh: currentUserRefresh } = await useFetch(
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: () => currentUserRefresh(),
+						onClick:() => currentUserRefresh(),
 					},
 				],
 			});
@@ -264,7 +264,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							click: onSubmit,
+							onClick:onSubmit,
 						},
 					],
 				});
@@ -276,7 +276,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							click: onSubmit,
+							onClick:onSubmit,
 						},
 					],
 				});

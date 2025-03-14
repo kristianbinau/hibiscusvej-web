@@ -2,7 +2,7 @@
 	<UCard class="mt-4 mb-12 w-fit">
 		<template #header>
 			<h2 class="text-lg flex justify-between">
-				System Booking <UBadge color="amber">Warning</UBadge>
+				System Booking <UBadge color="warning">Warning</UBadge>
 			</h2>
 
 			<p>Book som system.</p>
@@ -176,7 +176,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							click: onSubmit,
+							onClick:onSubmit,
 						},
 					],
 				});
@@ -188,7 +188,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							click: onSubmit,
+							onClick:onSubmit,
 						},
 					],
 				});

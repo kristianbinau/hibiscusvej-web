@@ -2,7 +2,6 @@
 	<UInput
 		v-model="model"
 		:type="visible ? 'text' : 'password'"
-		:ui="{ icon: { trailing: { pointer: '' } } }"
 	>
 		<template #trailing>
 			<UIcon

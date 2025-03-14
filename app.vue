@@ -1,12 +1,12 @@
 <template>
-	<div class="flex flex-col bg-gray-100 dark:bg-gray-900 min-h-dvh">
+	<div class="flex flex-col bg-neutral-100 dark:bg-neutral-900 min-h-dvh">
 		<NuxtRouteAnnouncer />
 
-		<NuxtLayout>
-			<NuxtPage />
-		</NuxtLayout>
-
-		<UNotifications />
+		<UApp>
+			<NuxtLayout>
+				<NuxtPage />
+			</NuxtLayout>
+		</UApp>
 	</div>
 
 	<ClientOnly>

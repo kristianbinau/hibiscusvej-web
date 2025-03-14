@@ -3,22 +3,20 @@
 		v-if="user"
 		class="mb-4 flex flex-col flex-1"
 		:ui="{
-			base: 'h-dvh !mb-0',
-			body: { base: 'overflow-auto flex-1' },
-			ring: '',
-			divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+			root: 'h-dvh !mb-0',
+			body: 'overflow-auto flex-1',
 		}"
 	>
 		<template #header>
 			<div class="flex items-center justify-between">
 				<h3
-					class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+					class="text-base font-semibold leading-6 text-neutral-900 dark:text-white"
 				>
 					ID: {{ user.id }}
 				</h3>
 				<UButton
 					v-if="showClose"
-					color="gray"
+					color="neutral"
 					variant="ghost"
 					icon="i-heroicons-x-mark-20-solid"
 					class="-my-1"
@@ -28,23 +26,23 @@
 		</template>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-			<UFormGroup label="Apartment ID">
+			<UFormField label="Apartment ID">
 				<UInput
 					disabled
 					:model-value="String(user.apartmentId)"
 					class="mb-4 disabled:*:cursor-default"
 				/>
-			</UFormGroup>
+			</UFormField>
 
-			<UFormGroup label="Is Admin">
+			<UFormField label="Is Admin">
 				<UInput
 					disabled
 					:model-value="String(user.admin)"
 					class="mb-4 disabled:*:cursor-default"
 				/>
-			</UFormGroup>
+			</UFormField>
 
-			<UFormGroup label="Verified">
+			<UFormField label="Verified">
 				<UInput
 					disabled
 					:model-value="
@@ -54,30 +52,26 @@
 					"
 					class="mb-4 disabled:*:cursor-default"
 				/>
-			</UFormGroup>
+			</UFormField>
 
-			<UFormGroup label="Created At">
+			<UFormField label="Created At">
 				<UInput
 					disabled
 					:model-value="String(new Date(user.createdAt).toLocaleDateString())"
 					class="mb-4 disabled:*:cursor-default"
 				/>
-			</UFormGroup>
+			</UFormField>
 
-			<UFormGroup label="Updated At">
+			<UFormField label="Updated At">
 				<UInput
 					disabled
 					:model-value="String(new Date(user.updatedAt).toLocaleDateString())"
 					class="mb-4 disabled:*:cursor-default"
 				/>
-			</UFormGroup>
+			</UFormField>
 		</div>
 
-		<UAccordion
-			:items="accordionItems"
-			class="mt-4"
-			:ui="{ item: { base: 'relative' } }"
-		>
+		<UAccordion :items="accordionItems" class="mt-4" :ui="{ item: 'relative' }">
 			<template #persons>
 				<AdminUserPersons
 					v-if="showPersons"
@@ -130,7 +124,7 @@
 						<UTooltip text="Klik for at verificere bruger">
 							<UButton
 								variant="soft"
-								color="amber"
+								color="warning"
 								icon="i-material-symbols-domain-verification-off-rounded"
 								:loading="verificationUpdateLoading"
 							>
@@ -150,7 +144,7 @@
 								<UButton
 									label="Godkend"
 									icon="i-material-symbols-check-circle-rounded"
-									color="green"
+									color="success"
 									variant="soft"
 									size="xs"
 									@click="verifyUser"
@@ -165,7 +159,7 @@
 						<UTooltip text="Klik for at permanent slette brugeren">
 							<UButton
 								icon="i-material-symbols-delete-forever-outline-rounded"
-								color="red"
+								color="error"
 								variant="soft"
 								class="flex-1"
 								block
@@ -184,7 +178,7 @@
 									>
 								</p>
 
-								<UFormGroup
+								<UFormField
 									class="mt-4"
 									label="Adgangskode"
 									help="Indtast din adgangskode for at bekræfte."
@@ -196,12 +190,12 @@
 										type="password"
 										v-model="currentSessionPassword"
 									/>
-								</UFormGroup>
+								</UFormField>
 
 								<UButton
 									label="Godkend"
 									icon="i-material-symbols-check-circle-rounded"
-									color="red"
+									color="error"
 									variant="soft"
 									size="xs"
 									@click="deleteUser"
@@ -222,7 +216,7 @@
 						<UTooltip text="Klik for at fjerne verificering">
 							<UButton
 								variant="soft"
-								color="green"
+								color="success"
 								icon="i-material-symbols-domain-verification-rounded"
 								:loading="verificationUpdateLoading"
 							>
@@ -241,7 +235,7 @@
 								<UButton
 									label="Godkend"
 									icon="i-material-symbols-check-circle-rounded"
-									color="red"
+									color="error"
 									variant="soft"
 									size="xs"
 									@click="unverifyUser"
@@ -370,7 +364,7 @@ async function fetchUser() {
 				actions: [
 					{
 						label: 'Luk',
-						click: () => emit('close'),
+						onClick: () => emit('close'),
 					},
 				],
 			});
@@ -386,7 +380,7 @@ async function fetchUser() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: fetchUser,
+					onClick: fetchUser,
 				},
 			],
 		});
@@ -425,11 +419,11 @@ async function verifyUser() {
 				icon: 'i-material-symbols-check-circle-rounded',
 				title: 'Success!',
 				description: `Du har verificeret brugeren med ID: ${id}`,
-				timeout: 10000,
+				duration: 10000,
 				actions: [
 					{
 						label: 'Undo',
-						click: () => unverifyUser(),
+						onClick: () => unverifyUser(),
 					},
 				],
 			});
@@ -444,7 +438,7 @@ async function verifyUser() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: verifyUser,
+					onClick: verifyUser,
 				},
 			],
 		});
@@ -477,11 +471,11 @@ async function unverifyUser() {
 				icon: 'i-material-symbols-check-circle-rounded',
 				title: 'Success!',
 				description: `Du har fjernet verificeringen af brugeren med ID: ${id}`,
-				timeout: 10000,
+				duration: 10000,
 				actions: [
 					{
 						label: 'Undo',
-						click: () => verifyUser(),
+						onClick: () => verifyUser(),
 					},
 				],
 			});
@@ -496,7 +490,7 @@ async function unverifyUser() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: unverifyUser,
+					onClick: unverifyUser,
 				},
 			],
 		});
@@ -533,7 +527,7 @@ async function deleteUser() {
 				icon: 'i-material-symbols-check-circle-rounded',
 				title: `Success!`,
 				description: `Du har slettet brugeren med ID: ${id}`,
-				timeout: 10000,
+				duration: 10000,
 			});
 
 			emit('close');
@@ -550,7 +544,7 @@ async function deleteUser() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: deleteUser,
+						onClick: deleteUser,
 					},
 				],
 			});

@@ -17,28 +17,24 @@
 </template>
 
 <script setup lang="ts">
-import type { HorizontalNavigationLink } from '#ui/types';
+import type { NavigationMenuItem } from '#ui/types';
 
-const links: HorizontalNavigationLink[][] = [
+const links: NavigationMenuItem[][] = [
 	[
 		{
 			label: 'Hibiscusvej 2-30: Admin',
-			labelClass: 'hidden sm:text-2xl sm:block',
 			icon: 'Logo',
-			iconClass: 'sm:h-6 sm:w-6',
 			to: '/',
 		},
 	],
 	[
 		{
 			label: 'Users',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-add-home-work-rounded',
 			to: '/u/admin/users',
 		},
 		{
 			label: 'Bookings',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-home-work-rounded',
 			to: '/u/admin/bookings',
 		},
@@ -51,7 +47,7 @@ const links: HorizontalNavigationLink[][] = [
 				size: 'md',
 				color: 'primary',
 			},
-			click: () => navigateTo('/u'),
+			onSelect: () => navigateTo('/u'),
 		},
 	],
 ];

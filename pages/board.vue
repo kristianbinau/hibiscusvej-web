@@ -1,24 +1,24 @@
 <template>
 	<section class="flex flex-col">
-		<UDivider>
+		<USeparator>
 			<h2>Formand</h2>
-		</UDivider>
+		</USeparator>
 
 		<div v-if="chairman" class="grid grid-cols-2 gap-4 p-4">
 			<BoardMemberCard :member="chairman" />
 		</div>
 
-		<UDivider>
+		<USeparator>
 			<h2>Medlemmer</h2>
-		</UDivider>
+		</USeparator>
 
 		<div v-if="members" class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
 			<BoardMemberCard v-for="member in members" :member="member" />
 		</div>
 
-		<UDivider>
+		<USeparator>
 			<h2>Suppleanter</h2>
-		</UDivider>
+		</USeparator>
 
 		<div v-if="deputies" class="grid grid-cols-2 gap-4 p-4">
 			<BoardMemberCard v-for="deputy in deputies" :member="deputy" />

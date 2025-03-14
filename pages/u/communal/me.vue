@@ -1,7 +1,7 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-primary text-2xl mt-2 mb-2">Mine bookinger</h1>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Mine bookinger</h1>
 			<p>
 				Her kan du se dine bookinger og slette dem hvis du har brug for det.<br />
 				Bookinger kan ikke slettes hvis de er startet.
@@ -9,8 +9,8 @@
 		</div>
 
 		<ClientOnly>
-			<UTable :loading="fetchingBookings" :rows="rows" :columns="columns">
-				<template #id-data="{ row }">
+			<UTable :loading="fetchingBookings" :data="rows" :columns="columns">
+				<template #id-cell="{ row }">
 					<UPopover
 						class="mr-auto"
 						:popper="{ placement: 'top-start' }"
@@ -20,9 +20,9 @@
 							<UButton
 								size="md"
 								label="Slet denne booking"
-								color="red"
+								color="error"
 								variant="soft"
-								:disabled="isAfter(now, row.fromDate)"
+								:disabled="isAfter(now, row.getValue<Date>('date'))"
 								:loading="deleteBookingLoading"
 							/>
 						</UTooltip>
@@ -38,10 +38,10 @@
 								<UButton
 									label="Godkend"
 									icon="i-material-symbols-check-circle-rounded"
-									color="red"
+									color="error"
 									variant="soft"
 									size="xs"
-									@click="deleteBooking(row.id)"
+									@click="deleteBooking(Number(row.id))"
 									:loading="deleteBookingLoading"
 									class="mt-4"
 								/>
@@ -59,6 +59,7 @@ import type { InternalApi } from 'nitropack';
 type BookingsMeApiResponse = InternalApi['/api/app/bookings/me']['get'];
 
 import { isAfter } from 'date-fns';
+import type { TableColumn } from '@nuxt/ui';
 
 definePageMeta({
 	layout: 'logged-in',
@@ -71,33 +72,35 @@ useHead({
 
 const toast = useToast();
 
-const columns = [
+type MyBookingRow = {
+	date: Date;
+	createdAt: Date;
+	id: number;
+};
+
+const columns: TableColumn<MyBookingRow>[] = [
 	{
-		key: 'date',
-		label: 'Dato',
+		accessorKey: 'date',
+		header: 'Dato',
+		cell: ({ row }) => row.getValue<Date>('date').toLocaleDateString(),
 	},
 	{
-		key: 'createdAt',
-		label: 'Oprettet',
-		// Hide on mobile
-		class: 'hidden md:table-cell',
-		rowClass: 'hidden md:table-cell',
+		accessorKey: 'createdAt',
+		header: 'Oprettet',
+		cell: ({ row }) => row.getValue<Date>('createdAt').toLocaleDateString(),
 	},
 	{
-		key: 'id',
-		label: 'Handlinger',
+		accessorKey: 'id',
+		header: 'Handlinger',
 	},
 ];
 
-const rows = computed(() => {
-	return myBookings.value.map((booking) => {
-		return {
-			id: booking.id,
-			date: new Date(booking.from).toLocaleDateString(),
-			createdAt: new Date(booking.createdAt).toLocaleString(),
-			fromDate: new Date(booking.from),
-		};
-	});
+const rows = computed<MyBookingRow[]>(() => {
+	return myBookings.value.map((booking) => ({
+		date: new Date(booking.from),
+		createdAt: new Date(booking.createdAt),
+		id: booking.id,
+	}));
 });
 
 const now = ref(new Date());
@@ -129,7 +132,7 @@ async function fetchMyBookings() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: fetchMyBookings,
+					onClick: fetchMyBookings,
 				},
 			],
 		});
@@ -172,7 +175,7 @@ async function deleteBooking(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: () => deleteBooking(id),
+					onClick: () => deleteBooking(id),
 				},
 			],
 		});

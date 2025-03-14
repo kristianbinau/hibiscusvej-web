@@ -12,30 +12,30 @@
 			>
 				<UCard>
 					<template #header>
-						<h1 class="text-2xl font-semibold text-primary">Ny adgangskode</h1>
+						<h1 class="text-2xl font-semibold text-(--ui-primary)">Ny adgangskode</h1>
 					</template>
 
 					<p class="mb-5">
 						Indtast engangskoden du har modtaget og vælg en ny adgangskode.
 					</p>
 
-					<UFormGroup
+					<UFormField
 						label="Engangskode"
 						name="singleUsePassword"
 						class="mt-3"
 						required
 					>
 						<Password v-model="state.singleUsePassword" />
-					</UFormGroup>
+					</UFormField>
 
-					<UFormGroup
+					<UFormField
 						label="Ny adgangskode"
 						name="newPassword"
 						class="mt-3"
 						required
 					>
 						<Password v-model="state.newPassword" />
-					</UFormGroup>
+					</UFormField>
 
 					<template #footer>
 						<div
@@ -142,7 +142,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: () => onSubmit(event),
+						onClick:() => onSubmit(event),
 					},
 				],
 			});
@@ -163,7 +163,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: () => onSubmit(event),
+						onClick:() => onSubmit(event),
 					},
 				],
 			});

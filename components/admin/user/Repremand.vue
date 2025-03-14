@@ -2,13 +2,15 @@
 	<UCard
 		class="mb-4"
 		:ui="{
-			header: { base: 'flex items-center justify-between' },
-			body: { base: 'flex flex-col gap-4' },
-			footer: { base: 'flex' },
+			header: 'flex items-center justify-between',
+			body: 'flex flex-col gap-4',
+			footer: 'flex',
 		}"
 	>
 		<template #header>
-			<h4 class="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
+			<h4
+				class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white"
+			>
 				Repremand ID: {{ repremand.id }}
 			</h4>
 			<UBadge
@@ -16,7 +18,7 @@
 				label="Unsaved"
 				variant="subtle"
 				size="xs"
-				color="amber"
+				color="warning"
 				icon="i-material-symbols-warning-outline-rounded"
 			/>
 		</template>
@@ -27,14 +29,15 @@
 				:schema="schema"
 				:state="state"
 				class="flex flex-col gap-4"
+				@submit="saveRepremand"
 			>
-				<UFormGroup label="Type">
+				<UFormField label="Type">
 					<UInput :model-value="repremand.type" />
-				</UFormGroup>
-				<UFormGroup label="Reason">
+				</UFormField>
+				<UFormField label="Reason">
 					<UInput :model-value="repremand.reason" />
-				</UFormGroup>
-				<UFormGroup label="Expires At">
+				</UFormField>
+				<UFormField label="Expires At">
 					<UInput
 						:model-value="
 							repremand.expiresAt
@@ -42,33 +45,33 @@
 								: 'Never'
 						"
 					/>
-				</UFormGroup>
-				<UFormGroup label="Created At">
+				</UFormField>
+				<UFormField label="Created At">
 					<UInput
 						disabled
 						:model-value="new Date(repremand.createdAt).toLocaleString()"
 						class="disabled:*:cursor-default"
 					/>
-				</UFormGroup>
+				</UFormField>
 			</UForm>
 		</template>
 
 		<template v-else>
-			<UFormGroup label="Type">
+			<UFormField label="Type">
 				<UInput
 					disabled
 					:model-value="repremand.type"
 					class="disabled:*:cursor-default"
 				/>
-			</UFormGroup>
-			<UFormGroup label="Reason">
+			</UFormField>
+			<UFormField label="Reason">
 				<UInput
 					disabled
 					:model-value="repremand.reason"
 					class="disabled:*:cursor-default"
 				/>
-			</UFormGroup>
-			<UFormGroup label="Expires At">
+			</UFormField>
+			<UFormField label="Expires At">
 				<UInput
 					disabled
 					:model-value="
@@ -78,14 +81,14 @@
 					"
 					class="disabled:*:cursor-default"
 				/>
-			</UFormGroup>
-			<UFormGroup label="Created At">
+			</UFormField>
+			<UFormField label="Created At">
 				<UInput
 					disabled
 					:model-value="new Date(repremand.createdAt).toLocaleString()"
 					class="disabled:*:cursor-default"
 				/>
-			</UFormGroup>
+			</UFormField>
 		</template>
 
 		<template #footer>
@@ -93,7 +96,7 @@
 				<UTooltip text="Cancel">
 					<UButton
 						variant="soft"
-						color="amber"
+						color="warning"
 						icon="i-material-symbols-cancel-outline-rounded"
 						@click="disableEditMode"
 					/>
@@ -101,23 +104,22 @@
 
 				<UTooltip text="Gem" class="ml-3">
 					<UButton
+						type="submit"
 						variant="soft"
-						color="green"
+						color="success"
 						icon="i-material-symbols-save-as-outline-rounded"
-						@click="saveRepremand"
 					/>
 				</UTooltip>
 			</template>
 			<template v-else>
 				<UPopover
 					:popper="{ placement: 'top-start' }"
-					:ui="{ base: '' }"
 					overlay
 				>
 					<UTooltip text="Klik for at permanent slette">
 						<UButton
 							icon="i-material-symbols-delete-forever-outline-rounded"
-							color="red"
+							color="error"
 							variant="soft"
 						/>
 					</UTooltip>
@@ -130,7 +132,7 @@
 								Dette kan ikke fortrydes, og alt data vil blive slettet.
 							</p>
 
-							<UFormGroup
+							<UFormField
 								class="mt-4"
 								label="Adgangskode"
 								help="Indtast din adgangskode for at bekræfte."
@@ -142,12 +144,12 @@
 									type="password"
 									v-model="currentSessionPassword"
 								/>
-							</UFormGroup>
+							</UFormField>
 
 							<UButton
 								label="Godkend"
 								icon="i-material-symbols-check-circle-rounded"
-								color="red"
+								color="error"
 								variant="soft"
 								size="xs"
 								@click="deleteRepremand"
@@ -161,7 +163,7 @@
 				<UTooltip text="Redigér" class="ml-3">
 					<UButton
 						variant="soft"
-						color="green"
+						color="success"
 						icon="i-material-symbols-edit-document-outline-rounded"
 						@click="enableEditMode"
 					/>
@@ -304,7 +306,7 @@ async function deleteRepremand() {
 				icon: 'i-material-symbols-check-circle-outline-rounded',
 				title: 'Success!',
 				description: `Du har slettet repremand med ID: ${id}`,
-				timeout: 10000,
+				duration: 10000,
 			});
 		}
 	} catch (error: any) {
@@ -318,7 +320,7 @@ async function deleteRepremand() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: deleteRepremand,
+						onClick: deleteRepremand,
 					},
 				],
 			});

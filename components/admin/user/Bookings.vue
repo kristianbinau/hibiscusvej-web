@@ -18,7 +18,7 @@
 		<USkeleton class="h-24" />
 		<UBadge
 			class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-			color="gray"
+			color="neutral"
 		>
 			Ingen Bookings!
 		</UBadge>
@@ -64,7 +64,7 @@ async function fetchBookings() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: fetchBookings,
+						onClick:fetchBookings,
 					},
 				],
 			});
@@ -80,7 +80,7 @@ async function fetchBookings() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: fetchBookings,
+					onClick:fetchBookings,
 				},
 			],
 		});

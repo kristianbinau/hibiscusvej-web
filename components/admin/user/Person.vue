@@ -1,32 +1,32 @@
 <template>
 	<UCard class="mb-4">
 		<template #header>
-			<h4 class="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
+			<h4 class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white">
 				Person ID: {{ person.id }}
 			</h4>
 		</template>
 
-		<UFormGroup label="Name">
+		<UFormField label="Name">
 			<UInput
 				disabled
 				:model-value="person.name"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
-		<UFormGroup label="Email">
+		</UFormField>
+		<UFormField label="Email">
 			<UInput
 				disabled
 				:model-value="person.email"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
-		<UFormGroup label="Phone">
+		</UFormField>
+		<UFormField label="Phone">
 			<UInput
 				disabled
 				:model-value="person.phone"
 				class="disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 	</UCard>
 </template>
 

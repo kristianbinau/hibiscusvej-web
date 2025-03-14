@@ -70,13 +70,13 @@ export default defineNuxtConfig({
 		typeCheck: true,
 	},
 
+	css: [
+		'~/assets/css/main.css'
+	],
+
 	/**
 	 * Modules
 	 */
-
-	ui: {
-		global: true,
-	},
 
 	hub: {
 		database: true,

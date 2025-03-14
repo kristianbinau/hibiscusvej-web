@@ -9,13 +9,12 @@
 </template>
 
 <script setup lang="ts">
-import type { HorizontalNavigationLink } from '#ui/types';
+import type { NavigationMenuItem } from '#ui/types';
 
-const links: HorizontalNavigationLink[] | HorizontalNavigationLink[][] = [
+const links: NavigationMenuItem[] | NavigationMenuItem[][] = [
 	[
 		{
 			label: 'Hibiscusvej 2-30',
-			labelClass: 'sm:text-2xl',
 			icon: 'Logo',
 			to: '/',
 		},

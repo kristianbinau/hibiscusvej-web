@@ -1,28 +1,28 @@
 <template>
 	<UCard class="mb-4">
 		<template #header>
-			<h4 class="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
+			<h4 class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white">
 				Booking ID: {{ booking.id }}
 			</h4>
 		</template>
 
-		<UFormGroup label="Starts At">
+		<UFormField label="Starts At">
 			<UInput
 				disabled
 				:model-value="String(new Date(booking.from).toLocaleString())"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 
-		<UFormGroup label="Ends At">
+		<UFormField label="Ends At">
 			<UInput
 				disabled
 				:model-value="String(new Date(booking.to).toLocaleString())"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 
-		<UFormGroup label="Deleted At">
+		<UFormField label="Deleted At">
 			<UInput
 				disabled
 				:model-value="
@@ -32,22 +32,22 @@
 				"
 				class="disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 
-		<UFormGroup label="Created At">
+		<UFormField label="Created At">
 			<UInput
 				disabled
 				:model-value="String(new Date(booking.createdAt).toLocaleDateString())"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
-		<UFormGroup label="Updated At">
+		</UFormField>
+		<UFormField label="Updated At">
 			<UInput
 				disabled
 				:model-value="String(new Date(booking.updatedAt).toLocaleDateString())"
 				class="disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 	</UCard>
 </template>
 

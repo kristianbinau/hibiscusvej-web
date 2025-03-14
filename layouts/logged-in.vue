@@ -17,30 +17,26 @@
 </template>
 
 <script setup lang="ts">
-import type { HorizontalNavigationLink } from '#ui/types';
+import type { NavigationMenuItem } from '#ui/types';
 
 const { authUser } = await useUser();
 
-const links: HorizontalNavigationLink[][] = [
+const links: NavigationMenuItem[][] = [
 	[
 		{
 			label: 'Hibiscusvej 2-30',
-			labelClass: 'hidden sm:text-2xl sm:block',
 			icon: 'Logo',
-			iconClass: 'sm:h-6 sm:w-6',
 			to: '/',
 		},
 	],
 	[
 		{
 			label: 'Book lokale',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-add-home-work-rounded',
 			to: '/u/communal/book',
 		},
 		{
 			label: 'Mine bookinger',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-home-work-rounded',
 			to: '/u/communal/me',
 		},
@@ -52,7 +48,7 @@ const links: HorizontalNavigationLink[][] = [
 				size: 'md',
 				color: 'primary',
 			},
-			click: () => navigateTo('/u/settings'),
+			onSelect: () => navigateTo('/u/settings'),
 		},
 		{
 			badge: {
@@ -63,13 +59,13 @@ const links: HorizontalNavigationLink[][] = [
 				size: 'md',
 				color: 'primary',
 			},
-			click: () => logout(),
+			onSelect: () => logout(),
 		},
 	],
 ];
 
 if (authUser.value && authUser.value.user.admin) {
-	const link: HorizontalNavigationLink = {
+	const link: NavigationMenuItem = {
 		badge: {
 			// @ts-ignore
 			icon: 'i-material-symbols-admin-panel-settings-rounded',
@@ -77,7 +73,7 @@ if (authUser.value && authUser.value.user.admin) {
 			size: 'md',
 			color: 'primary',
 		},
-		click: () => navigateTo('/u/admin'),
+		onSelect: () => navigateTo('/u/admin'),
 	};
 
 	// Add before settings

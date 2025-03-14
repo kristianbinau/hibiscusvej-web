@@ -21,7 +21,7 @@ export const useServiceWorker = () => {
 							description:
 								'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
 							color: 'red',
-							timeout: 0,
+							duration: 0,
 						});
 					}
 				},

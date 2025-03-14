@@ -1,18 +1,18 @@
 <template>
 	<UCard class="mb-4">
 		<template #header>
-			<h4 class="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
+			<h4 class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white">
 				Login ID: {{ login.id }}
 			</h4>
 		</template>
 
-		<UFormGroup label="Email">
+		<UFormField label="Email">
 			<UInput
 				disabled
 				:model-value="login.email"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 
 		<template #footer>
 			<UPopover :popper="{ placement: 'top-end' }" overlay>
@@ -20,7 +20,7 @@
 					<UButton
 						icon="i-material-symbols-lock-reset-rounded"
 						label="Nulstil kodeord"
-						color="red"
+						color="error"
 						variant="soft"
 						class="flex-1"
 						block
@@ -39,7 +39,7 @@
 							</span>
 						</p>
 
-						<UFormGroup
+						<UFormField
 							class="mt-4"
 							label="Adgangskode"
 							help="Indtast din adgangskode for at bekræfte."
@@ -51,12 +51,12 @@
 								type="password"
 								v-model="currentSessionPassword"
 							/>
-						</UFormGroup>
+						</UFormField>
 
 						<UButton
 							label="Godkend"
 							icon="i-material-symbols-check-circle-rounded"
-							color="red"
+							color="error"
 							variant="soft"
 							size="xs"
 							@click="resetPassword"
@@ -114,7 +114,7 @@ async function resetPassword() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: resetPassword,
+						onClick:resetPassword,
 					},
 				],
 			});
@@ -127,12 +127,12 @@ async function resetPassword() {
 			id: `reset-password-${login.value.id}`,
 			title: 'Kodeord nulstillet!',
 			description: `Dette er det nye kodeord: "${data.newPassword}", husk at kopiere det!`,
-			timeout: 0,
+			duration: 0,
 			actions: [
 				{
 					label: 'Kopiér kodeord',
-					color: 'green',
-					click: () => {
+					color: 'success',
+					onClick:() => {
 						navigator.clipboard.writeText(data.newPassword);
 						toast.add({
 							id: `reset-password-copied-${login.value.id}`,
@@ -153,7 +153,7 @@ async function resetPassword() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: resetPassword,
+					onClick:resetPassword,
 				},
 			],
 		});

@@ -12,16 +12,16 @@
 			>
 				<UCard>
 					<template #header>
-						<h1 class="text-2xl font-semibold text-primary">Login</h1>
+						<h1 class="text-2xl font-semibold text-(--ui-primary)">Login</h1>
 					</template>
 
-					<UFormGroup label="Email" name="email" required>
+					<UFormField label="Email" name="email" required>
 						<UInput v-model="state.email" />
-					</UFormGroup>
+					</UFormField>
 
-					<UFormGroup label="Password" name="password" class="mt-3" required>
+					<UFormField label="Password" name="password" class="mt-3" required>
 						<Password v-model="state.password" />
-					</UFormGroup>
+					</UFormField>
 
 					<template #footer>
 						<div
@@ -29,7 +29,7 @@
 						>
 							<ULink
 								to="/auth/register"
-								class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+								class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 							>
 								Har du ikke en konto?
 							</ULink>
@@ -105,7 +105,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				title: 'Engangskode brugt!',
 				description:
 					'Da du har brugt en engangskode, er du blevet videresendt for at oprette en ny adgangskode.',
-				timeout: 10000,
+				duration: 10000,
 			});
 			await navigateTo(`/auth/reset?loginId=${res.loginId}`);
 		} else if (res && 'accessToken' in res) {
@@ -118,7 +118,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: () => onSubmit(event),
+						onClick:() => onSubmit(event),
 					},
 				],
 			});
@@ -143,7 +143,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: () => onSubmit(event),
+						onClick:() => onSubmit(event),
 					},
 				],
 			});

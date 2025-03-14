@@ -2,14 +2,14 @@
 	<UForm ref="form" :schema="schema" :state="state" @submit.prevent="onSubmit">
 		<UCard
 			:ui="{
-				body: { base: 'flex flex-col gap-3' },
-				footer: { base: 'flex gap-3' },
+				body: 'flex flex-col gap-3',
+				footer: 'flex gap-3',
 			}"
 		>
 			<template #header>
 				<div class="flex items-center justify-between">
 					<h3
-						class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+						class="text-base font-semibold leading-6 text-neutral-900 dark:text-white"
 					>
 						<template v-if="isCreated">
 							{{
@@ -23,17 +23,17 @@
 				</div>
 			</template>
 
-			<UFormGroup label="Name" name="name" required>
+			<UFormField label="Name" name="name" required>
 				<UInput v-model="state.name" />
-			</UFormGroup>
+			</UFormField>
 
-			<UFormGroup label="Email" name="email" required>
+			<UFormField label="Email" name="email" required>
 				<UInput v-model="state.email" />
-			</UFormGroup>
+			</UFormField>
 
-			<UFormGroup label="Phone" name="phone" required>
+			<UFormField label="Phone" name="phone" required>
 				<UInput v-model="state.phone" />
-			</UFormGroup>
+			</UFormField>
 
 			<template #footer>
 				<template v-if="isCreated">
@@ -41,7 +41,7 @@
 						v-if="deleteable"
 						@click="onDelete"
 						:loading="onDeleteLoading"
-						color="red"
+						color="error"
 						variant="soft"
 						class="flex-1"
 						block
@@ -51,7 +51,7 @@
 					<UButton
 						:loading="onSubmitLoading"
 						:disabled="!hasChanges"
-						color="green"
+						color="success"
 						type="submit"
 						class="flex-1"
 						block
@@ -62,7 +62,7 @@
 				<template v-else>
 					<UButton
 						@click="onDelete"
-						color="red"
+						color="error"
 						variant="soft"
 						class="flex-1"
 						block
@@ -71,7 +71,7 @@
 
 					<UButton
 						:loading="onSubmitLoading"
-						color="green"
+						color="success"
 						type="submit"
 						class="flex-1"
 						block
@@ -200,7 +200,7 @@ async function onDelete() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: onDelete,
+					onClick:onDelete,
 				},
 			],
 		});

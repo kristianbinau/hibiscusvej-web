@@ -1,34 +1,34 @@
 <template>
 	<UCard class="mb-4">
 		<template #header>
-			<h4 class="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
+			<h4 class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white">
 				Session ID: {{ session.id }}
 			</h4>
 		</template>
 
-		<UFormGroup label="Expires At">
+		<UFormField label="Expires At">
 			<UInput
 				disabled
 				:model-value="String(new Date(session.expiredAt).toLocaleDateString())"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 
-		<UFormGroup label="Created At">
+		<UFormField label="Created At">
 			<UInput
 				disabled
 				:model-value="String(new Date(session.createdAt).toLocaleDateString())"
 				class="mb-4 disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 
-		<UFormGroup label="Updated At">
+		<UFormField label="Updated At">
 			<UInput
 				disabled
 				:model-value="String(new Date(session.updatedAt).toLocaleDateString())"
 				class="disabled:*:cursor-default"
 			/>
-		</UFormGroup>
+		</UFormField>
 	</UCard>
 </template>
 

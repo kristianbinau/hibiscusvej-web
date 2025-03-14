@@ -1,7 +1,7 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-primary text-2xl mt-2 mb-2">Indstillinger</h1>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Indstillinger</h1>
 			<p>Her kan du ændre oplysninger der er tilknyttet din bruger.<br /></p>
 		</div>
 
@@ -28,8 +28,8 @@
 					<UCard
 						class="flex-1 relative"
 						:ui="{
-							base: 'flex flex-col',
-							body: { base: 'flex-1' },
+							root: 'flex flex-col',
+							body: 'flex-1',
 						}"
 					>
 						<template #header>
@@ -44,7 +44,7 @@
 							<UButton
 								icon="i-material-symbols-add-box-rounded"
 								size="sm"
-								color="green"
+								color="success"
 								square
 								variant="solid"
 								@click="addPerson"
@@ -71,7 +71,7 @@
 					<UButton
 						icon="i-material-symbols-notification-add-outline-rounded"
 						label="Aktiver"
-						color="green"
+						color="success"
 						variant="soft"
 						class="flex-1"
 						@click="subscribeToPush()"
@@ -84,7 +84,7 @@
 					<UButton
 						icon="i-material-symbols-notifications-off-outline-rounded"
 						label="Deaktiver"
-						color="red"
+						color="error"
 						variant="soft"
 						class="flex-1"
 						@click="unsubscribeToPush()"
@@ -101,7 +101,7 @@
 						<UButton
 							icon="i-material-symbols-notifications-off-rounded"
 							label="Deaktiver alle"
-							color="red"
+							color="error"
 							variant="soft"
 							class="flex-1"
 							:loading="unsubscribeToPushEverywhereLoading"
@@ -120,7 +120,7 @@
 							<UButton
 								label="Godkend"
 								icon="i-material-symbols-check-circle-rounded"
-								color="red"
+								color="error"
 								variant="soft"
 								size="xs"
 								@click="unsubscribeToPushEverywhere()"
@@ -146,7 +146,7 @@
 						<UButton
 							icon="i-material-symbols-key-off-outline-rounded"
 							label="Log ud på alle enheder"
-							color="red"
+							color="error"
 							variant="soft"
 							class="flex-1"
 							block
@@ -164,7 +164,7 @@
 							<UButton
 								label="Godkend"
 								icon="i-material-symbols-check-circle-rounded"
-								color="red"
+								color="error"
 								variant="soft"
 								size="xs"
 								@click="logoutEverywhere"
@@ -183,7 +183,7 @@
 						<UButton
 							icon="i-material-symbols-delete-forever-outline-rounded"
 							label="Slet bruger"
-							color="red"
+							color="error"
 							variant="soft"
 							class="flex-1"
 							block
@@ -202,7 +202,7 @@
 								>
 							</p>
 
-							<UFormGroup
+							<UFormField
 								class="mt-4"
 								label="Adgangskode"
 								help="Indtast din adgangskode for at bekræfte."
@@ -214,12 +214,12 @@
 									type="password"
 									v-model="currentSessionPassword"
 								/>
-							</UFormGroup>
+							</UFormField>
 
 							<UButton
 								label="Godkend"
 								icon="i-material-symbols-check-circle-rounded"
-								color="red"
+								color="error"
 								variant="soft"
 								size="xs"
 								@click="deleteAccount"
@@ -275,7 +275,7 @@ async function fetchMe() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					click: () => reloadNuxtApp(),
+					onClick:() => reloadNuxtApp(),
 				},
 			],
 		});
@@ -314,7 +314,7 @@ async function fetchPersons() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					click: () => reloadNuxtApp(),
+					onClick:() => reloadNuxtApp(),
 				},
 			],
 		});
@@ -378,7 +378,7 @@ async function fetchLogins() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					click: () => reloadNuxtApp(),
+					onClick:() => reloadNuxtApp(),
 				},
 			],
 		});
@@ -474,7 +474,7 @@ async function unsubscribeToPush() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: unsubscribeToPush,
+					onClick:unsubscribeToPush,
 				},
 			],
 		});
@@ -511,7 +511,7 @@ async function unsubscribeToPushEverywhere() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: unsubscribeToPushEverywhere,
+					onClick:unsubscribeToPushEverywhere,
 				},
 			],
 		});
@@ -563,7 +563,7 @@ async function deleteAccount() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: deleteAccount,
+						onClick:deleteAccount,
 					},
 				],
 			});
@@ -597,7 +597,7 @@ async function logoutEverywhere() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					click: () => reloadNuxtApp(),
+					onClick:() => reloadNuxtApp(),
 				},
 			],
 		});

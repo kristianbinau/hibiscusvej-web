@@ -1,7 +1,7 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-primary text-2xl mt-2 mb-2">Users</h1>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Users</h1>
 			<p>Her kan vi se alle brugere, deres sessions, logins og personer.</p>
 		</div>
 
@@ -38,7 +38,7 @@
 						class="px-1.5"
 						size="lg"
 						icon="i-material-symbols-check-box-rounded"
-						color="green"
+						color="success"
 						variant="soft"
 					/>
 
@@ -47,7 +47,7 @@
 						class="px-1.5"
 						size="lg"
 						icon="i-material-symbols-check-box-outline-blank"
-						color="red"
+						color="error"
 						variant="soft"
 					/>
 				</template>
@@ -61,7 +61,7 @@
 							class="px-1.5"
 							size="lg"
 							icon="i-material-symbols-check-box-rounded"
-							color="green"
+							color="success"
 							variant="soft"
 						/>
 					</UTooltip>
@@ -71,7 +71,7 @@
 							class="px-1.5"
 							size="lg"
 							icon="i-material-symbols-check-box-outline-blank"
-							color="red"
+							color="error"
 							variant="soft"
 						/>
 					</UTooltip>
@@ -79,25 +79,27 @@
 			</UTable>
 
 			<USlideover
-				v-model="isUserSlideOpen"
+				v-model:open="isUserSlideOpen"
 				:ui="{
-					base: '!max-w-3xl',
+					overlay: '!max-w-3xl',
 				}"
 				@close="atUserSlideClose()"
 			>
-				<!-- TODO: Implement Sync between AdminUser & Users page-->
-				<AdminUser
-					v-if="selectedUserForSlide"
-					:userId="selectedUserForSlide.id"
-					:user="selectedUserForSlide"
-					:showPersons="true"
-					:showLogins="true"
-					:showSessions="true"
-					:showBookings="true"
-					:showRepremands="true"
-					:showClose="true"
-					@close="isUserSlideOpen = false"
-				/>
+				<template #content>
+					<!-- TODO: Implement Sync between AdminUser & Users page-->
+					<AdminUser
+						v-if="selectedUserForSlide"
+						:userId="selectedUserForSlide.id"
+						:user="selectedUserForSlide"
+						:showPersons="true"
+						:showLogins="true"
+						:showSessions="true"
+						:showBookings="true"
+						:showRepremands="true"
+						:showClose="true"
+						@close="isUserSlideOpen = false"
+					/>
+				</template>
 			</USlideover>
 		</ClientOnly>
 	</section>
@@ -261,7 +263,7 @@ async function fetch() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					click: () => reloadNuxtApp(),
+					onClick:() => reloadNuxtApp(),
 				},
 			],
 		});
@@ -289,7 +291,7 @@ async function fetchApartments() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: fetchApartments,
+					onClick:fetchApartments,
 				},
 			],
 		});
@@ -335,11 +337,11 @@ async function verifyUser(id: number) {
 				icon: 'i-material-symbols-check-circle-outline-rounded',
 				title: 'Success!',
 				description: `Du har verificeret brugeren med ID: ${id}`,
-				timeout: 10000,
+				duration: 10000,
 				actions: [
 					{
 						label: 'Undo',
-						click: () => unverifyUser(id),
+						onClick:() => unverifyUser(id),
 					},
 				],
 			});
@@ -354,7 +356,7 @@ async function verifyUser(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: () => verifyUser(id),
+					onClick:() => verifyUser(id),
 				},
 			],
 		});
@@ -387,11 +389,11 @@ async function unverifyUser(id: number) {
 				icon: 'i-material-symbols-check-circle-outline-rounded',
 				title: 'Success!',
 				description: `Du har fjernet verificeringen af brugeren med ID: ${id}`,
-				timeout: 10000,
+				duration: 10000,
 				actions: [
 					{
 						label: 'Undo',
-						click: () => verifyUser(id),
+						onClick:() => verifyUser(id),
 					},
 				],
 			});
@@ -406,7 +408,7 @@ async function unverifyUser(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: () => unverifyUser(id),
+					onClick:() => unverifyUser(id),
 				},
 			],
 		});
@@ -434,7 +436,7 @@ function openUser(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: () => openUser(id),
+					onClick:() => openUser(id),
 				},
 			],
 		});

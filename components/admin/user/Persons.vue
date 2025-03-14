@@ -11,7 +11,7 @@
 		<USkeleton class="h-24" />
 		<UBadge
 			class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-			color="red"
+			color="error"
 		>
 			Ingen Kontaktpersoner! Det er et krav at have mindst én..
 		</UBadge>

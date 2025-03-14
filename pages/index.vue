@@ -10,9 +10,9 @@
 		</video>
 
 		<section
-			class="lg:absolute lg:mt-0 -bottom-16 xl:bottom-0 z-30 mt-2 bg-gray-100 dark:bg-gray-900 p-4 rounded-tl-lg rounded-tr-lg"
+			class="lg:absolute lg:mt-0 -bottom-16 xl:bottom-0 z-30 mt-2 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-tl-lg rounded-tr-lg"
 		>
-			<h1 class="text-primary text-4xl mb-2">Velkommen til Hibiscusvej 2-30</h1>
+			<h1 class="text-(--ui-primary) text-4xl mb-2">Velkommen til Hibiscusvej 2-30</h1>
 
 			<p class="mb-2">
 				Denne side er styret af boligens frivillige bestyrelse.<br />
@@ -23,7 +23,7 @@
 					to="mailto:hibiscusvejbestyrelse@outlook.dk"
 					:external="true"
 					target="_blank"
-					class="text-primary underline hover:text-primary-500"
+					class="text-(--ui-primary) underline"
 				>
 					bestyrelsen</ULink
 				>.
@@ -35,7 +35,7 @@
 					to="https://www.facebook.com/groups/692711287862071"
 					:external="true"
 					target="_blank"
-					class="text-primary underline hover:text-primary-500"
+					class="text-(--ui-primary) underline"
 				>
 					Facebook-gruppe</ULink
 				>, hvor der løbende bliver delt nyttig information.

@@ -3,7 +3,7 @@
 		"*.css": "tailwindcss"
 	},
 	"editor.quickSuggestions": {
-		"strings": true
+		"strings": "on"
 	},
 	"tailwindCSS.experimental.configFile": "tailwind.config.ts",
 	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"]

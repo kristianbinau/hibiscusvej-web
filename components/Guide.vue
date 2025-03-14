@@ -7,10 +7,10 @@
 			<span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
 		</span>
 
-		<UPopover :ui="{ base: 'mr-6' }">
+		<UPopover class="mr-6">
 			<UButton
 				size="xl"
-				color="white"
+				color="neutral"
 				icon="i-material-symbols-help-outline"
 				square
 				@click="hasSeen = '1'"

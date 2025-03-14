@@ -1,7 +1,7 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-primary text-2xl mt-2 mb-2">Bookings</h1>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Bookings</h1>
 			<p>Her kan vi se alle bookings.</p>
 		</div>
 
@@ -39,7 +39,7 @@
 								size="md"
 								icon="i-material-symbols-delete-outline"
 								label="Slet"
-								color="red"
+								color="error"
 								variant="soft"
 								:disabled="isAfter(now, row.fromDate)"
 								:loading="deleteBookingLoading"
@@ -57,7 +57,7 @@
 								<UButton
 									label="Godkend"
 									icon="i-material-symbols-check-circle-rounded"
-									color="red"
+									color="error"
 									variant="soft"
 									size="xs"
 									@click="deleteBooking(row.id)"
@@ -71,25 +71,27 @@
 			</UTable>
 
 			<USlideover
-				v-model="isUserSlideOpen"
+				v-model:open="isUserSlideOpen"
 				:ui="{
-					base: '!max-w-3xl',
+					overlay: '!max-w-3xl',
 				}"
 				@close="atUserSlideClose()"
 			>
-				<!-- TODO: Implement Sync between AdminUser & Users page-->
-				<AdminUser
-					v-if="selectedUserIdForSlide"
-					:userId="selectedUserIdForSlide"
-					:bookings="response.communalBookings"
-					:showPersons="true"
-					:showLogins="true"
-					:showSessions="true"
-					:showBookings="true"
-					:showRepremands="true"
-					:showClose="true"
-					@close="isUserSlideOpen = false"
-				/>
+				<template #content>
+					<!-- TODO: Implement Sync between AdminUser & Users page-->
+					<AdminUser
+						v-if="selectedUserIdForSlide"
+						:userId="selectedUserIdForSlide"
+						:bookings="response.communalBookings"
+						:showPersons="true"
+						:showLogins="true"
+						:showSessions="true"
+						:showBookings="true"
+						:showRepremands="true"
+						:showClose="true"
+						@close="isUserSlideOpen = false"
+					/>
+				</template>
 			</USlideover>
 		</ClientOnly>
 	</section>
@@ -199,7 +201,7 @@ async function fetch() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					click: () => reloadNuxtApp(),
+					onClick:() => reloadNuxtApp(),
 				},
 			],
 		});
@@ -242,7 +244,7 @@ async function deleteBooking(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					click: () => deleteBooking(id),
+					onClick:() => deleteBooking(id),
 				},
 			],
 		});

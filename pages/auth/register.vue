@@ -12,10 +12,10 @@
 			>
 				<UCard>
 					<template #header>
-						<h1 class="text-2xl font-semibold text-primary">Registér</h1>
+						<h1 class="text-2xl font-semibold text-(--ui-primary)">Registér</h1>
 					</template>
 
-					<h3 class="text-xl font-semibold text-primary mb-2">Lejlighed</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Lejlighed</h3>
 
 					<p class="mb-5">
 						Vi har brug for at vide hvilken lejlighed du bor i. Når du har
@@ -23,7 +23,7 @@
 						informationer.
 					</p>
 
-					<UFormGroup
+					<UFormField
 						label="Lejlighed"
 						name="apartmentId"
 						class="mt-3 mb-5"
@@ -31,15 +31,15 @@
 					>
 						<USelectMenu
 							v-model="state.apartmentId"
-							:options="apartments"
+							:items="apartments"
 							value-attribute="id"
 							option-attribute="address"
 						/>
-					</UFormGroup>
+					</UFormField>
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-					<h3 class="text-xl font-semibold text-primary mb-2">Login</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Login</h3>
 
 					<p class="mb-5">
 						Vi har brug for login informationer, så du kan logge ind på din
@@ -47,11 +47,11 @@
 						vores servere.
 					</p>
 
-					<UFormGroup label="Email" name="email" class="my-3" required>
+					<UFormField label="Email" name="email" class="my-3" required>
 						<UInput v-model="state.email" />
-					</UFormGroup>
+					</UFormField>
 
-					<UFormGroup
+					<UFormField
 						label="Kodeord"
 						name="password"
 						class="mt-3 mb-5"
@@ -59,11 +59,11 @@
 						required
 					>
 						<Password v-model="state.password" />
-					</UFormGroup>
+					</UFormField>
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-					<h3 class="text-xl font-semibold text-primary mb-2">Kontakt</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Kontakt</h3>
 
 					<p class="mb-5">
 						Vi har brug for kontaktinformationer på alle beboere i lejligheden.
@@ -72,50 +72,50 @@
 					</p>
 
 					<!-- Contact Information -->
-					<UFormGroup name="persons">
+					<UFormField name="persons">
 						<div class="flex flex-col gap-6">
 							<template v-for="(person, index) in state.persons">
-								<UFormGroup
+								<UFormField
 									:label="`${index + 1}. kontaktperson`"
 									:name="`persons.${index}`"
 								>
-									<UFormGroup
+									<UFormField
 										label="Navn"
 										:name="`persons.${index}.name`"
 										class="mt-3"
 										required
 									>
 										<UInput v-model="person.name" label="Name" />
-									</UFormGroup>
-									<UFormGroup
+									</UFormField>
+									<UFormField
 										label="Email"
 										:name="`persons.${index}.email`"
 										class="mt-3"
 										required
 									>
 										<UInput v-model="person.email" />
-									</UFormGroup>
-									<UFormGroup
+									</UFormField>
+									<UFormField
 										label="Telefon"
 										:name="`persons.${index}.phone`"
 										class="mt-3"
 										required
 									>
 										<UInput v-model="person.phone" label="Phone" />
-									</UFormGroup>
+									</UFormField>
 									<UButton
 										v-if="state.persons.length > 1"
-										color="red"
+										color="error"
 										variant="soft"
 										@click="() => removePerson(index)"
 										class="mt-5"
 									>
 										Fjern kontaktperson
 									</UButton>
-								</UFormGroup>
+								</UFormField>
 							</template>
 						</div>
-					</UFormGroup>
+					</UFormField>
 
 					<template v-if="state.persons.length < 2">
 						<UButton
@@ -130,23 +130,23 @@
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-					<h3 class="text-xl font-semibold text-primary mb-2">Samtykke</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Samtykke</h3>
 
 					<p class="mb-5">
 						Vi har brug for dit samtykke til at behandle dine informationer i
 						overstemmelse med vores
-						<ULink to="/privacy" target="_blank" class="text-primary underline"
+						<ULink to="/privacy" target="_blank" class="text-(--ui-primary) underline"
 							>privatlivspolitik</ULink
 						>.
 					</p>
 
-					<UFormGroup name="acceptedPrivacyPolicy" class="mt-3 mb-5" required>
+					<UFormField name="acceptedPrivacyPolicy" class="mt-3 mb-5" required>
 						<UCheckbox
 							v-model="state.acceptedPrivacyPolicy"
 							label="Jeg giver samtykke til at mine informationer bliver behandlet i henhold til privatlivspolitikken"
 							class="select-none"
 						/>
-					</UFormGroup>
+					</UFormField>
 
 					<template #footer>
 						<div
@@ -154,7 +154,7 @@
 						>
 							<ULink
 								to="/auth/login"
-								class="text-gray-500 underline hover:text-gray-600 dark:hover:text-gray-400"
+								class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 							>
 								Har du allerede en konto?
 							</ULink>
@@ -290,11 +290,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				icon: 'i-material-symbols-person-check',
 				title: 'Konto oprettet',
 				description: 'Skal vi tage dig til login siden?',
-				timeout: 20000,
+				duration: 20000,
 				actions: [
 					{
 						label: 'Ja, før mig til login siden',
-						click: async () => {
+						onClick:async () => {
 							await navigateTo('/auth/login');
 						},
 					},
@@ -308,7 +308,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: () => onSubmit(event),
+						onClick:() => onSubmit(event),
 					},
 				],
 			});
@@ -337,7 +337,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						click: () => onSubmit(event),
+						onClick:() => onSubmit(event),
 					},
 				],
 			});

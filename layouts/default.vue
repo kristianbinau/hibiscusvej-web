@@ -19,34 +19,28 @@ const links = [
 	[
 		{
 			label: 'Hibiscusvej 2-30',
-			labelClass: ' hidden text-2xl md:block',
 			icon: 'Logo',
-			iconClass: 'sm:h-6 sm:w-6',
 			to: '/',
 		},
 	],
 	[
 		{
 			label: 'Fælleslokale',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-add-home-work-rounded',
 			to: '/communal',
 		},
 		{
 			label: 'Lån & Leje',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-tools-power-drill',
 			to: '/borrow',
 		},
 		{
 			label: 'Parkering',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-car-tag',
 			to: '/parking',
 		},
 		{
 			label: 'Kontakt',
-			labelClass: 'hidden sm:block',
 			icon: 'i-material-symbols-phone-enabled',
 			to: '/contact',
 		},

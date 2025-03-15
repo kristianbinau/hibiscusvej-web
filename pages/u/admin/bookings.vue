@@ -31,8 +31,10 @@
 				<template #actions-data="{ row }">
 					<UPopover
 						class="mr-auto"
-						:popper="{ placement: 'top-start' }"
-						overlay
+						:content="{
+							align: 'start',
+							side: 'top',
+						}"
 					>
 						<UTooltip text="Klik for at fjerne booking">
 							<UButton
@@ -46,7 +48,7 @@
 							/>
 						</UTooltip>
 
-						<template #panel>
+						<template #content>
 							<div class="p-4">
 								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 								<p class="text-xs">
@@ -60,7 +62,7 @@
 									color="error"
 									variant="soft"
 									size="xs"
-									@click="deleteBooking(row.id)"
+									@click="deleteBooking(row.getValue('id'))"
 									:loading="deleteBookingLoading"
 									class="mt-4"
 								/>
@@ -201,7 +203,7 @@ async function fetch() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					onClick:() => reloadNuxtApp(),
+					onClick: () => reloadNuxtApp(),
 				},
 			],
 		});
@@ -244,7 +246,7 @@ async function deleteBooking(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:() => deleteBooking(id),
+					onClick: () => deleteBooking(id),
 				},
 			],
 		});

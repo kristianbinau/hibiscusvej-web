@@ -1,7 +1,9 @@
 <template>
 	<UCard class="mb-4">
 		<template #header>
-			<h4 class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white">
+			<h4
+				class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white"
+			>
 				Login ID: {{ login.id }}
 			</h4>
 		</template>
@@ -15,7 +17,12 @@
 		</UFormField>
 
 		<template #footer>
-			<UPopover :popper="{ placement: 'top-end' }" overlay>
+			<UPopover
+				:content="{
+					align: 'end',
+					side: 'top',
+				}"
+			>
 				<UTooltip text="Klik for at nullstille kodeord">
 					<UButton
 						icon="i-material-symbols-lock-reset-rounded"
@@ -27,7 +34,7 @@
 					/>
 				</UTooltip>
 
-				<template #panel>
+				<template #content>
 					<div class="p-4">
 						<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 						<p class="text-xs">
@@ -114,7 +121,7 @@ async function resetPassword() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:resetPassword,
+						onClick: resetPassword,
 					},
 				],
 			});
@@ -132,7 +139,7 @@ async function resetPassword() {
 				{
 					label: 'Kopiér kodeord',
 					color: 'success',
-					onClick:() => {
+					onClick: () => {
 						navigator.clipboard.writeText(data.newPassword);
 						toast.add({
 							id: `reset-password-copied-${login.value.id}`,
@@ -153,7 +160,7 @@ async function resetPassword() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:resetPassword,
+					onClick: resetPassword,
 				},
 			],
 		});

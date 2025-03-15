@@ -119,7 +119,7 @@
 
 					<template v-if="state.persons.length < 2">
 						<UButton
-							color="emerald"
+							color="success"
 							variant="soft"
 							@click="addPerson"
 							class="mt-5 mb-5"

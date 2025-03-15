@@ -93,7 +93,12 @@
 					/>
 				</UTooltip>
 
-				<UPopover :popper="{ placement: 'top-start' }" overlay>
+				<UPopover
+					:content="{
+						align: 'start',
+						side: 'top',
+					}"
+				>
 					<UTooltip
 						class="w-full"
 						text="Klik for at deaktivere notifikationer på alle enheder"
@@ -109,7 +114,7 @@
 						/>
 					</UTooltip>
 
-					<template #panel>
+					<template #content>
 						<div class="p-4">
 							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 							<p class="text-xs">
@@ -141,7 +146,12 @@
 			</p>
 
 			<div class="flex flex-col md:flex-row gap-4">
-				<UPopover :popper="{ placement: 'top-start' }" overlay>
+				<UPopover
+					:content="{
+						align: 'start',
+						side: 'top',
+					}"
+				>
 					<UTooltip class="w-full" text="Klik for at logge ud på alle enheder">
 						<UButton
 							icon="i-material-symbols-key-off-outline-rounded"
@@ -153,7 +163,7 @@
 						/>
 					</UTooltip>
 
-					<template #panel>
+					<template #content>
 						<div class="p-4">
 							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 							<p class="text-xs">
@@ -175,7 +185,12 @@
 					</template>
 				</UPopover>
 
-				<UPopover :popper="{ placement: 'top-start' }" overlay>
+				<UPopover
+					:content="{
+						align: 'start',
+						side: 'top',
+					}"
+				>
 					<UTooltip
 						class="w-full"
 						text="Klik for at permanent slette din bruger"
@@ -190,7 +205,7 @@
 						/>
 					</UTooltip>
 
-					<template #panel>
+					<template #content>
 						<div class="p-4">
 							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 							<p class="text-xs">
@@ -275,7 +290,7 @@ async function fetchMe() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					onClick:() => reloadNuxtApp(),
+					onClick: () => reloadNuxtApp(),
 				},
 			],
 		});
@@ -314,7 +329,7 @@ async function fetchPersons() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					onClick:() => reloadNuxtApp(),
+					onClick: () => reloadNuxtApp(),
 				},
 			],
 		});
@@ -378,7 +393,7 @@ async function fetchLogins() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					onClick:() => reloadNuxtApp(),
+					onClick: () => reloadNuxtApp(),
 				},
 			],
 		});
@@ -474,7 +489,7 @@ async function unsubscribeToPush() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:unsubscribeToPush,
+					onClick: unsubscribeToPush,
 				},
 			],
 		});
@@ -511,7 +526,7 @@ async function unsubscribeToPushEverywhere() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:unsubscribeToPushEverywhere,
+					onClick: unsubscribeToPushEverywhere,
 				},
 			],
 		});
@@ -563,7 +578,7 @@ async function deleteAccount() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:deleteAccount,
+						onClick: deleteAccount,
 					},
 				],
 			});
@@ -597,7 +612,7 @@ async function logoutEverywhere() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					onClick:() => reloadNuxtApp(),
+					onClick: () => reloadNuxtApp(),
 				},
 			],
 		});

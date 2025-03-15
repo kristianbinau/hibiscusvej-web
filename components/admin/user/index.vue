@@ -118,8 +118,10 @@
 				<template v-if="user.verifiedAt === null">
 					<UPopover
 						class="mr-auto"
-						:popper="{ placement: 'top-start' }"
-						overlay
+						:content="{
+							align: 'start',
+							side: 'top',
+						}"
 					>
 						<UTooltip text="Klik for at verificere bruger">
 							<UButton
@@ -131,7 +133,7 @@
 							</UButton>
 						</UTooltip>
 
-						<template #panel>
+						<template #content>
 							<div class="p-4">
 								<p class="text-xs">
 									Du er ved at verificere denne bruger. <br />
@@ -155,7 +157,12 @@
 						</template>
 					</UPopover>
 
-					<UPopover :popper="{ placement: 'top-end' }" overlay>
+					<UPopover
+						:content="{
+							align: 'start',
+							side: 'top',
+						}"
+					>
 						<UTooltip text="Klik for at permanent slette brugeren">
 							<UButton
 								icon="i-material-symbols-delete-forever-outline-rounded"
@@ -166,7 +173,7 @@
 							/>
 						</UTooltip>
 
-						<template #panel>
+						<template #content>
 							<div class="p-4">
 								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 								<p class="text-xs">
@@ -210,8 +217,10 @@
 				<template v-else>
 					<UPopover
 						class="mr-auto"
-						:popper="{ placement: 'top-start' }"
-						overlay
+						:content="{
+							align: 'start',
+							side: 'top',
+						}"
 					>
 						<UTooltip text="Klik for at fjerne verificering">
 							<UButton
@@ -223,7 +232,7 @@
 							</UButton>
 						</UTooltip>
 
-						<template #panel>
+						<template #content>
 							<div class="p-4">
 								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 								<p class="text-xs">

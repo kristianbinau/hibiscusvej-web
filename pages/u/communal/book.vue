@@ -14,7 +14,7 @@
 						label: 'Aktiver notifikationer',
 						icon: 'i-material-symbols-notification-add-outline-rounded',
 						variant: 'soft',
-						color: 'red',
+						color: 'error',
 						onClick:subscribeToPush,
 						loading: subscribeToPushLoading,
 					},

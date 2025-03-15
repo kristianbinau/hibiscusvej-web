@@ -20,7 +20,7 @@ export const useServiceWorker = () => {
 							title: 'Advarsel!',
 							description:
 								'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
-							color: 'red',
+							color: 'error',
 							duration: 0,
 						});
 					}

@@ -16,7 +16,7 @@
 				@click="hasSeen = '1'"
 			/>
 
-			<template #panel>
+			<template #content>
 				<div class="p-4">
 					<section
 						id="guide-content"

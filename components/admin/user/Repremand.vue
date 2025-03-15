@@ -113,8 +113,10 @@
 			</template>
 			<template v-else>
 				<UPopover
-					:popper="{ placement: 'top-start' }"
-					overlay
+					:content="{
+						align: 'start',
+						side: 'top',
+					}"
 				>
 					<UTooltip text="Klik for at permanent slette">
 						<UButton
@@ -124,7 +126,7 @@
 						/>
 					</UTooltip>
 
-					<template #panel>
+					<template #content>
 						<div class="p-4">
 							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
 							<p class="text-xs">

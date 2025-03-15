@@ -17,11 +17,11 @@
 				<template #id-data="{ row }">
 					<UTooltip text="Klik for at se bruger">
 						<UButton
-							@click="openUser(row.id)"
+							@click="openUser(row.getValue('id'))"
 							class="cursor-pointer select-none"
 							color="primary"
 							icon="i-material-symbols-open-in-new"
-							:label="String(row.id)"
+							:label="String(row.getValue('id'))"
 						/>
 					</UTooltip>
 				</template>

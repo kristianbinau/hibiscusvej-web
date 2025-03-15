@@ -11,43 +11,17 @@
 		<ClientOnly>
 			<UTable :loading="fetchingBookings" :data="rows" :columns="columns">
 				<template #id-cell="{ row }">
-					<UPopover
-						class="mr-auto"
-						:popper="{ placement: 'top-start' }"
-						overlay
-					>
-						<UTooltip text="Klik for at fjerne booking">
-							<UButton
-								size="md"
-								label="Slet denne booking"
-								color="error"
-								variant="soft"
-								:disabled="isAfter(now, row.getValue<Date>('date'))"
-								:loading="deleteBookingLoading"
-							/>
-						</UTooltip>
-
-						<template #panel>
-							<div class="p-4">
-								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
-								<p class="text-xs">
-									Du er ved fjerne denne booking. <br />
-									Er du sikker på at du vil fjerne denne booking?
-								</p>
-
-								<UButton
-									label="Godkend"
-									icon="i-material-symbols-check-circle-rounded"
-									color="error"
-									variant="soft"
-									size="xs"
-									@click="deleteBooking(Number(row.id))"
-									:loading="deleteBookingLoading"
-									class="mt-4"
-								/>
-							</div>
-						</template>
-					</UPopover>
+					<UTooltip text="Klik for at fjerne booking">
+						<UButton
+							size="md"
+							label="Slet denne booking"
+							color="error"
+							variant="soft"
+							:disabled="isAfter(now, row.getValue<Date>('date'))"
+							@click="deleteBooking(row.getValue('id'))"
+							:loading="deleteBookingLoading"
+						/>
+					</UTooltip>
 				</template>
 			</UTable>
 		</ClientOnly>

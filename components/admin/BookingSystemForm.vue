@@ -176,7 +176,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							onClick:onSubmit,
+							onClick: onSubmit,
 						},
 					],
 				});
@@ -188,7 +188,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							onClick:onSubmit,
+							onClick: onSubmit,
 						},
 					],
 				});

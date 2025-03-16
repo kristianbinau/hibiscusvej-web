@@ -47,7 +47,7 @@ const links: NavigationMenuItem[][] = [
 				size: 'md',
 				color: 'primary',
 			},
-			onSelect: () => navigateTo('/u'),
+			to: '/u',
 		},
 	],
 ];

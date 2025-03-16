@@ -64,7 +64,7 @@ async function fetchRepremands() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:fetchRepremands,
+						onClick: fetchRepremands,
 					},
 				],
 			});
@@ -80,7 +80,7 @@ async function fetchRepremands() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:fetchRepremands,
+					onClick: fetchRepremands,
 				},
 			],
 		});

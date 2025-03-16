@@ -12,7 +12,9 @@
 		<section
 			class="lg:absolute lg:mt-0 -bottom-16 xl:bottom-0 z-30 mt-2 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-tl-lg rounded-tr-lg"
 		>
-			<h1 class="text-(--ui-primary) text-4xl mb-2">Velkommen til Hibiscusvej 2-30</h1>
+			<h1 class="text-(--ui-primary) text-4xl mb-2">
+				Velkommen til Hibiscusvej 2-30
+			</h1>
 
 			<p class="mb-2">
 				Denne side er styret af boligens frivillige bestyrelse.<br />

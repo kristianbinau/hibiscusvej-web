@@ -70,7 +70,7 @@ export const usePush = () => {
 				actions: [
 					{
 						label: 'Genindlæs siden',
-						onClick:() => {
+						onClick: () => {
 							location.reload();
 						},
 					},

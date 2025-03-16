@@ -1,7 +1,9 @@
 <template>
 	<UCard class="mb-4">
 		<template #header>
-			<h4 class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white">
+			<h4
+				class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white"
+			>
 				Session ID: {{ session.id }}
 			</h4>
 		</template>

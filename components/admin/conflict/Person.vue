@@ -2,7 +2,7 @@
 	<USlideover
 		v-model:open="isOpen"
 		:ui="{
-			overlay: '!max-w-3xl',
+			content: '!max-w-3xl',
 		}"
 	>
 		<template #content>

@@ -6,15 +6,18 @@
 		</div>
 
 		<ClientOnly>
-			<UTable :loading="fetching" :rows="rows" :columns="columns">
-				<template #userId-data="{ row }">
-					<UTooltip v-if="row.userId !== 0" text="Klik for at se bruger">
+			<UTable :loading="fetching" :data="rows" :columns="columns">
+				<template #userId-cell="{ row }">
+					<UTooltip
+						v-if="row.getValue('userId') !== 0"
+						text="Klik for at se bruger"
+					>
 						<UButton
-							@click="openUser(row.userId)"
+							@click="openUser(row.getValue('userId'))"
 							class="cursor-pointer select-none"
 							color="primary"
 							icon="i-material-symbols-open-in-new"
-							:label="String(row.userId)"
+							:label="String(row.getValue('userId'))"
 						/>
 					</UTooltip>
 
@@ -23,12 +26,12 @@
 							class="cursor-pointer select-none"
 							color="primary"
 							icon="i-material-symbols-verified-user-outline-rounded"
-							:label="String(row.userId)"
+							:label="String(row.getValue('userId'))"
 						/>
 					</UTooltip>
 				</template>
 
-				<template #actions-data="{ row }">
+				<template #actions-cell="{ row }">
 					<UPopover
 						class="mr-auto"
 						:content="{
@@ -43,7 +46,7 @@
 								label="Slet"
 								color="error"
 								variant="soft"
-								:disabled="isAfter(now, row.fromDate)"
+								:disabled="isAfter(now, row.getValue<Date>('date'))"
 								:loading="deleteBookingLoading"
 							/>
 						</UTooltip>
@@ -75,7 +78,7 @@
 			<USlideover
 				v-model:open="isUserSlideOpen"
 				:ui="{
-					overlay: '!max-w-3xl',
+					content: '!max-w-3xl',
 				}"
 				@close="atUserSlideClose()"
 			>
@@ -84,7 +87,6 @@
 					<AdminUser
 						v-if="selectedUserIdForSlide"
 						:userId="selectedUserIdForSlide"
-						:bookings="response.communalBookings"
 						:showPersons="true"
 						:showLogins="true"
 						:showSessions="true"
@@ -101,6 +103,7 @@
 
 <script lang="ts" setup>
 import type { AdminBookingsApiResponse } from '~/utils/types/admin';
+import type { TableColumn } from '@nuxt/ui';
 
 import { isAfter } from 'date-fns';
 
@@ -116,45 +119,51 @@ useHead({
 const toast = useToast();
 const now = ref(new Date());
 
-const columns = [
+type BookingRow = {
+	id: number;
+	userId: number;
+	date: Date;
+	createdAt: Date;
+	updatedAt: Date;
+};
+
+const columns: TableColumn<BookingRow>[] = [
 	{
-		key: 'id',
-		label: 'ID',
-		sortable: true,
+		accessorKey: 'id',
+		header: 'ID',
 	},
 	{
-		key: 'userId',
-		label: 'UserId',
-		sortable: true,
+		accessorKey: 'userId',
+		header: 'UserId',
 	},
 	{
-		key: 'date',
-		label: 'Dato',
-		sortable: true,
+		accessorKey: 'date',
+		header: 'Dato',
+		cell: ({ row }) => row.getValue<Date>('date').toLocaleDateString(),
 	},
 	{
-		key: 'createdAt',
-		label: 'Oprettet',
-		sortable: true,
+		accessorKey: 'createdAt',
+		header: 'Oprettet',
+		cell: ({ row }) => row.getValue<Date>('createdAt').toLocaleDateString(),
 	},
 	{
-		key: 'updatedAt',
-		label: 'Opdateret',
-		sortable: true,
+		accessorKey: 'updatedAt',
+		header: 'Opdateret',
+		cell: ({ row }) => row.getValue<Date>('updatedAt').toLocaleDateString(),
 	},
 	{
-		key: 'actions',
-		label: 'Handlinger',
+		accessorKey: 'actions',
+		header: 'Handlinger',
 	},
 ];
 
-const rows = computed(() => {
+const rows = computed<BookingRow[]>(() => {
 	return bookingsJoined.value.map((booking) => {
 		return {
 			...booking,
-			date: new Date(booking.from).toLocaleDateString(),
-			createdAt: new Date(booking.createdAt).toLocaleString(),
-			updatedAt: new Date(booking.updatedAt).toLocaleString(),
+			date: new Date(booking.from),
+			createdAt: new Date(booking.createdAt),
+			updatedAt: new Date(booking.updatedAt),
 			actions: booking.id,
 		};
 	});

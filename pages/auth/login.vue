@@ -15,12 +15,17 @@
 						<h1 class="text-2xl font-semibold text-(--ui-primary)">Login</h1>
 					</template>
 
-					<UFormField label="Email" name="email" required>
-						<UInput v-model="state.email" />
+					<UFormField label="Email" name="email">
+						<UInput
+							v-model="state.email"
+							autocomplete="email"
+							inputmode="email"
+							class="w-full"
+						/>
 					</UFormField>
 
-					<UFormField label="Password" name="password" class="mt-3" required>
-						<Password v-model="state.password" />
+					<UFormField label="Password" name="password" class="mt-3">
+						<Password v-model="state.password" class="w-full" />
 					</UFormField>
 
 					<template #footer>
@@ -74,10 +79,7 @@ type Schema = z.output<typeof schema>;
 
 const form = ref<Form<Schema>>();
 
-const state = reactive<{
-	email: string | undefined;
-	password: string | undefined;
-}>({
+const state = reactive<Partial<Schema>>({
 	email: undefined,
 	password: undefined,
 });
@@ -118,7 +120,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:() => onSubmit(event),
+						onClick: () => onSubmit(event),
 					},
 				],
 			});
@@ -127,11 +129,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (error.statusCode === 401) {
 			form.value!.setErrors([
 				{
-					path: 'email',
+					name: 'email',
 					message: 'Email eller kodeord er forkert',
 				},
 				{
-					path: 'password',
+					name: 'password',
 					message: 'Email eller kodeord er forkert',
 				},
 			]);
@@ -143,7 +145,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:() => onSubmit(event),
+						onClick: () => onSubmit(event),
 					},
 				],
 			});

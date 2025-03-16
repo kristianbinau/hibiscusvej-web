@@ -71,8 +71,17 @@
 			</UFormField>
 		</div>
 
-		<UAccordion :items="accordionItems" class="mt-4" :ui="{ item: 'relative' }">
-			<template #persons>
+		<UAccordion
+			:items="accordionItems"
+			class="mt-4"
+			:ui="{
+				header:
+					'bg-(--ui-color-primary-950) text-(--ui-color-primary-400) py-1.5 px-2.5 rounded-lg mb-1.5',
+				trigger: 'py-0',
+				body: 'relative',
+			}"
+		>
+			<template #persons-body>
 				<AdminUserPersons
 					v-if="showPersons"
 					:userId="userId"
@@ -80,7 +89,7 @@
 				/>
 			</template>
 
-			<template #logins>
+			<template #logins-body>
 				<AdminUserLogins
 					v-if="showLogins"
 					:userId="userId"
@@ -88,7 +97,7 @@
 				/>
 			</template>
 
-			<template #sessions>
+			<template #sessions-body>
 				<AdminUserSessions
 					v-if="showSessions"
 					:userId="userId"
@@ -96,7 +105,7 @@
 				/>
 			</template>
 
-			<template #bookings>
+			<template #bookings-body>
 				<AdminUserBookings
 					v-if="showBookings"
 					:userId="userId"
@@ -104,7 +113,7 @@
 				/>
 			</template>
 
-			<template #repremands>
+			<template #repremands-body>
 				<AdminUserRepremands
 					v-if="showRepremands"
 					:userId="userId"
@@ -114,10 +123,9 @@
 		</UAccordion>
 
 		<template #footer>
-			<div class="flex items-center justify-end gap-3">
+			<div class="flex items-center justify-between gap-3">
 				<template v-if="user.verifiedAt === null">
 					<UPopover
-						class="mr-auto"
 						:content="{
 							align: 'start',
 							side: 'top',
@@ -168,8 +176,6 @@
 								icon="i-material-symbols-delete-forever-outline-rounded"
 								color="error"
 								variant="soft"
-								class="flex-1"
-								block
 							/>
 						</UTooltip>
 

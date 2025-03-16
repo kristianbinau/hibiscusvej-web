@@ -64,7 +64,7 @@ async function fetchBookings() {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:fetchBookings,
+						onClick: fetchBookings,
 					},
 				],
 			});
@@ -80,7 +80,7 @@ async function fetchBookings() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:fetchBookings,
+					onClick: fetchBookings,
 				},
 			],
 		});

@@ -15,7 +15,7 @@
 						icon: 'i-material-symbols-notification-add-outline-rounded',
 						variant: 'soft',
 						color: 'error',
-						onClick:subscribeToPush,
+						onClick: subscribeToPush,
 						loading: subscribeToPushLoading,
 					},
 				]"
@@ -23,7 +23,9 @@
 
 			<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
 				<div>
-					<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Book fælleslokalet</h1>
+					<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">
+						Book fælleslokalet
+					</h1>
 					<p>
 						Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
 						Du kan fjerne din booking indtil før den starter. <br />
@@ -207,7 +209,7 @@ const { data: currentUser, refresh: currentUserRefresh } = await useFetch(
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:() => currentUserRefresh(),
+						onClick: () => currentUserRefresh(),
 					},
 				],
 			});
@@ -264,7 +266,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							onClick:onSubmit,
+							onClick: onSubmit,
 						},
 					],
 				});
@@ -276,7 +278,7 @@ async function onSubmit() {
 					actions: [
 						{
 							label: 'Prøv igen',
-							onClick:onSubmit,
+							onClick: onSubmit,
 						},
 					],
 				});

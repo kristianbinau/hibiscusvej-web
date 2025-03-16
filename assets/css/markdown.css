@@ -40,7 +40,7 @@ section.markdown-content p:not(.markdown-exclude) {
 }
 
 section.markdown-content a:not(.markdown-exclude) {
-	@apply text-(--ui-primary) underline ;
+	@apply text-(--ui-primary) underline;
 }
 
 section.markdown-content ul:not(.markdown-exclude) {

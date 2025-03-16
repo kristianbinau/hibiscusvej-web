@@ -12,7 +12,9 @@
 			>
 				<UCard>
 					<template #header>
-						<h1 class="text-2xl font-semibold text-(--ui-primary)">Ny adgangskode</h1>
+						<h1 class="text-2xl font-semibold text-(--ui-primary)">
+							Ny adgangskode
+						</h1>
 					</template>
 
 					<p class="mb-5">
@@ -100,10 +102,7 @@ type Schema = z.output<typeof schema>;
 
 const form = ref<Form<Schema>>();
 
-const state = reactive<{
-	singleUsePassword: string | undefined;
-	newPassword: string | undefined;
-}>({
+const state = reactive<Partial<Schema>>({
 	singleUsePassword: undefined,
 	newPassword: undefined,
 });
@@ -142,7 +141,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:() => onSubmit(event),
+						onClick: () => onSubmit(event),
 					},
 				],
 			});
@@ -151,7 +150,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (error.statusCode === 401) {
 			form.value!.setErrors([
 				{
-					path: 'singleUsePassword',
+					name: 'singleUsePassword',
 					message: 'Kodeord er forkert',
 				},
 			]);
@@ -163,7 +162,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:() => onSubmit(event),
+						onClick: () => onSubmit(event),
 					},
 				],
 			});

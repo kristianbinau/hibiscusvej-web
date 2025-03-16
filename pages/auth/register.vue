@@ -3,6 +3,7 @@
 		class="lg:w-2/4 lg:px-0 px-4 mx-auto flex flex-col items-center gap-4 mt-12"
 	>
 		<ClientOnly>
+			<!-- @vue-ignore -->
 			<UForm
 				ref="form"
 				:schema="schema"
@@ -15,7 +16,9 @@
 						<h1 class="text-2xl font-semibold text-(--ui-primary)">Registér</h1>
 					</template>
 
-					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Lejlighed</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">
+						Lejlighed
+					</h3>
 
 					<p class="mb-5">
 						Vi har brug for at vide hvilken lejlighed du bor i. Når du har
@@ -32,8 +35,8 @@
 						<USelectMenu
 							v-model="state.apartmentId"
 							:items="apartments"
-							value-attribute="id"
-							option-attribute="address"
+							value-key="id"
+							class="w-full"
 						/>
 					</UFormField>
 
@@ -48,7 +51,7 @@
 					</p>
 
 					<UFormField label="Email" name="email" class="my-3" required>
-						<UInput v-model="state.email" />
+						<UInput v-model="state.email" class="w-full" />
 					</UFormField>
 
 					<UFormField
@@ -58,12 +61,14 @@
 						eager-validation
 						required
 					>
-						<Password v-model="state.password" />
+						<Password v-model="state.password" class="w-full" />
 					</UFormField>
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Kontakt</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">
+						Kontakt
+					</h3>
 
 					<p class="mb-5">
 						Vi har brug for kontaktinformationer på alle beboere i lejligheden.
@@ -85,7 +90,7 @@
 										class="mt-3"
 										required
 									>
-										<UInput v-model="person.name" label="Name" />
+										<UInput v-model="person.name" label="Name" class="w-full" />
 									</UFormField>
 									<UFormField
 										label="Email"
@@ -93,7 +98,7 @@
 										class="mt-3"
 										required
 									>
-										<UInput v-model="person.email" />
+										<UInput v-model="person.email" class="w-full" />
 									</UFormField>
 									<UFormField
 										label="Telefon"
@@ -101,7 +106,11 @@
 										class="mt-3"
 										required
 									>
-										<UInput v-model="person.phone" label="Phone" />
+										<UInput
+											v-model="person.phone"
+											label="Phone"
+											class="w-full"
+										/>
 									</UFormField>
 									<UButton
 										v-if="state.persons.length > 1"
@@ -130,12 +139,17 @@
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Samtykke</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">
+						Samtykke
+					</h3>
 
 					<p class="mb-5">
 						Vi har brug for dit samtykke til at behandle dine informationer i
 						overstemmelse med vores
-						<ULink to="/privacy" target="_blank" class="text-(--ui-primary) underline"
+						<ULink
+							to="/privacy"
+							target="_blank"
+							class="text-(--ui-primary) underline"
 							>privatlivspolitik</ULink
 						>.
 					</p>
@@ -176,7 +190,7 @@
 
 <script lang="ts" setup>
 import { z } from 'zod';
-import type { Form, FormSubmitEvent } from '#ui/types';
+import type { SelectMenuItem, Form, FormSubmitEvent } from '#ui/types';
 import type { Apartment } from '~/utils/types/global';
 
 definePageMeta({
@@ -242,17 +256,15 @@ type Schema = z.output<typeof schema>;
 
 const form = ref<Form<Schema>>();
 
-const state = reactive<{
-	apartmentId: number | undefined;
-	email: string | undefined;
-	password: string | undefined;
+type PartialSchema = Omit<Partial<Schema>, 'persons'> & {
 	persons: {
 		name: string | undefined;
 		email: string | undefined;
 		phone: string | undefined;
 	}[];
-	acceptedPrivacyPolicy: boolean;
-}>({
+};
+
+const state = reactive<PartialSchema>({
 	apartmentId: undefined,
 	email: undefined,
 	password: undefined,
@@ -268,6 +280,7 @@ const state = reactive<{
 
 const onSubmitLoading = ref<boolean>(false);
 
+// @ts-ignore
 async function onSubmit(event: FormSubmitEvent<Schema>) {
 	onSubmitLoading.value = true;
 
@@ -294,7 +307,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Ja, før mig til login siden',
-						onClick:async () => {
+						onClick: async () => {
 							await navigateTo('/auth/login');
 						},
 					},
@@ -308,7 +321,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:() => onSubmit(event),
+						onClick: () => onSubmit(event),
 					},
 				],
 			});
@@ -317,7 +330,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (error.statusCode === 422) {
 			form.value!.setErrors(
 				error.data.errors.map((error: any) => ({
-					// Map validation errors to { path: string, message: string }
 					message: error.message,
 					path: error.path,
 				})),
@@ -326,7 +338,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			form.value!.setErrors([
 				{
 					message: 'Email er allerede i brug',
-					path: 'email',
+					name: 'email',
 				},
 			]);
 		} else {
@@ -337,7 +349,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 				actions: [
 					{
 						label: 'Prøv igen',
-						onClick:() => onSubmit(event),
+						onClick: () => onSubmit(event),
 					},
 				],
 			});
@@ -350,7 +362,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 /**
  * Apartments
  */
-const apartments = ref<{ id: number; address: string }[]>([]);
+const apartments = ref<{ id: number; label: string }[]>([]);
 
 async function fetchApartments() {
 	const { data } = await useFetch('/api/app/apartments');
@@ -365,7 +377,7 @@ async function fetchApartments() {
 
 		return {
 			id: apartment.id,
-			address,
+			label: address,
 		};
 	});
 }

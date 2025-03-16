@@ -13,8 +13,8 @@
 				@update="atConflictHandlingClose"
 			/>
 
-			<UTable :loading="fetching" :rows="rows" :columns="columns">
-				<template #id-data="{ row }">
+			<UTable :loading="fetching" :data="rows" :columns="columns">
+				<template #id-cell="{ row }">
 					<UTooltip text="Klik for at se bruger">
 						<UButton
 							@click="openUser(row.getValue('id'))"
@@ -26,15 +26,17 @@
 					</UTooltip>
 				</template>
 
-				<template #apartmentId-data="{ row }">
-					<UTooltip :text="`ID: ${row.apartmentId}`">
-						{{ convertApartmentIdToApartmentAdress(row.apartmentId) }}
+				<template #apartmentId-cell="{ row }">
+					<UTooltip :text="`ID: ${row.getValue('apartmentId')}`">
+						{{
+							convertApartmentIdToApartmentAdress(row.getValue('apartmentId'))
+						}}
 					</UTooltip>
 				</template>
 
-				<template #admin-data="{ row }">
+				<template #admin-cell="{ row }">
 					<UBadge
-						v-if="row.admin"
+						v-if="row.getValue('admin')"
 						class="px-1.5"
 						size="lg"
 						icon="i-material-symbols-check-box-rounded"
@@ -52,10 +54,10 @@
 					/>
 				</template>
 
-				<template #verified-data="{ row }">
+				<template #verified-cell="{ row }">
 					<UTooltip
-						v-if="row.verified !== 'Ikke verificeret'"
-						:text="row.verified"
+						v-if="row.getValue('verified') !== 'Ikke verificeret'"
+						:text="row.getValue('verified')"
 					>
 						<UBadge
 							class="px-1.5"
@@ -81,7 +83,7 @@
 			<USlideover
 				v-model:open="isUserSlideOpen"
 				:ui="{
-					overlay: '!max-w-3xl',
+					content: '!max-w-3xl',
 				}"
 				@close="atUserSlideClose()"
 			>
@@ -108,6 +110,7 @@
 <script lang="ts" setup>
 import type { AdminUsersApiResponse, User } from '~/utils/types/admin';
 import type { Apartment } from '~/utils/types/global';
+import type { TableColumn } from '@nuxt/ui';
 
 definePageMeta({
 	layout: 'logged-in-admin',
@@ -121,51 +124,56 @@ useHead({
 const toast = useToast();
 const { query } = useRoute();
 
-const columns = [
+type UserRow = {
+	id: number;
+	apartmentId: number;
+	admin: boolean;
+	verified: string;
+	sessionCount: number;
+	loginCount: number;
+	personCount: number;
+	createdAt: Date;
+	updatedAt: Date;
+};
+
+const columns: TableColumn<UserRow>[] = [
 	{
-		key: 'id',
-		label: 'ID',
-		sortable: true,
+		accessorKey: 'id',
+		header: 'ID',
 	},
 	{
-		key: 'apartmentId',
-		label: 'Apartment',
-		sortable: true,
+		accessorKey: 'apartmentId',
+		header: 'Apartment',
 	},
 	{
-		key: 'admin',
-		label: 'isAdmin',
-		sortable: true,
+		accessorKey: 'admin',
+		header: 'isAdmin',
 	},
 	{
-		key: 'verified',
-		label: 'Verificeret',
-		sortable: true,
+		accessorKey: 'verified',
+		header: 'Verificeret',
 	},
 	{
-		key: 'sessionCount',
-		label: 'Sessions',
-		sortable: true,
+		accessorKey: 'sessionCount',
+		header: 'Sessions',
 	},
 	{
-		key: 'loginCount',
-		label: 'Logins',
-		sortable: true,
+		accessorKey: 'loginCount',
+		header: 'Logins',
 	},
 	{
-		key: 'personCount',
-		label: 'Personer',
-		sortable: true,
+		accessorKey: 'personCount',
+		header: 'Personer',
 	},
 	{
-		key: 'createdAt',
-		label: 'Oprettet',
-		sortable: true,
+		accessorKey: 'createdAt',
+		header: 'Oprettet',
+		cell: ({ row }) => row.getValue<Date>('createdAt').toLocaleDateString(),
 	},
 	{
-		key: 'updatedAt',
-		label: 'Opdateret',
-		sortable: true,
+		accessorKey: 'updatedAt',
+		header: 'Opdateret',
+		cell: ({ row }) => row.getValue<Date>('createdAt').toLocaleDateString(),
 	},
 ];
 
@@ -175,7 +183,7 @@ onMounted(() => {
 	}
 });
 
-const rows = computed(() => {
+const rows = computed<UserRow[]>(() => {
 	return usersJoined.value.map((user) => {
 		const verifiedByUser = usersJoined.value.find(
 			(verifiedUser) => verifiedUser.id === user.verifiedByUserId,
@@ -193,8 +201,8 @@ const rows = computed(() => {
 			sessionCount: user.sessions.length,
 			loginCount: user.logins.length,
 			personCount: user.persons.length,
-			createdAt: new Date(user.createdAt).toLocaleDateString(),
-			updatedAt: new Date(user.updatedAt).toLocaleDateString(),
+			createdAt: new Date(user.createdAt),
+			updatedAt: new Date(user.updatedAt),
 		};
 	});
 });
@@ -263,7 +271,7 @@ async function fetch() {
 			actions: [
 				{
 					label: 'Genindlæs siden',
-					onClick:() => reloadNuxtApp(),
+					onClick: () => reloadNuxtApp(),
 				},
 			],
 		});
@@ -291,7 +299,7 @@ async function fetchApartments() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:fetchApartments,
+					onClick: fetchApartments,
 				},
 			],
 		});
@@ -341,7 +349,7 @@ async function verifyUser(id: number) {
 				actions: [
 					{
 						label: 'Undo',
-						onClick:() => unverifyUser(id),
+						onClick: () => unverifyUser(id),
 					},
 				],
 			});
@@ -356,7 +364,7 @@ async function verifyUser(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:() => verifyUser(id),
+					onClick: () => verifyUser(id),
 				},
 			],
 		});
@@ -393,7 +401,7 @@ async function unverifyUser(id: number) {
 				actions: [
 					{
 						label: 'Undo',
-						onClick:() => verifyUser(id),
+						onClick: () => verifyUser(id),
 					},
 				],
 			});
@@ -408,7 +416,7 @@ async function unverifyUser(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:() => unverifyUser(id),
+					onClick: () => unverifyUser(id),
 				},
 			],
 		});
@@ -436,7 +444,7 @@ function openUser(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:() => openUser(id),
+					onClick: () => openUser(id),
 				},
 			],
 		});

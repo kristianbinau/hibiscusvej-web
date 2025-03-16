@@ -200,7 +200,7 @@ async function onDelete() {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick:onDelete,
+					onClick: onDelete,
 				},
 			],
 		});

@@ -7,7 +7,7 @@
 importScripts('/js/lib/localforage.min.js');
 
 localforage.config({
-    name: 'service-worker-auth-storage',
+	name: 'service-worker-auth-storage',
 });
 
 /**

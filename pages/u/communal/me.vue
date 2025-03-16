@@ -30,10 +30,10 @@
 
 <script lang="ts" setup>
 import type { InternalApi } from 'nitropack';
+import type { TableColumn } from '@nuxt/ui';
 type BookingsMeApiResponse = InternalApi['/api/app/bookings/me']['get'];
 
 import { isAfter } from 'date-fns';
-import type { TableColumn } from '@nuxt/ui';
 
 definePageMeta({
 	layout: 'logged-in',

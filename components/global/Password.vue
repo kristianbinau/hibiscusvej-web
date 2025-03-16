@@ -2,6 +2,7 @@
 	<UInput
 		v-model="model"
 		:type="visible ? 'text' : 'password'"
+		autocomplete="password"
 	>
 		<template #trailing>
 			<UIcon

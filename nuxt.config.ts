@@ -67,7 +67,8 @@ export default defineNuxtConfig({
 	},
 
 	typescript: {
-		typeCheck: true,
+		// https://github.com/nuxt/ui/issues/3405
+		typeCheck: false,
 	},
 
 	css: ['~/assets/css/main.css'],

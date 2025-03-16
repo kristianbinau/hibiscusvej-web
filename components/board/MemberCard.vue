@@ -17,10 +17,8 @@
 </template>
 
 <script lang="ts" setup>
-import { type BoardCollectionItem } from '@nuxt/content';
-
 const { member } = defineProps<{
-	member: BoardCollectionItem;
+	member: any;
 }>();
 </script>
 

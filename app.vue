@@ -65,7 +65,3 @@ useHead({
 	],
 });
 </script>
-
-<style>
-@import url('~/assets/css/markdown.css');
-</style>

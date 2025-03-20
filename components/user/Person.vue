@@ -24,15 +24,15 @@
 			</template>
 
 			<UFormField label="Name" name="name" required>
-				<UInput v-model="state.name" />
+				<UInput v-model="state.name" class="w-full" />
 			</UFormField>
 
 			<UFormField label="Email" name="email" required>
-				<UInput v-model="state.email" />
+				<UInput v-model="state.email" class="w-full" />
 			</UFormField>
 
 			<UFormField label="Phone" name="phone" required>
-				<UInput v-model="state.phone" />
+				<UInput v-model="state.phone" class="w-full" />
 			</UFormField>
 
 			<template #footer>

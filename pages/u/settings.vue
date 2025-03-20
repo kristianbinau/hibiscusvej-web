@@ -418,6 +418,8 @@ const {
 const subscribeToPushLoading = ref<boolean>(false);
 
 async function subscribeToPush() {
+	if (subscribeToPushLoading.value) return;
+
 	subscribeToPushLoading.value = true;
 
 	if (!isSupported.value) {
@@ -453,6 +455,8 @@ async function subscribeToPush() {
 const unsubscribeToPushLoading = ref<boolean>(false);
 
 async function unsubscribeToPush() {
+	if (unsubscribeToPushLoading.value) return;
+
 	unsubscribeToPushLoading.value = true;
 
 	try {
@@ -464,6 +468,7 @@ async function unsubscribeToPush() {
 				title: 'Info!',
 				description: 'Du modtager ikke notifikationer på denne enhed',
 			});
+			unsubscribeToPushLoading.value = false;
 			return;
 		}
 
@@ -501,6 +506,8 @@ async function unsubscribeToPush() {
 const unsubscribeToPushEverywhereLoading = ref<boolean>(false);
 
 async function unsubscribeToPushEverywhere() {
+	if (unsubscribeToPushEverywhereLoading.value) return;
+
 	unsubscribeToPushEverywhereLoading.value = true;
 
 	try {

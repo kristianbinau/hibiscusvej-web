@@ -28,7 +28,7 @@ Der er rengørings udstyr ved køkkenet inkl. genbrugelige klude, viskestykker o
   _Undgå at spille musik for åbne døre og vinduer eller støje på en måde, der generer dine naboer – særlige hensyn skal tages mellem kl. 22.00 og 07.00. Fredag og lørdag må fest/sammenkomster fortsætte til kl. 24.00. Fortsætter arrangementet til efter kl. 24.00 skal snak og musik dæmpes, så de omkringboende ikke generes af støj._
 - Overtrædelse af overstående regler vil medføre udsmidning af lokalet med det samme og minimum 6 måneders karantæne.
 
-<div class="flex justify-center w-100 mt-8">
+<div class="flex justify-center w-full mt-8">
 
 :UButton{label="Book Fælleslokale" to="/u/communal/book" size="xl" icon="i-material-symbols-add-home-work-rounded" class="markdown-exclude"}
 

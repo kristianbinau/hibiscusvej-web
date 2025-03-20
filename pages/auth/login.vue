@@ -71,8 +71,8 @@ const { hash } = useHash();
 const toast = useToast();
 
 const schema = z.object({
-	email: z.string(),
-	password: z.string(),
+	email: z.string({ required_error: 'Påkrævet' }),
+	password: z.string({ required_error: 'Påkrævet' }),
 });
 
 type Schema = z.output<typeof schema>;

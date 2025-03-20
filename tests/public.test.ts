@@ -10,7 +10,7 @@ describe('public', async () => {
 		const page = await createPage();
 		await page.goto(url('/'), { waitUntil: 'hydration' });
 		const text = await page.textContent('h1');
-		expect(text).toBe('Velkommen til Hibiscusvej 2-30');
+		expect(text).toBe(' Velkommen til Hibiscusvej 2-30 ');
 	});
 
 	test('privacy', async () => {

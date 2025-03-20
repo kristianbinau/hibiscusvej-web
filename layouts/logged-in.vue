@@ -12,7 +12,7 @@
 	<footer
 		class="md:container w-full md:px-0 sm:px-3 px-1 mt-auto mb-10 mx-auto"
 	>
-		<LayoutLinks />
+		<LazyLayoutLinks hydrate-never />
 	</footer>
 </template>
 

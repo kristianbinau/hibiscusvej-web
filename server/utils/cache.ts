@@ -1,4 +1,4 @@
-import type { H3Event, EventHandlerResponse } from 'h3';
+import type { EventHandlerResponse } from 'h3';
 import { type CachedEventHandlerOptions } from 'nitropack';
 
 export const cacheOneWeek =

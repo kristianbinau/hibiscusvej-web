@@ -31,7 +31,7 @@ class ExecutionLock {
 		this.isLocked = true;
 
 		// Creating a promise that will resolve when ExecutionLock is unlocked. (Or autoUnlockAfterMilliseconds is exceeded)
-		this.lockedPromise = new Promise((resolve, reject) => {
+		this.lockedPromise = new Promise((resolve, _reject) => {
 			let interval, timeout;
 
 			// AutoUnlock
@@ -157,8 +157,6 @@ self.addEventListener('notificationclick', (event) => {
  * @return {Promise<Response>}
  */
 function processOnFetch(event) {
-	const url = new URL(event.request.url);
-
 	// We currently only want to do stuff with "real" requests: Navigation and API calls.
 	if (
 		!(event.request.mode === 'navigate' || event.request.url.includes('/api/'))

@@ -167,7 +167,7 @@ const useDecodedToken = async (event: H3Event<EventHandlerRequest>) => {
 		const decodedToken = await verifyToken(token);
 
 		return decodedToken;
-	} catch (error) {
+	} catch {
 		throw createError({
 			statusCode: 401,
 			statusMessage: 'Unauthorized',

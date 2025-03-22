@@ -19,7 +19,7 @@ export const users = sqliteTable(
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 	},
-	(user) => [],
+	(_user) => [],
 );
 
 export const userPersons = sqliteTable(

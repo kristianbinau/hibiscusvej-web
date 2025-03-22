@@ -71,11 +71,10 @@ export default eventHandler(async (event) => {
 	}
 
 	// Try to create a new userLogin
-	let userLogin = null;
 	try {
 		const hashedPassword = await hashPassword(body.password);
 
-		userLogin = await useDrizzle()
+		await useDrizzle()
 			.insert(tables.userLogins)
 			.values({
 				userId: user.id,

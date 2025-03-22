@@ -27,7 +27,7 @@ export default eventHandler(async (event) => {
 				statusMessage: 'Unauthorized',
 			});
 		}
-	} catch (error) {
+	} catch {
 		deleteCookie(event, REFRESH_COOKIE_NAME);
 		throw createError({
 			statusCode: 401,

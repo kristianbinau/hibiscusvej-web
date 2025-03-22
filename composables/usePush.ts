@@ -64,7 +64,7 @@ export const usePush = () => {
 			}
 
 			return true;
-		} catch (error) {
+		} catch {
 			toast.add({
 				title: 'Der opstod en fejl under oprettelse af notifikationer',
 				actions: [
@@ -97,7 +97,7 @@ export const usePush = () => {
 	function urlBase64ToUint8Array(base64String: string) {
 		var padding = '='.repeat((4 - (base64String.length % 4)) % 4);
 		var base64 = (base64String + padding)
-			.replace(/\-/g, '+')
+			.replace(/-/g, '+')
 			.replace(/_/g, '/');
 
 		var rawData = window.atob(base64);
@@ -129,7 +129,7 @@ export const usePush = () => {
 				title: 'Notifikationer er nu aktiveret',
 			});
 			return true;
-		} catch (error) {
+		} catch {
 			toast.add({
 				title: 'Der opstod en fejl under oprettelse af notifikationer',
 			});

@@ -1,7 +1,14 @@
-name: Deploy to NuxtHub
+name: Check & Deploy
 on: push
 
 jobs:
+  lint:
+    name: Lint JS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm run lint
+
   deploy:
     name: 'Deploy to NuxtHub'
     runs-on: ubuntu-latest

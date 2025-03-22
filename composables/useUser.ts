@@ -12,7 +12,7 @@ export const useUser = async () => {
 		} else {
 			authUser.value = data.value;
 		}
-	} catch (error: any) {
+	} catch {
 		authUser.value = null;
 	}
 

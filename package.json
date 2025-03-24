@@ -51,7 +51,7 @@
 		"typescript": "^5.8.2",
 		"vitest": "^3.0.9",
 		"vue-tsc": "^2.2.8",
-		"wrangler": "^4.3.0"
+		"wrangler": "^4.4.0"
 	},
 	"volta": {
 		"node": "22.11.0"

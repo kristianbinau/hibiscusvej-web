@@ -6,11 +6,6 @@
 		"strings": "on"
 	},
 	"tailwindCSS.experimental.configFile": "tailwind.config.ts",
-	"tailwindCSS.classAttributes": [
-		"class",
-		"className",
-		"ngClass",
-		"ui"
-	],
+	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"],
 	"oxc.enable": true
 }

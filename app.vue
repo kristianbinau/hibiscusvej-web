@@ -2,7 +2,7 @@
 	<div class="flex flex-col min-h-dvh">
 		<NuxtRouteAnnouncer />
 
-		<UApp>
+		<UApp :locale="da">
 			<NuxtLayout>
 				<NuxtPage />
 			</NuxtLayout>
@@ -15,6 +15,8 @@
 </template>
 
 <script setup lang="ts">
+import { da } from '@nuxt/ui/locale';
+
 useHead({
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} - Hibiscusvej 2-30` : 'Hibiscusvej 2-30';

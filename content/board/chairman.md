@@ -1,6 +1,6 @@
 ---
 type: chairman
-name: 'Fie K. W. Rasmussen'
+name: 'Kristina W. Rasmussen'
 termStartYear: 2024
 termEndYear: 2026
 links:

@@ -21,7 +21,7 @@
 				]"
 			></UAlert>
 
-			<div class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
+			<div v-show="false" class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6">
 				<div>
 					<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">
 						Book fælleslokalet
@@ -66,6 +66,10 @@
 						>Book</UButton
 					>
 				</div>
+			</div>
+
+			<div class="flex justify-center mx-auto">
+				<BookingCalendar></BookingCalendar>
 			</div>
 		</ClientOnly>
 	</section>

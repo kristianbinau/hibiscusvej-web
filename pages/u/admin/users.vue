@@ -85,7 +85,7 @@
 				:ui="{
 					content: '!max-w-3xl',
 				}"
-				@close="atUserSlideClose()"
+				@after:leave="atUserSlideClose()"
 			>
 				<template #content>
 					<!-- TODO: Implement Sync between AdminUser & Users page-->

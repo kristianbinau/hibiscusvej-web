@@ -72,7 +72,7 @@
 			</div>
 
 			<div class="flex justify-center mx-auto">
-				<BookingCalendar></BookingCalendar>
+				<BookingCalendar v-if="currentUser" :userId="currentUser.auth.user.id"></BookingCalendar v-if="">
 			</div>
 		</ClientOnly>
 	</section>

@@ -1,7 +1,7 @@
 <template>
 	<UCalendar
 		:key="reload"
-		v-model="value"
+		v-model="selectedDate"
 		:min-value="minDate"
 		:max-value="maxDate"
 		:year-controls="false"
@@ -20,41 +20,10 @@
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance } from 'vue'
-import {
-	createDateRange,
-	createDecade,
-	createMonth,
-	createYear,
-	createYearRange,
-	getDaysInMonth,
-	hasTime,
-	isAfter,
-	isAfterOrSame,
-	isBefore,
-	isBeforeOrSame,
-	isBetween,
-	isBetweenInclusive,
-	isCalendarDateTime,
-	isZonedDateTime,
-	parseStringToDateValue,
-	toDate,
-} from 'reka-ui/date';
-
-import {
-	type Calendar,
-	type DateValue,
-	ZonedDateTime,
-	CalendarDate,
-	CalendarDateTime,
-	startOfWeek,
-	endOfWeek,
-	today,
-	DateFormatter,
-	toCalendarDate,
-	getDayOfWeek,
-} from '@internationalized/date';
+import { type DateValue, CalendarDate, today } from '@internationalized/date';
 import type { Booking } from '~/utils/types/global';
+
+const toast = useToast();
 
 const TIMEZONE = 'Europe/Copenhagen';
 const LOCALE = 'da-DK';
@@ -62,7 +31,44 @@ const LOCALE = 'da-DK';
 const minDate = today(TIMEZONE);
 const maxDate = today(TIMEZONE).add({ years: 1 });
 
-const value = ref<undefined | CalendarDate>();
+const selectedDate = ref<undefined | CalendarDate>();
+
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: Date | null): void;
+}>();
+
+defineExpose({ addBooking });
+
+emit('update:modelValue', null);
+
+watch(selectedDate, (newValue) => {
+	if (!newValue) {
+		emit('update:modelValue', null);
+		return;
+	}
+
+	const booking = bookings.value[newValue.toString()];
+	if (booking) {
+		// If the date is booked, set the value to undefined
+		selectedDate.value = undefined;
+
+		if (booking.userId === userId) {
+			toast.add({
+				icon: 'i-material-symbols-warning-outline-rounded',
+				title: 'Advarsel!',
+				description: 'Du har allerede en booking den dag',
+			});
+		} else {
+			toast.add({
+				icon: 'i-material-symbols-warning-outline-rounded',
+				title: 'Advarsel!',
+				description: 'Der er allerede en booking den dag',
+			});
+		}
+	}
+
+	emit('update:modelValue', newValue.toDate(TIMEZONE));
+});
 
 // Is used to keep state of the calendar, when we force refresh.
 const placeholderValue = ref<undefined | CalendarDate>();
@@ -126,8 +132,6 @@ async function handleMonthChange(date: DateValue) {
 function getColorByBooking(
 	booking?: DayBooking,
 ): 'success' | 'error' | undefined {
-	console.log('getColorByBooking', booking);
-
 	if (!booking) return undefined;
 
 	if (booking.userId === userId) {
@@ -169,12 +173,15 @@ const fetchCache = ref<
 	}[]
 >([]);
 
-async function fetchMonth(month: { year: number; month: number }) {
+async function fetchMonth(
+	month: { year: number; month: number },
+	forceUpdate = false,
+) {
 	const cache = fetchCache.value.find(
 		(cache) => cache.year === month.year && cache.month === month.month,
 	);
 
-	if (cache) return cache.data;
+	if (!forceUpdate && cache) return cache.data;
 
 	const promise = new Promise<DayBooking[]>((resolve) => {
 		$fetch<Booking[]>('/api/app/bookings', {
@@ -203,13 +210,41 @@ async function fetchMonth(month: { year: number; month: number }) {
 		});
 	});
 
-	fetchCache.value.push({
-		year: month.year,
-		month: month.month,
-		data: promise,
-	});
+	if (forceUpdate) {
+		const index = fetchCache.value.findIndex(
+			(cache) => cache.year === month.year && cache.month === month.month,
+		);
+		if (index === -1) {
+			fetchCache.value.push({
+				year: month.year,
+				month: month.month,
+				data: promise,
+			});
+		} else {
+			fetchCache.value[index].data = promise;
+		}
+	} else {
+		fetchCache.value.push({
+			year: month.year,
+			month: month.month,
+			data: promise,
+		});
+	}
 
 	return promise;
+}
+
+async function addBooking(date: Date) {
+	selectedDate.value = undefined;
+
+	const year = date.getFullYear();
+	const month = date.getMonth() + 1;
+
+	await fetchMonth({ year, month }, true);
+
+	nextTick(() => {
+		reload.value++;
+	});
 }
 </script>
 

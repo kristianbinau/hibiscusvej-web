@@ -22,7 +22,7 @@
 			></UAlert>
 
 			<div
-				v-show="false"
+				v-show="currentUser"
 				class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6"
 			>
 				<div>
@@ -41,11 +41,11 @@
 					</p>
 				</div>
 				<div class="flex flex-col">
-					<DatePicker
-						v-model="date"
-						:attributes="attributes"
-						:minDate="new Date()"
-						@didMove="onDidMove"
+					<BookingCalendar
+						ref="bookingCalendar"
+						v-if="currentUser"
+						@update:modelValue="($event) => (date = $event)"
+						:userId="currentUser.auth.user.id"
 					/>
 
 					<UCheckbox v-model="hasReadTerms" class="my-4">
@@ -63,25 +63,19 @@
 					</UCheckbox>
 
 					<UButton
-						:loading="onSubmitLoading || statusBookingsThisMonth === 'pending'"
+						:loading="onSubmitLoading"
 						@click="onSubmit"
 						:disabled="date === null || !hasReadTerms || !currentUserVerified"
 						>Book</UButton
 					>
 				</div>
 			</div>
-
-			<div class="flex justify-center mx-auto">
-				<BookingCalendar v-if="currentUser" :userId="currentUser.auth.user.id"></BookingCalendar v-if="">
-			</div>
 		</ClientOnly>
 	</section>
 </template>
 
 <script lang="ts" setup>
-import type { AttributeConfig } from 'v-calendar/dist/types/src/utils/attribute.d.ts';
-import type { Page } from 'v-calendar/dist/types/src/utils/page.js';
-import { format, isSameDay } from 'date-fns';
+import { format } from 'date-fns';
 
 definePageMeta({
 	layout: 'logged-in',
@@ -96,99 +90,8 @@ const toast = useToast();
 
 const hasReadTerms = ref(false);
 const date = ref<Date | null>(null);
-const year = ref<string>(new Date().getFullYear().toString());
-const month = ref<string>((new Date().getMonth() + 1).toString());
 
-watch(date, async (newDate) => {
-	if (newDate) {
-		const alreadyBooked = bookingsThisMonth.value.some((booking) =>
-			isSameDay(booking, newDate),
-		);
-
-		const alreadyBookedByUser = myBookingsThisMonth.value.some((booking) =>
-			isSameDay(booking, newDate),
-		);
-
-		if (alreadyBooked) {
-			toast.add({
-				icon: 'i-material-symbols-warning-outline-rounded',
-				title: 'Advarsel!',
-				description: 'Der er allerede en booking den dag',
-			});
-			date.value = null;
-		}
-
-		if (alreadyBookedByUser) {
-			toast.add({
-				icon: 'i-material-symbols-warning-outline-rounded',
-				title: 'Advarsel!',
-				description: 'Du har allerede en booking den dag',
-			});
-			date.value = null;
-		}
-	}
-});
-
-const attributes: Ref<AttributeConfig[]> = computed(() => {
-	return [
-		{
-			highlight: 'red',
-			dates: bookingsThisMonth.value,
-			order: 0,
-		},
-		{
-			highlight: 'blue',
-			dates: myBookingsThisMonth.value,
-			order: 1,
-		},
-	];
-});
-
-function onDidMove(pages: Page[]) {
-	const firstPage = pages[0];
-
-	if (!firstPage) return;
-
-	year.value = firstPage.year.toString();
-	month.value = firstPage.month.toString();
-
-	refreshBookingsThisMonth();
-}
-
-/**
- * Bookings
- */
-
-const bookingsThisMonth = computed<Date[]>(() => {
-	if (dataBookingsThisMonth.value === null) return [];
-
-	return dataBookingsThisMonth.value
-		.filter((booking) => booking.userId !== currentUser.value?.user.id)
-		.map((booking) => {
-			return new Date(booking.from);
-		});
-});
-const myBookingsThisMonth = computed<Date[]>(() => {
-	if (dataBookingsThisMonth.value === null) return [];
-
-	return dataBookingsThisMonth.value
-		.filter((booking) => booking.userId === currentUser.value?.user.id)
-		.map((booking) => {
-			return new Date(booking.from);
-		});
-});
-
-const {
-	data: dataBookingsThisMonth,
-	refresh: refreshBookingsThisMonth,
-	status: statusBookingsThisMonth,
-} = await useFetch('/api/app/bookings', {
-	params: {
-		year: year,
-		month: month,
-	},
-	immediate: false,
-});
+const bookingCalendarRef = useTemplateRef('bookingCalendar');
 
 /**
  * Current User
@@ -205,9 +108,6 @@ const { data: currentUser, refresh: currentUserRefresh } = await useFetch(
 	'/api/app/users/me',
 	{
 		server: false,
-		onResponse: () => {
-			refreshBookingsThisMonth();
-		},
 		onResponseError: () => {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
@@ -248,14 +148,13 @@ async function onSubmit() {
 		});
 
 		if (res) {
+			await bookingCalendarRef.value?.addBooking(bookAsDate);
+
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
 				title: 'Success!',
 				description: `Du har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
 			});
-
-			myBookingsThisMonth.value.push(bookAsDate);
-			date.value = null;
 		}
 	} catch (error: any) {
 		if (error.statusCode === 409) {

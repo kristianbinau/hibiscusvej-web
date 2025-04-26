@@ -56,6 +56,7 @@ if (!isUnderMaintenance.value) {
 			label: 'Login',
 			size: 'md',
 			color: 'primary',
+			variant: 'solid',
 		},
 		to: '/auth/login',
 	});

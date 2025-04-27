@@ -11,6 +11,7 @@
 			<UButton
 				size="xl"
 				color="neutral"
+				variant="subtle"
 				icon="i-material-symbols-help-outline"
 				square
 				@click="hasSeen = '1'"

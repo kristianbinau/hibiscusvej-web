@@ -5,6 +5,11 @@
 			<p>Her kan vi se alle bookings.</p>
 		</div>
 
+		<AdminBookingCalendar
+			@update:userId="($event) => (filteredByUserId = $event)"
+			class="mb-8"
+		/>
+
 		<ClientOnly>
 			<UTable :loading="fetching" :data="rows" :columns="columns">
 				<template #userId-cell="{ row }">
@@ -119,6 +124,8 @@ useHead({
 const toast = useToast();
 const now = ref(new Date());
 
+const filteredByUserId = ref<number | null>(null);
+
 type BookingRow = {
 	id: number;
 	userId: number;
@@ -158,15 +165,23 @@ const columns: TableColumn<BookingRow>[] = [
 ];
 
 const rows = computed<BookingRow[]>(() => {
-	return bookingsJoined.value.map((booking) => {
-		return {
-			...booking,
-			date: new Date(booking.from),
-			createdAt: new Date(booking.createdAt),
-			updatedAt: new Date(booking.updatedAt),
-			actions: booking.id,
-		};
-	});
+	return bookingsJoined.value
+		.map((booking) => {
+			return {
+				...booking,
+				date: new Date(booking.from),
+				createdAt: new Date(booking.createdAt),
+				updatedAt: new Date(booking.updatedAt),
+				actions: booking.id,
+			};
+		})
+		.filter((booking) => {
+			if (filteredByUserId.value) {
+				return booking.userId === filteredByUserId.value;
+			}
+
+			return true;
+		});
 });
 
 /**

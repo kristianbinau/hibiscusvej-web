@@ -11,7 +11,9 @@
 			<template #day="{ day }">
 				<UChip
 					v-if="bookings[day.toString()]"
-					:color="getColorByBooking(bookings[day.toString()])"
+					:ui="{
+						base: getColorByBooking(bookings[day.toString()]),
+					}"
 				>
 					{{ day.day }}
 				</UChip>
@@ -25,7 +27,12 @@
 		"
 		text="Click to remove filter"
 	>
-		<UBadge class="cursor-pointer" trailing-icon="i-lucide-circle-x" @click="selectedDate = undefined" color="warning">
+		<UBadge
+			class="cursor-pointer"
+			trailing-icon="i-lucide-circle-x"
+			@click="selectedDate = undefined"
+			color="warning"
+		>
 			Filtered By UserId: #{{ bookings[selectedDate.toString()].userId }}
 		</UBadge>
 	</UTooltip>
@@ -145,13 +152,45 @@ async function handleMonthChange(date: DateValue) {
 	});
 }
 
-function getColorByBooking(
-	booking?: DayBooking,
-): 'info' | 'success' | 'warning' | 'error' | undefined {
+const colors = [
+	'bg-red-400',
+	'bg-red-600',
+	'bg-orange-400',
+	'bg-orange-600',
+	'bg-amber-400',
+	'bg-amber-600',
+	'bg-yellow-400',
+	'bg-yellow-600',
+	'bg-lime-400',
+	'bg-lime-600',
+	'bg-green-400',
+	'bg-green-600',
+	'bg-emerald-400',
+	'bg-emerald-600',
+	'bg-teal-400',
+	'bg-teal-600',
+	'bg-cyan-400',
+	'bg-cyan-600',
+	'bg-indigo-400',
+	'bg-indigo-600',
+	'bg-violet-400',
+	'bg-violet-600',
+	'bg-purple-400',
+	'bg-purple-600',
+	'bg-fuchsia-400',
+	'bg-fuchsia-600',
+	'bg-pink-400',
+	'bg-pink-600',
+	'bg-rose-400',
+	'bg-rose-600',
+] as const;
+type Color = (typeof colors)[number];
+
+function getColorByBooking(booking?: DayBooking): Color | undefined {
 	if (!booking) return undefined;
 
-	const colors = ['info', 'success', 'warning', 'error'] as const;
-	return colors[booking.userId % colors.length];
+	const colorIndex = booking.userId % colors.length;
+	return colors[colorIndex];
 }
 
 /**

@@ -3,6 +3,9 @@
 		orientation="horizontal"
 		:items="links"
 		class="border-b border-gray-200 dark:border-gray-800"
+		:ui="{
+			linkLabel: 'hidden sm:block',
+		}"
 	/>
 </template>
 

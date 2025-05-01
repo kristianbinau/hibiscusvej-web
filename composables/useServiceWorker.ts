@@ -1,5 +1,3 @@
-import { set } from 'date-fns';
-
 // @ts-nocheck
 export const useServiceWorker = () => {
 	/**

@@ -8,6 +8,7 @@ export default defineNuxtConfig({
 		'@nuxt/content',
 		'@nuxt/test-utils/module',
 		'@kristianbinau/nuxt-maintenance-mode',
+		'@compodium/nuxt'
 	],
 
 	// We only want to use the Sentry module in production

@@ -130,26 +130,28 @@ async function resetPassword() {
 
 		toast.remove(`reset-password-${login.value.id}`);
 		toast.remove(`reset-password-copied-${login.value.id}`);
-		toast.add({
-			id: `reset-password-${login.value.id}`,
-			title: 'Kodeord nulstillet!',
-			description: `Dette er det nye kodeord: "${data.newPassword}", husk at kopiere det!`,
-			duration: 0,
-			actions: [
-				{
-					label: 'Kopiér kodeord',
-					color: 'success',
-					onClick: () => {
-						navigator.clipboard.writeText(data.newPassword);
-						toast.add({
-							id: `reset-password-copied-${login.value.id}`,
-							title: 'Kodeord kopieret!',
-							description: 'Informer brugeren om det nye kodeord.',
-						});
+		setTimeout(() => {
+			toast.add({
+				id: `reset-password-${login.value.id}`,
+				title: 'Kodeord nulstillet!',
+				description: `Dette er det nye kodeord: "${data.newPassword}", husk at kopiere det!`,
+				duration: 0,
+				actions: [
+					{
+						label: 'Kopiér kodeord',
+						color: 'success',
+						onClick: () => {
+							navigator.clipboard.writeText(data.newPassword);
+							toast.add({
+								id: `reset-password-copied-${login.value.id}`,
+								title: 'Kodeord kopieret!',
+								description: 'Informer brugeren om det nye kodeord.',
+							});
+						},
 					},
-				},
-			],
-		});
+				],
+			});
+		}, 500);
 
 		currentSessionPassword.value = '';
 	} catch (error: any) {

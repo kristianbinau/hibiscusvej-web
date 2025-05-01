@@ -1,3 +1,5 @@
+import { set } from 'date-fns';
+
 // @ts-nocheck
 export const useServiceWorker = () => {
 	/**
@@ -14,15 +16,19 @@ export const useServiceWorker = () => {
 				route,
 				() => {
 					if (route.path.includes('/auth/')) {
-						useToast().add({
-							id: 'doesnt-support-login',
-							icon: 'i-material-symbols-warning-outline-rounded',
-							title: 'Advarsel!',
-							description:
-								'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
-							color: 'error',
-							duration: 0,
-						});
+						const toast = useToast();
+						toast.remove('doesnt-support-login');
+						setTimeout(() => {
+							toast.add({
+								id: 'doesnt-support-login',
+								icon: 'i-material-symbols-warning-outline-rounded',
+								title: 'Advarsel!',
+								description:
+									'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
+								color: 'error',
+								duration: 0,
+							});
+						}, 500);
 					}
 				},
 				{ immediate: true },

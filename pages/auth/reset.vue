@@ -62,16 +62,13 @@
 import { z } from 'zod';
 import type { Form, FormSubmitEvent } from '#ui/types';
 
-definePageMeta({
-	layout: 'minimal',
-	middleware: 'guest-required',
-});
-
 useHead({
 	title: 'Ny adgangskode',
 });
 
 definePageMeta({
+	layout: 'minimal',
+	middleware: 'guest-required',
 	validate: async (route) => {
 		// Validate loginId
 		return (

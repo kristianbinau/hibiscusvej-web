@@ -1,16 +1,16 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const LOG_MODULE = 'Api/Auth/Register';
 
 const bodySchema = z.object({
 	apartmentId: z.number(),
-	email: z.string().email(),
+	email: z.email(),
 	password: z.string(),
 	persons: z
 		.array(
 			z.object({
 				name: z.string().min(1).max(255),
-				email: z.string().email().min(1).max(255),
+				email: z.email().min(1).max(255),
 				phone: z.string().min(1).max(255),
 			}),
 		)

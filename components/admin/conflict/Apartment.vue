@@ -40,7 +40,7 @@
 				</p>
 
 				<USelect
-					v-model="selectedConflict"
+					v-model="selectedConflictApartmentId"
 					:items="confictsOptions"
 					variant="outline"
 					icon="i-material-symbols-apartment-rounded"
@@ -123,6 +123,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { SelectItem } from '@nuxt/ui';
 import type { ConfictingApartment } from '~/utils/types/admin';
 import type { Apartment } from '~/utils/types/global';
 
@@ -137,16 +138,23 @@ const { conflicting, apartments } = defineProps<{
  * Conflict Selection
  */
 
-const selectedConflict = ref<ConfictingApartment | undefined>(undefined);
+const selectedConflictApartmentId = ref<number | undefined>(undefined);
+const selectedConflict = computed<ConfictingApartment | undefined>(() => {
+	if (selectedConflictApartmentId.value === undefined) return undefined;
+
+	return conflicting.find(
+		(conflict) => conflict.apartmentId === selectedConflictApartmentId.value,
+	);
+});
 
 watchEffect(() => {
 	if (conflicting.length === 1) {
-		selectedConflict.value = conflicting[0];
+		selectedConflictApartmentId.value = conflicting[0].apartmentId;
 	}
 });
 
-const confictsOptions = computed(() => {
-	const items = [];
+const confictsOptions = computed<SelectItem[]>(() => {
+	const items: SelectItem[] = [];
 	for (const conflict of conflicting) {
 		const apartment = apartments.find(
 			(apartment) => apartment.id === conflict.apartmentId,
@@ -155,7 +163,7 @@ const confictsOptions = computed(() => {
 		if (apartment) {
 			items.push({
 				label: `${apartmentToAdress(apartment)}`,
-				value: conflict,
+				value: conflict.apartmentId,
 			});
 		}
 	}

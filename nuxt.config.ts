@@ -8,7 +8,7 @@ export default defineNuxtConfig({
 		'@nuxt/content',
 		'@nuxt/test-utils/module',
 		'@kristianbinau/nuxt-maintenance-mode',
-		'@compodium/nuxt'
+		'@compodium/nuxt',
 	],
 
 	// We only want to use the Sentry module in production
@@ -68,8 +68,7 @@ export default defineNuxtConfig({
 	},
 
 	typescript: {
-		// https://github.com/nuxt/ui/issues/3405
-		typeCheck: false,
+		typeCheck: true,
 	},
 
 	css: ['~/assets/css/main.css'],

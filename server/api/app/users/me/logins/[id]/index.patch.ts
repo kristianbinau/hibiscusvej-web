@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const LOG_MODULE = 'Api/Users/Me/Logins/[id]/Patch';
 
@@ -7,7 +7,7 @@ const routeSchema = z.object({
 });
 
 const bodySchema = z.object({
-	email: z.string().email().optional(),
+	email: z.email().optional(),
 	password: z.string().optional(),
 	currentSessionPassword: z.string(),
 });

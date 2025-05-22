@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const LOG_MODULE = 'Api/Users/Me/Logins/[id]/Post';
 
 const bodySchema = z.object({
-	email: z.string().email(),
+	email: z.email(),
 	password: z.string(),
 	currentSessionPassword: z.string(),
 });

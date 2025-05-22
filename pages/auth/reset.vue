@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import type { Form, FormSubmitEvent } from '#ui/types';
 
 useHead({

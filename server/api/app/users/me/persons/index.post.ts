@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const LOG_MODULE = 'Api/Users/Me/Persons/[id]/Post';
 
 const bodySchema = z.object({
 	name: z.string().min(1).max(255),
-	email: z.string().email().min(1).max(255),
+	email: z.email().min(1).max(255),
 	phone: z.string().min(1).max(255),
 });
 

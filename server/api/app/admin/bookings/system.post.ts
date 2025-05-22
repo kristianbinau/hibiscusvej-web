@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays } from 'date-fns';
 

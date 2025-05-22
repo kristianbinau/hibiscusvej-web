@@ -40,7 +40,7 @@
 				</p>
 
 				<USelect
-					v-model="selectedConflict"
+					v-model="selectedConflictPersonUserIds"
 					:items="confictsOptions"
 					variant="outline"
 					icon="i-material-symbols-apartment-rounded"
@@ -124,6 +124,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { SelectItem } from '@nuxt/ui';
 import type { ConfictingPerson } from '~/utils/types/admin';
 const isOpen = defineModel({ required: true, type: Boolean });
 
@@ -135,22 +136,31 @@ const { conflicting } = defineProps<{
  * Conflict Selection
  */
 
-const selectedConflict = ref<ConfictingPerson | undefined>(undefined);
+const selectedConflictPersonUserIds = ref<string | undefined>(undefined);
+const selectedConflict = computed(() => {
+	if (selectedConflictPersonUserIds.value === undefined) return undefined;
+
+	return conflicting.find((conflict) => {
+		const userIds = conflict.users.map((user) => user.id);
+		return `#${userIds.join(', #')}` === selectedConflictPersonUserIds.value;
+	});
+});
 
 watchEffect(() => {
 	if (conflicting.length === 1) {
-		selectedConflict.value = conflicting[0];
+		const userIds = conflicting[0].users.map((user) => user.id);
+		selectedConflictPersonUserIds.value = `#${userIds.join(', #')}`;
 	}
 });
 
-const confictsOptions = computed(() => {
-	const items = [];
+const confictsOptions = computed<SelectItem[]>(() => {
+	const items: SelectItem[] = [];
 	for (const conflict of conflicting) {
 		const userIds = conflict.users.map((user) => user.id);
 
 		items.push({
 			label: `#${userIds.join(', #')}`,
-			value: conflict,
+			value: `#${userIds.join(', #')}`,
 		});
 	}
 	return items;

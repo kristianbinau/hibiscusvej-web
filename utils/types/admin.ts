@@ -16,7 +16,7 @@ export type User = {
 export type UserSession = User['sessions'][0];
 export type UserLogin = User['logins'][0];
 export type UserPerson = User['persons'][0];
-export type UserRepremand = AdminUserRepremandsApiResponse['repremands'][0];
+export type UserRepremand = AdminUserRepremandsApiResponse[0];
 
 export type Booking = AdminBookingsApiResponse['communalBookings'][0];
 

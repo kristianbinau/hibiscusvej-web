@@ -106,17 +106,11 @@
 			</template>
 
 			<template #bookings-body>
-				<AdminUserBookings
-					v-if="showBookings"
-					:userId="userId"
-				/>
+				<AdminUserBookings v-if="showBookings" :userId="userId" />
 			</template>
 
 			<template #repremands-body>
-				<AdminUserRepremands
-					v-if="showRepremands"
-					:userId="userId"
-				/>
+				<AdminUserRepremands v-if="showRepremands" :userId="userId" />
 			</template>
 		</UAccordion>
 

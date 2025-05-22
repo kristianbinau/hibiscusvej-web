@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const querySchema = z.object({
 	everywhere: z.coerce.boolean().optional(),

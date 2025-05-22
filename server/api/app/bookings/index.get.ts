@@ -1,5 +1,5 @@
 import { startOfMonth, endOfMonth } from 'date-fns';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const querySchema = z.object({
 	year: z.coerce.number().min(2024),

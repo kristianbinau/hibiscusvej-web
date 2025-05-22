@@ -20,7 +20,7 @@
 		"@internationalized/date": "^3.8.0",
 		"@kristianbinau/nuxt-maintenance-mode": "^0.0.6",
 		"@nuxt/content": "^3.5.1",
-		"@nuxt/ui": "^3.1.0",
+		"@nuxt/ui": "^3.1.1",
 		"@nuxthub/core": "^0.8.25",
 		"@nuxtjs/seo": "^3.0.3",
 		"@popperjs/core": "^2.11.8",
@@ -43,17 +43,17 @@
 		"@iconify-json/lucide": "^1.2.39",
 		"@iconify-json/material-symbols": "^1.2.20",
 		"@iconify-json/mdi": "^1.2.3",
-		"@nuxt/test-utils": "^3.17.2",
+		"@nuxt/test-utils": "^3.18.0",
 		"@types/bcryptjs": "^3.0.0",
 		"@vue/test-utils": "^2.4.6",
-		"drizzle-kit": "^0.31.0",
-		"oxlint": "^0.16.8",
+		"drizzle-kit": "^0.31.1",
+		"oxlint": "^0.16.9",
 		"playwright-core": "^1.52.0",
 		"prettier": "3.5.3",
 		"typescript": "^5.8.3",
 		"vitest": "^3.1.2",
 		"vue-tsc": "^2.2.10",
-		"wrangler": "^4.13.2"
+		"wrangler": "^4.14.1"
 	},
 	"volta": {
 		"node": "22.11.0"

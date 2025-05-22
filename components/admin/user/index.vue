@@ -109,7 +109,6 @@
 				<AdminUserBookings
 					v-if="showBookings"
 					:userId="userId"
-					:bookings="bookings"
 				/>
 			</template>
 
@@ -117,7 +116,6 @@
 				<AdminUserRepremands
 					v-if="showRepremands"
 					:userId="userId"
-					:repremands="repremands"
 				/>
 			</template>
 		</UAccordion>
@@ -290,14 +288,6 @@ const {
 }>();
 
 const user = defineModel<User>('user', { required: false, type: Object });
-const bookings = defineModel<Booking[]>('bookings', {
-	required: false,
-	type: Array,
-});
-const repremands = defineModel<UserRepremand[]>('repremands', {
-	required: false,
-	type: Array,
-});
 
 const toast = useToast();
 

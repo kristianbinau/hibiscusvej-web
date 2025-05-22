@@ -29,7 +29,7 @@
 	>
 		<UBadge
 			class="cursor-pointer"
-			trailing-icon="i-lucide-circle-x"
+			trailing-icon="i-material-symbols-remove-selection-rounded"
 			@click="selectedDate = undefined"
 			color="warning"
 		>

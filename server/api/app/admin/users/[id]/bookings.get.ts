@@ -29,7 +29,5 @@ export default defineEventHandler(async (event) => {
 		.where(eq(tables.communalBookings.userId, id))
 		.all();
 
-	return {
-		bookings: bookings,
-	};
+	return bookings;
 });

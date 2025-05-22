@@ -10,13 +10,11 @@ export default defineEventHandler(async (event) => {
 
 	const userId = params.id;
 
-	const userRepremands = await useDrizzle()
+	const repremands = await useDrizzle()
 		.select()
 		.from(tables.userRepremands)
 		.where(eq(tables.userRepremands.userId, userId))
 		.all();
 
-	return {
-		repremands: userRepremands,
-	};
+	return repremands;
 });

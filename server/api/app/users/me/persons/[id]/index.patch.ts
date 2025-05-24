@@ -12,7 +12,7 @@ const bodySchema = z.object({
 	phone: z.string().min(1).max(255).optional(),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 	const body = await readValidatedBody(event, bodySchema.parse);

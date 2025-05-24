@@ -1,6 +1,6 @@
 const LOG_MODULE = 'Api/Auth/Refresh';
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const refreshToken = getCookie(event, REFRESH_COOKIE_NAME);
 	if (!refreshToken) {
 		throw createError({

@@ -2,7 +2,7 @@ import { subDays } from 'date-fns';
 
 const HISTORY_DAYS = 180;
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 
 	// Get all my bookings for the last HISTORY_DAYS days

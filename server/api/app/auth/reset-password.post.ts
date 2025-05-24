@@ -8,7 +8,7 @@ const bodySchema = z.object({
 	newPassword: z.string(),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const body = await readValidatedBody(event, bodySchema.parse);
 
 	// If UserLogin w/ Email is not found, return 401 Unauthorized

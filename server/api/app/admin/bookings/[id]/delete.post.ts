@@ -8,7 +8,7 @@ const routeSchema = z.object({
 
 const ADMIN_ACTION = 'DeleteBooking';
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const authAdmin = await useAuthAdmin(event);
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 

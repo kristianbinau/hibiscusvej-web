@@ -6,7 +6,7 @@ const routeSchema = z.object({
 	id: z.coerce.number(),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 

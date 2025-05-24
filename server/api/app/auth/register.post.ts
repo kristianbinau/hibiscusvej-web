@@ -18,7 +18,7 @@ const bodySchema = z.object({
 		.max(2),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const body = await readValidatedBody(event, bodySchema.parse);
 
 	// If Email is already in use, return 409 Conflict

@@ -4,7 +4,7 @@ const querySchema = z.object({
 	everywhere: z.coerce.boolean().optional(),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 	const query = await getValidatedQuery(event, querySchema.parse);
 

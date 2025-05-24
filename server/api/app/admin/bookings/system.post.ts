@@ -8,7 +8,7 @@ const bodySchema = z.object({
 	date: z.string().date(),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	await useAuthAdmin(event);
 	const body = await readValidatedBody(event, bodySchema.parse);
 

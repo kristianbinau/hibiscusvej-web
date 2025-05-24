@@ -1,3 +1,3 @@
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	return await useAuthUser(event);
 });

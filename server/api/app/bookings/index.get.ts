@@ -6,7 +6,7 @@ const querySchema = z.object({
 	month: z.coerce.number().min(1).max(12),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	await useAuthUser(event);
 	const query = await getValidatedQuery(event, querySchema.parse);
 

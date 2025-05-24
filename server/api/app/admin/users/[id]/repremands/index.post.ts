@@ -12,7 +12,7 @@ const bodySchema = z.object({
 	expiresAt: z.string().date(),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	await useAuthAdmin(event);
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 	const body = await readValidatedBody(event, bodySchema.parse);

@@ -10,7 +10,7 @@ const bodySchema = z.object({
 
 const maxConsecutiveDays = 2;
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 	const body = await readValidatedBody(event, bodySchema.parse);
 

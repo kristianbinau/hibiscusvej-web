@@ -8,7 +8,7 @@ const bodySchema = z.object({
 	phone: z.string().min(1).max(255),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
 	const body = await readValidatedBody(event, bodySchema.parse);
 

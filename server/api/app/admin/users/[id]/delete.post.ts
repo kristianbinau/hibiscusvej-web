@@ -12,7 +12,7 @@ const bodySchema = z.object({
 
 const ADMIN_ACTION = 'DeleteUser';
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 	const body = await readValidatedBody(event, bodySchema.parse);
 	const authAdmin = await useAuthValidatedAdmin(

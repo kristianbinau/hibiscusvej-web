@@ -10,7 +10,7 @@ const bodySchema = z.object({
 	currentSessionPassword: z.string(),
 });
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
 	const params = await getValidatedRouterParams(event, routeSchema.parse);
 	const body = await readValidatedBody(event, bodySchema.parse);
 	await useAuthValidatedAdmin(event, body.currentSessionPassword);

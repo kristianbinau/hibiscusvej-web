@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 
 const LOG_MODULE = 'Api/Push/Unsubscribe';
 
-const pushSubscriptionJSON = z.custom<PushSubscriptionJSON>((val) => {
+const pushSubscriptionJSON = z.custom<PushSubscriptionJSON>((val: any) => {
 	return (
 		typeof val.endpoint === 'string' &&
 		typeof val.keys === 'object' &&

@@ -5,28 +5,37 @@ jobs:
   lint:
     name: Lint JS
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
+      - uses: ./.github/actions/setup-node-install
       - name: Lint JS
         run: npm run lint
+
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: ./.github/actions/setup-node-install
+      - name: Check formatting
+        run: npm run format -- --check
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: ./.github/actions/setup-node-install
+      - name: Type check
+        run: npm run typecheck
 
   deploy:
     name: 'Deploy to NuxtHub'
     runs-on: ubuntu-latest
-    needs: lint
+    needs: [lint, format, typecheck]
     environment:
       name: ${{ github.ref == 'refs/heads/master' && 'production' || 'preview' }}
       url: ${{ steps.deploy.outputs.deployment-url }}
@@ -35,23 +44,9 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
+      - uses: ./.github/actions/setup-node-install
       - name: Build application
         run: npm run build
-
       - name: Deploy to NuxtHub
         uses: nuxt-hub/action@v1
         id: deploy

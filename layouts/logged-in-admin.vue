@@ -38,15 +38,11 @@ const links: NavigationMenuItem[][] = [
 			icon: 'i-material-symbols-home-work-rounded',
 			to: '/u/admin/bookings',
 		},
+	],
+	[
 		{
-			badge: {
-				// @ts-ignore
-				icon: 'i-material-symbols-backspace-rounded',
-				variant: 'subtle',
-				label: 'Tilbage',
-				size: 'md',
-				color: 'primary',
-			},
+			icon: 'i-material-symbols-backspace-rounded',
+			label: 'Tilbage',
 			to: '/u',
 		},
 	],

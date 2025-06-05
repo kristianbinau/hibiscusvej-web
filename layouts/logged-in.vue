@@ -40,25 +40,16 @@ const links: NavigationMenuItem[][] = [
 			icon: 'i-material-symbols-home-work-rounded',
 			to: '/u/communal/me',
 		},
+	],
+	[
 		{
-			badge: {
-				// @ts-ignore
-				icon: 'i-material-symbols-settings-account-box-rounded',
-				variant: 'subtle',
-				size: 'md',
-				color: 'primary',
-			},
-			onSelect: () => navigateTo('/u/settings'),
+			icon: 'i-material-symbols-settings-account-box-rounded',
+			label: 'Indstillinger',
+			to: '/u/settings',
 		},
 		{
-			badge: {
-				// @ts-ignore
-				icon: 'i-material-symbols-key-off-outline-rounded',
-				variant: 'subtle',
-				label: 'Logout',
-				size: 'md',
-				color: 'primary',
-			},
+			icon: 'i-material-symbols-key-off-outline-rounded',
+			label: 'Logout',
 			onSelect: () => logout(),
 		},
 	],
@@ -66,18 +57,12 @@ const links: NavigationMenuItem[][] = [
 
 if (authUser.value && authUser.value.user.admin) {
 	const link: NavigationMenuItem = {
-		badge: {
-			// @ts-ignore
-			icon: 'i-material-symbols-admin-panel-settings-rounded',
-			variant: 'subtle',
-			size: 'md',
-			color: 'primary',
-		},
-		onSelect: () => navigateTo('/u/admin'),
+		icon: 'i-material-symbols-admin-panel-settings-rounded',
+		label: 'Admin',
+		to: '/u/admin',
 	};
 
-	// Add before settings
-	links[1].splice(-2, 0, link);
+	links[2].unshift(link);
 }
 
 async function logout() {

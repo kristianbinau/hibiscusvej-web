@@ -49,16 +49,11 @@ const links = [
 
 const { isUnderMaintenance } = useMaintenance('/auth/login');
 if (!isUnderMaintenance.value) {
-	links[1].push({
+	links.push([{
 		// @ts-ignore
-		badge: {
-			icon: 'i-material-symbols-key-outline-rounded',
-			label: 'Login',
-			size: 'md',
-			color: 'primary',
-			variant: 'solid',
-		},
+		icon: 'i-material-symbols-key-outline-rounded',
+		label: 'Login',
 		to: '/auth/login',
-	});
+	}]);
 }
 </script>

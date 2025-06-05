@@ -21,14 +21,8 @@ const links: NavigationMenuItem[] | NavigationMenuItem[][] = [
 	],
 	[
 		{
-			badge: {
-				// @ts-ignore
-				icon: 'i-material-symbols-arrow-back-rounded',
-				label: 'Tilbage',
-				variant: 'subtle',
-				size: 'md',
-				color: 'primary',
-			},
+			icon: 'i-material-symbols-arrow-back-rounded',
+			label: 'Tilbage',
 			to: '/',
 		},
 	],

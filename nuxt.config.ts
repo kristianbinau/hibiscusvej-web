@@ -7,7 +7,6 @@ export default defineNuxtConfig({
 		'@nuxt/ui',
 		'@nuxt/content',
 		'@nuxt/test-utils/module',
-		'@kristianbinau/nuxt-maintenance-mode',
 		'@compodium/nuxt',
 	],
 

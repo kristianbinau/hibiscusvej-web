@@ -73,3 +73,13 @@ Update dependencies:
 ```bash
 npm run update-dependencies -- -u
 ```
+
+## Aerial Pictures
+
+We will need to update aerial video and pictures when construction is done.
+
+We have used:
+
+- [Google Earth Studio](https://www.google.com/earth/studio/), for the aerial video.
+- [Skråfoto](https://skraafoto.dataforsyningen.dk/?center=586212.77294979%2C6139665.65069059&item=2023_83_36_1_0010_00001234&year=2023&orientation=nadir), is a good source for aerial pictures in Denmark.
+- [Dataforsyningen](https://dataforsyningen.dk/map/981), yearly updated aerial pictures of Denmark.

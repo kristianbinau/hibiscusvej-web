@@ -32,12 +32,7 @@
 						class="mt-3 mb-5"
 						required
 					>
-						<USelectMenu
-							v-model="state.apartmentId"
-							:items="apartments"
-							value-key="id"
-							class="w-full"
-						/>
+						<ApartmentSelect v-model="state.apartmentId" />
 					</UFormField>
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
@@ -360,29 +355,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 /**
- * Apartments
- */
-const apartments = ref<{ id: number; label: string }[]>([]);
-
-async function fetchApartments() {
-	const { data } = await useFetch('/api/app/apartments');
-
-	if (data.value === null) return;
-
-	apartments.value = data.value.map((apartment: Apartment) => {
-		let address = `${apartment.street} ${apartment.number}`;
-		if (apartment.floor && apartment.door) {
-			address += `, ${apartment.floor}, ${apartment.door}`;
-		}
-
-		return {
-			id: apartment.id,
-			label: address,
-		};
-	});
-}
-
-/**
  * Persons
  */
 
@@ -397,5 +369,4 @@ function addPerson() {
 function removePerson(index: number) {
 	state.persons.splice(index, 1);
 }
-fetchApartments();
 </script>

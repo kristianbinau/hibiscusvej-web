@@ -91,7 +91,7 @@ async function fetchMyBookings() {
 	try {
 		const { data } = await useFetch('/api/app/bookings/me');
 
-		if (data.value === null) {
+		if (!data.value) {
 			fetchingBookings.value = false;
 			myBookings.value = [];
 			return;

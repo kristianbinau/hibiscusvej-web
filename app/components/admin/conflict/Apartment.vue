@@ -18,7 +18,7 @@
 						<h3
 							class="text-base font-semibold leading-6 text-neutral-900 dark:text-white"
 						>
-							Konfliktende Personer
+							Konfliktende lejligheder
 						</h3>
 						<UButton
 							color="neutral"
@@ -34,14 +34,14 @@
 					v-if="conflicting.length !== 1"
 					class="text-sm text-neutral-600 dark:text-neutral-400 mb-4"
 				>
-					Dette er en liste over de brugere, hvor der er en eller flere personer
-					som er ens. <br />
-					Vælg en konflikt for at se de brugere som er i konflikt.
+					Dette er en liste over lejligheder, hvor der er flere brugere
+					tilknyttet. <br />
+					Vælg en lejlighed for at se konflikten.
 				</p>
 
 				<USelect
-					v-model="selectedConflictPersonUserIds"
-					:items="confictsOptions"
+					v-model="selectedConflictApartmentId"
+					:items="conflictsOptions"
 					variant="outline"
 					icon="i-material-symbols-apartment-rounded"
 					placeholder="Vælg konflikt.."
@@ -50,11 +50,10 @@
 
 				<template v-if="selectedConflict !== undefined">
 					<p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-						Konflikten har følgende brugere tilknyttet:
+						Lejligheden har følgende brugere tilknyttet:
 						{{ selectedConflict.users.map((user) => '#' + user.id).join(', ') }}
 						<br />
-						Der må kun være en bruger med samme person, og konflikten skal
-						løses.
+						Der må kun være en bruger tilknyttet, og konflikten skal løses.
 						<br />
 					</p>
 					<p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
@@ -125,43 +124,49 @@
 
 <script lang="ts" setup>
 import type { SelectItem } from '@nuxt/ui';
-import type { ConfictingPerson } from '~/utils/types/admin';
+import type { ConfictingApartment } from '~/utils/types/admin';
+import type { Apartment } from '~/utils/types/global';
+
 const isOpen = defineModel({ required: true, type: Boolean });
 
-const { conflicting } = defineProps<{
-	conflicting: ConfictingPerson[];
+const { conflicting, apartments } = defineProps<{
+	conflicting: ConfictingApartment[];
+	apartments: Apartment[];
 }>();
 
 /**
  * Conflict Selection
  */
 
-const selectedConflictPersonUserIds = ref<string | undefined>(undefined);
-const selectedConflict = computed(() => {
-	if (selectedConflictPersonUserIds.value === undefined) return undefined;
+const selectedConflictApartmentId = ref<number | undefined>(undefined);
+const selectedConflict = computed<ConfictingApartment | undefined>(() => {
+	if (selectedConflictApartmentId.value === undefined) return undefined;
 
-	return conflicting.find((conflict) => {
-		const userIds = conflict.users.map((user) => user.id);
-		return `#${userIds.join(', #')}` === selectedConflictPersonUserIds.value;
-	});
+	return conflicting.find(
+		(conflict) => conflict.apartmentId === selectedConflictApartmentId.value,
+	);
 });
 
 watchEffect(() => {
-	if (conflicting.length === 1) {
-		const userIds = conflicting[0].users.map((user) => user.id);
-		selectedConflictPersonUserIds.value = `#${userIds.join(', #')}`;
+	const singleConflict = conflicting.length === 1 ? conflicting[0] : undefined;
+	if (singleConflict) {
+		selectedConflictApartmentId.value = singleConflict.apartmentId;
 	}
 });
 
-const confictsOptions = computed<SelectItem[]>(() => {
+const conflictsOptions = computed<SelectItem[]>(() => {
 	const items: SelectItem[] = [];
 	for (const conflict of conflicting) {
-		const userIds = conflict.users.map((user) => user.id);
+		const apartment = apartments.find(
+			(apartment) => apartment.id === conflict.apartmentId,
+		);
 
-		items.push({
-			label: `#${userIds.join(', #')}`,
-			value: `#${userIds.join(', #')}`,
-		});
+		if (apartment) {
+			items.push({
+				label: `${apartmentToAdress(apartment)}`,
+				value: conflict.apartmentId,
+			});
+		}
 	}
 	return items;
 });
@@ -179,4 +184,4 @@ function handleUserDeleted(userId: number) {
 }
 </script>
 
-<style></style>
+<style scoped></style>

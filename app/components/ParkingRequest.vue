@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import * as z from 'zod';
+import * as z from 'zod/v3';
 import type { FormSubmitEvent } from '@nuxt/ui';
 
 const MAIL_TO =

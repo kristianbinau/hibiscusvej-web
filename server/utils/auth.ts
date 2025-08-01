@@ -161,7 +161,7 @@ const useDecodedToken = async (event: H3Event<EventHandlerRequest>) => {
 		});
 	}
 
-	const token = authHeader.split(' ')[1];
+	const token = authHeader.split(' ')[1] as string;
 
 	try {
 		const decodedToken = await verifyToken(token);

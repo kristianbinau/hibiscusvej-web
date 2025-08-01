@@ -184,7 +184,7 @@
 </template>
 
 <script lang="ts" setup>
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import type { SelectMenuItem, Form, FormSubmitEvent } from '#ui/types';
 import type { Apartment } from '~/utils/types/global';
 

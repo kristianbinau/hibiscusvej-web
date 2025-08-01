@@ -84,7 +84,7 @@ export function decodeToken(token: string): {
 	sub: string;
 	jti: string;
 } {
-	const payload = token.split('.')[1];
+	const payload = token.split('.')[1] as string;
 	const decoded = atob(payload);
 	return JSON.parse(decoded);
 }

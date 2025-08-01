@@ -354,7 +354,7 @@ async function fetchUser() {
 			server: false,
 		});
 
-		if (data.value === null) {
+		if (!data.value) {
 			fetchingUser.value = false;
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',

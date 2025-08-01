@@ -189,8 +189,12 @@ const rows = computed<UserRow[]>(() => {
 			(verifiedUser) => verifiedUser.id === user.verifiedByUserId,
 		);
 
+		const verifiedByUserName = verifiedByUser
+			? verifiedByUser.persons[0]?.name || 'Ukendt'
+			: 'Ukendt';
+
 		const verified = user.verifiedAt
-			? `${new Date(user.verifiedAt).toLocaleDateString()}: ${verifiedByUser?.persons[0].name}`
+			? `${new Date(user.verifiedAt).toLocaleDateString()}: ${verifiedByUserName}`
 			: 'Ikke verificeret';
 
 		return {
@@ -251,7 +255,7 @@ async function fetch() {
 	try {
 		const { data } = await useFetch('/api/app/admin/users');
 
-		if (data.value === null) {
+		if (!data.value) {
 			fetching.value = false;
 			adminUsersApiResponse.value = {
 				users: [],

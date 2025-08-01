@@ -21,7 +21,7 @@ import type { NavigationMenuItem } from '#ui/types';
 
 const { authUser } = await useUser();
 
-const links: NavigationMenuItem[][] = [
+const links = ref<NavigationMenuItem[][]>([
 	[
 		{
 			label: 'Hibiscusvej 2-30',
@@ -53,7 +53,7 @@ const links: NavigationMenuItem[][] = [
 			onSelect: () => logout(),
 		},
 	],
-];
+]);
 
 if (authUser.value && authUser.value.user.admin) {
 	const link: NavigationMenuItem = {
@@ -62,7 +62,8 @@ if (authUser.value && authUser.value.user.admin) {
 		to: '/u/admin',
 	};
 
-	links[2].unshift(link);
+	// @ts-ignore
+	links.value[2].unshift(link);
 }
 
 async function logout() {

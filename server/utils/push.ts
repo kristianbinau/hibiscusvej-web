@@ -38,7 +38,11 @@ export const sendPushNotification = async (
 	message: PushMessage,
 ) => {
 	try {
-		const payload = await buildPushPayload(message, subscription, getVapid());
+		const payload = (await buildPushPayload(
+			message,
+			subscription,
+			getVapid(),
+		)) as RequestInit;
 
 		const res = await fetch(subscription.endpoint, payload);
 

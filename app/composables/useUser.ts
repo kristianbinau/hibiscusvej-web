@@ -5,9 +5,11 @@ export const useUser = async () => {
 	const authUser = ref<UserResponse | null>(null);
 
 	try {
-		const { data } = await useFetch('/api/app/auth/user');
+		const { data } = await useFetch('/api/app/auth/user', {
+			deep: true,
+		});
 
-		if (data.value === null) {
+		if (!data.value) {
 			authUser.value = null;
 		} else {
 			authUser.value = data.value;

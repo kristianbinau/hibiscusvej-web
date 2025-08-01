@@ -275,7 +275,7 @@ async function fetchMe() {
 	try {
 		const { data } = await useFetch('/api/app/users/me');
 
-		if (data.value === null) {
+		if (!data.value) {
 			fetchingMe.value = false;
 			me.value = undefined;
 			return;
@@ -314,7 +314,7 @@ async function fetchPersons() {
 	try {
 		const { data } = await useFetch('/api/app/users/me/persons');
 
-		if (data.value === null) {
+		if (!data.value) {
 			fetchingPersons.value = false;
 			persons.value = [];
 			return;
@@ -378,7 +378,7 @@ async function fetchLogins() {
 	try {
 		const { data } = await useFetch('/api/app/users/me/logins');
 
-		if (data.value === null) {
+		if (!data.value) {
 			fetchingLogins.value = false;
 			logins.value = [];
 			return;

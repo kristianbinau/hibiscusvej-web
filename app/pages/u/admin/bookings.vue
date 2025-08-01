@@ -210,7 +210,7 @@ async function fetch() {
 	try {
 		const { data } = await useFetch('/api/app/admin/bookings');
 
-		if (data.value === null) {
+		if (!data.value) {
 			fetching.value = false;
 			response.value = {
 				communalBookings: [],

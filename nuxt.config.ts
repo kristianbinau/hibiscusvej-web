@@ -7,7 +7,6 @@ export default defineNuxtConfig({
 		'@nuxt/ui',
 		'@nuxt/content',
 		'@nuxt/test-utils/module',
-		'@kristianbinau/nuxt-maintenance-mode',
 		'@compodium/nuxt',
 	],
 
@@ -56,10 +55,6 @@ export default defineNuxtConfig({
 		public: {
 			vapidSubject: process.env.NUXT_PUBLIC_VAPID_SUBJECT,
 			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
-			// @ts-ignore
-			maintenanceModeEnabled: false,
-			maintenanceModeBypassSecret:
-				process.env.NUXT_PUBLIC_MAINTENANCE_MODE_BYPASS_SECRET,
 		},
 	},
 
@@ -83,8 +78,8 @@ export default defineNuxtConfig({
 		blob: true,
 	},
 
-	maintenanceMode: {
-		include: ['/u*', '/auth*', '/api/app/*'],
+	content: {
+		experimental: { nativeSqlite: true },
 	},
 
 	site: {

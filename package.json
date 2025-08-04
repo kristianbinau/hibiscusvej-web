@@ -19,15 +19,13 @@
 		"@block65/webcrypto-web-push": "^1.0.2",
 		"@date-fns/utc": "^2.1.1",
 		"@internationalized/date": "^3.8.2",
-		"@kristianbinau/nuxt-maintenance-mode": "^0.0.6",
 		"@nuxt/content": "^3.6.3",
 		"@nuxt/ui": "^3.3.0",
 		"@nuxthub/core": "^0.9.0",
 		"@nuxtjs/seo": "^3.1.0",
 		"@popperjs/core": "^2.11.8",
-		"@sentry/nuxt": "^10.0.0",
+		"@sentry/nuxt": "^10.1.0",
 		"bcryptjs": "^3.0.2",
-		"better-sqlite3": "^12.2.0",
 		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.44.4",
 		"jose": "^6.0.12",
@@ -42,7 +40,7 @@
 	"devDependencies": {
 		"@compodium/nuxt": "^0.1.0-beta.11",
 		"@iconify-json/heroicons": "^1.2.2",
-		"@iconify-json/lucide": "^1.2.59",
+		"@iconify-json/lucide": "^1.2.60",
 		"@iconify-json/material-symbols": "^1.2.30",
 		"@iconify-json/mdi": "^1.2.3",
 		"@nuxt/test-utils": "^3.19.2",
@@ -54,11 +52,11 @@
 		"prettier": "3.6.2",
 		"typescript": "^5.9.2",
 		"vitest": "^3.2.4",
-		"vue-tsc": "^3.0.4",
+		"vue-tsc": "^3.0.5",
 		"wrangler": "^4.27.0"
 	},
 	"volta": {
-		"node": "22.16.0"
+		"node": "24.5.0"
 	},
 	"prettier": {
 		"singleQuote": true,

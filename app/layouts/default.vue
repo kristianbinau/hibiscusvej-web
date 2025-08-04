@@ -45,17 +45,13 @@ const links = [
 			to: '/contact',
 		},
 	],
-];
-
-const { isUnderMaintenance } = useMaintenance('/auth/login');
-if (!isUnderMaintenance.value) {
-	links.push([
+	[
 		{
 			// @ts-ignore
 			icon: 'i-material-symbols-key-outline-rounded',
 			label: 'Login',
 			to: '/auth/login',
 		},
-	]);
-}
+	],
+];
 </script>

@@ -7,7 +7,7 @@
 			<span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
 		</span>
 
-		<UPopover class="mr-6">
+		<UPopover>
 			<UButton
 				size="xl"
 				color="neutral"
@@ -18,14 +18,12 @@
 			/>
 
 			<template #content>
-				<div class="p-4">
-					<section
-						id="guide-content"
-						class="markdown-content max-h-96 overflow-y-scroll"
-					>
-						<ContentRenderer class="pointer-events-none" :value="guide" />
-					</section>
-				</div>
+				<section
+					id="guide-content"
+					class="markdown-content max-h-96 overflow-y-scroll"
+				>
+					<ContentRenderer class="pointer-events-none" :value="guide" />
+				</section>
 			</template>
 		</UPopover>
 	</section>
@@ -58,6 +56,7 @@ watch(
 <style>
 #guide-content.markdown-content {
 	width: unset;
+	max-width: 90vw;
 
 	h1,
 	h2,

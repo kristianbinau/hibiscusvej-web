@@ -1,5 +1,28 @@
+import { UnsupportedBrowserModal } from '#components';
+
 // @ts-nocheck
 export const useServiceWorker = () => {
+	const route = useRoute();
+	const overlay = useOverlay();
+
+	const modal = overlay.create(UnsupportedBrowserModal);
+
+	const serviceWorkerSupported = ref<boolean>(true);
+
+	watch(
+		[route, serviceWorkerSupported],
+		() => {
+			// If we are on an auth route and service workers are not supported, show the modal
+			if (route.path.includes('/auth/') && !serviceWorkerSupported.value) {
+				modal.open();
+				return;
+			}
+
+			modal.close();
+		},
+		{ immediate: true },
+	);
+
 	/**
 	 * @param tryOnce
 	 * @returns {Promise<void|ServiceWorker|*>}
@@ -8,33 +31,12 @@ export const useServiceWorker = () => {
 	 */
 	async function registerServiceWorker(tryOnce = false) {
 		if (!('serviceWorker' in navigator)) {
-			const route = useRoute();
-
-			watch(
-				route,
-				() => {
-					if (route.path.includes('/auth/')) {
-						const toast = useToast();
-						toast.remove('doesnt-support-login');
-						setTimeout(() => {
-							toast.add({
-								id: 'doesnt-support-login',
-								icon: 'i-material-symbols-warning-outline-rounded',
-								title: 'Advarsel!',
-								description:
-									'Denne browser understøtter ikke login. Hvis du har åbnet siden igennem Facebook, så prøv at åbne siden igennem en anden browser.',
-								color: 'error',
-								duration: 0,
-							});
-						}, 500);
-					}
-				},
-				{ immediate: true },
-			);
+			serviceWorkerSupported.value = false;
 
 			throw new Error('serviceWorker not supported');
 		}
 
+		// @ts-ignore
 		const url = new URL(`/service-worker.js`, location).toString();
 		//console.info('Registering worker');
 		const registration = await navigator.serviceWorker.register(url, {
@@ -63,8 +65,11 @@ export const useServiceWorker = () => {
 			//console.info('Worker isn’t controlling, re-register');
 			try {
 				const reg = await navigator.serviceWorker.getRegistration('/');
-				//console.info('Unregistering worker');
-				await reg.unregister();
+				if (reg) {
+					//console.info('Unregistering worker');
+					await reg.unregister();
+				}
+
 				//console.info('Successfully unregistered, trying registration again');
 				return registerServiceWorker();
 			} catch (err) {
@@ -80,7 +85,11 @@ export const useServiceWorker = () => {
 			serviceReg.active || serviceReg.waiting || serviceReg.installing;
 		if (!serviceWorker) {
 			//console.info('No worker on registration, getting registration again');
-			serviceReg = await navigator.serviceWorker.getRegistration('/');
+			const navigatorRegistration =
+				await navigator.serviceWorker.getRegistration('/');
+			if (navigatorRegistration) {
+				serviceReg = navigatorRegistration;
+			}
 			serviceWorker =
 				serviceReg.active || serviceReg.waiting || serviceReg.installing;
 		}
@@ -108,17 +117,19 @@ export const useServiceWorker = () => {
 				// see ServiceWorker.onstatechange MDN docs.
 				await timeout(
 					100,
-					new Promise((resolve) => {
+					new Promise<void>((resolve) => {
 						serviceWorker.addEventListener('statechange', (e) => {
-							if (e.target.state == 'activated') resolve();
+							if ((e.target as ServiceWorker).state == 'activated') resolve();
 						});
 					}),
 				);
 			} catch (err) {
 				if (err instanceof TimeoutError) {
+					// @ts-ignore
 					if (serviceWorker.state != 'activated') {
 						if (tryOnce) {
 							//console.info('Worker is still not active. state=', serviceWorker.state);
+							serviceWorkerSupported.value = false;
 							throw new Error('failed to activate service worker');
 						} else {
 							//console.info('Worker is still not active, retrying once');
@@ -127,6 +138,7 @@ export const useServiceWorker = () => {
 					}
 				} else {
 					// should be unreachable
+					serviceWorkerSupported.value = false;
 					throw err;
 				}
 			}
@@ -140,13 +152,8 @@ export const useServiceWorker = () => {
 
 	/**
 	 * Run promise but reject after some timeout.
-	 *
-	 * @template T
-	 * @param {number} ms Milliseconds until timing out
-	 * @param {Promise<T>} promise Promise to run until timeout (note that it will keep running after timeout)
-	 * @returns {Promise<T, Error>}
 	 */
-	function timeout(ms, promise) {
+	function timeout<T>(ms: number, promise: Promise<T>): Promise<T> {
 		return new Promise((resolve, reject) => {
 			const timer = setTimeout(() => {
 				reject(new TimeoutError());
@@ -163,6 +170,13 @@ export const useServiceWorker = () => {
 				},
 			);
 		});
+	}
+
+	/**
+	 * Sleep for X milliseconds.
+	 */
+	function sleep(ms: number): Promise<void> {
+		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
 	registerServiceWorker();

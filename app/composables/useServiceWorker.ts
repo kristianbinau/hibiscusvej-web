@@ -24,16 +24,15 @@ export const useServiceWorker = () => {
 	);
 
 	/**
-	 * @param tryOnce
-	 * @returns {Promise<void|ServiceWorker|*>}
-	 *
 	 * @see https://stackoverflow.com/a/67612740
 	 */
-	async function registerServiceWorker(tryOnce = false) {
+	async function registerServiceWorker(
+		tryOnce = false,
+	): Promise<void | ServiceWorker> {
 		if (!('serviceWorker' in navigator)) {
 			serviceWorkerSupported.value = false;
-
-			throw new Error('serviceWorker not supported');
+			console.error('ServiceWorker not supported');
+			return;
 		}
 
 		// @ts-ignore
@@ -101,8 +100,11 @@ export const useServiceWorker = () => {
 
 		serviceWorker =
 			serviceReg.active || serviceReg.waiting || serviceReg.installing;
-		if (!serviceWorker)
-			throw new Error('after waiting on .ready, still no worker');
+		if (!serviceWorker) {
+			serviceWorkerSupported.value = false;
+			console.error('ServiceWorker still not found, after waiting on .ready');
+			return;
+		}
 
 		if (serviceWorker.state == 'redundant') {
 			//console.info('Worker is redundant, trying again');
@@ -130,7 +132,8 @@ export const useServiceWorker = () => {
 						if (tryOnce) {
 							//console.info('Worker is still not active. state=', serviceWorker.state);
 							serviceWorkerSupported.value = false;
-							throw new Error('failed to activate service worker');
+							console.error('ServiceWorker failed to activate');
+							return;
 						} else {
 							//console.info('Worker is still not active, retrying once');
 							return registerServiceWorker(true);
@@ -139,7 +142,8 @@ export const useServiceWorker = () => {
 				} else {
 					// should be unreachable
 					serviceWorkerSupported.value = false;
-					throw err;
+					console.error('ServiceWorker failed unexpectedly');
+					return;
 				}
 			}
 		}
@@ -180,4 +184,6 @@ export const useServiceWorker = () => {
 	}
 
 	registerServiceWorker();
+
+	return { serviceWorkerSupported };
 };

@@ -18,7 +18,7 @@
 					v-if="showClose"
 					color="neutral"
 					variant="ghost"
-					icon="i-heroicons-x-mark-20-solid"
+					icon="i-material-symbols-close"
 					class="-my-1"
 					@click="emit('close')"
 				/>

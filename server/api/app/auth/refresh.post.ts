@@ -155,7 +155,7 @@ export default defineEventHandler(async (event) => {
 			accessToken: accessToken,
 		};
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed to generate tokens', error);
+		void logError(LOG_MODULE, 'Failed to generate tokens', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

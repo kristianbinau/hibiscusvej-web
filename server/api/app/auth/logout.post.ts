@@ -6,7 +6,9 @@ const querySchema = z.object({
 
 export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const query = await getValidatedQuery(event, querySchema.parse);
+	const query = await getValidatedQuery(event, (data) =>
+		querySchema.parse(data),
+	);
 
 	const everywhere = query.everywhere ?? false;
 

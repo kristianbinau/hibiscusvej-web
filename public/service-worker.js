@@ -191,7 +191,7 @@ async function processTokenOnFetch(event) {
 
 	// If no accessToken is set, then we should try to refresh.
 	if (accessToken === null || accessToken === undefined) {
-		accessToken = await refreshTokens(event);
+		accessToken = refreshTokens(event);
 
 		/**
 		 * If accessToken still is null then we have confirmed that we're unauthorized.
@@ -219,7 +219,7 @@ async function processTokenOnFetch(event) {
 		 * the user won't even notice that it has been refreshed.
 		 */
 		if (accessTokenExpiration < getTimestampInSeconds()) {
-			accessToken = await refreshTokens(event);
+			accessToken = refreshTokens(event);
 		}
 
 		/**

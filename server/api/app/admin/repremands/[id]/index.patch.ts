@@ -14,8 +14,10 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
 	await useAuthAdmin(event);
-	const params = await getValidatedRouterParams(event, routeSchema.parse);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const params = await getValidatedRouterParams(event, (data) =>
+		routeSchema.parse(data),
+	);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	const id = params.id;
 
@@ -45,7 +47,7 @@ export default defineEventHandler(async (event) => {
 			})
 			.where(and(eq(tables.userRepremands.id, id)));
 	} catch (error) {
-		logError(LOG_MODULE, `Failed Update of UserRepremandId: ${id}`, error);
+		void logError(LOG_MODULE, `Failed Update of UserRepremandId: ${id}`, error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

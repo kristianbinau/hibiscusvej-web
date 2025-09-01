@@ -94,7 +94,7 @@ function getJWTSecret() {
 	const jwtSecret = process.env.NUXT_JWT_SECRET || runtimeConfig.jwtSecret;
 
 	if (!jwtSecret) {
-		logError(LOG_MODULE, 'JWT Secret undefined');
+		void logError(LOG_MODULE, 'JWT Secret undefined');
 		throw new Error('JWT Secret is undefined');
 	}
 

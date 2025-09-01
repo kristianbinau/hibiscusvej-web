@@ -17,7 +17,7 @@ const ADMIN_ACTION = 'VerifyUsers';
 
 export default defineEventHandler(async (event) => {
 	const authAdmin = await useAuthAdmin(event);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	const userIds = body.userIds;
 	const now = new Date();
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
 				createdAt: now,
 			});
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Update', error);
+		void logError(LOG_MODULE, 'Failed Update', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -145,7 +145,7 @@ export default defineEventHandler(async (event) => {
 			await sendPushNotificationToUserIds(adminUserIds, pushMessage);
 		}
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Notify Admins', error);
+		void logError(LOG_MODULE, 'Failed Notify Admins', error);
 	}
 
 	return true;

@@ -6,7 +6,9 @@ const routeSchema = z.object({
 
 export default defineEventHandler(async (event) => {
 	await useAuthAdmin(event);
-	const params = await getValidatedRouterParams(event, routeSchema.parse);
+	const params = await getValidatedRouterParams(event, (data) =>
+		routeSchema.parse(data),
+	);
 
 	const userId = params.id;
 

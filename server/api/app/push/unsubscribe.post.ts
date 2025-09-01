@@ -23,8 +23,10 @@ const bodySchema = z
 
 export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const query = await getValidatedQuery(event, querySchema.parse);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const query = await getValidatedQuery(event, (data) =>
+		querySchema.parse(data),
+	);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	const everywhere = query.everywhere ?? false;
 	const pushSubscription = body?.subscription ?? null;
@@ -46,7 +48,7 @@ export default defineEventHandler(async (event) => {
 
 			return true;
 		} catch (error) {
-			logError(LOG_MODULE, 'Failed Delete Everywhere', error);
+			void logError(LOG_MODULE, 'Failed Delete Everywhere', error);
 			throw createError({
 				statusCode: 500,
 				statusMessage: 'Internal Server Error',
@@ -82,7 +84,7 @@ export default defineEventHandler(async (event) => {
 
 		return true;
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Delete', error);
+		void logError(LOG_MODULE, 'Failed Delete', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

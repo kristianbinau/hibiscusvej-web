@@ -11,8 +11,10 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	const params = await getValidatedRouterParams(event, routeSchema.parse);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const params = await getValidatedRouterParams(event, (data) =>
+		routeSchema.parse(data),
+	);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 	await useAuthValidatedAdmin(event, body.currentSessionPassword);
 
 	const id = params.id;
@@ -22,7 +24,7 @@ export default defineEventHandler(async (event) => {
 			.delete(tables.userRepremands)
 			.where(eq(tables.userRepremands.id, id));
 	} catch (error) {
-		logError(LOG_MODULE, `Failed Delete of UserRepremandId: ${id}`, error);
+		void logError(LOG_MODULE, `Failed Delete of UserRepremandId: ${id}`, error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

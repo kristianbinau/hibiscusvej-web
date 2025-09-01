@@ -10,7 +10,7 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	// If User already has 2 persons, return 400 Bad Request - Cannot create more than 2 persons
 	const count = await useDrizzle().$count(
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
 			.returning()
 			.get();
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Insert', error);
+		void logError(LOG_MODULE, 'Failed Insert', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

@@ -11,8 +11,10 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	const params = await getValidatedRouterParams(event, routeSchema.parse);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const params = await getValidatedRouterParams(event, (data) =>
+		routeSchema.parse(data),
+	);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 	const authUser = await useAuthValidatedUser(
 		event,
 		body.currentSessionPassword,
@@ -52,7 +54,7 @@ export default defineEventHandler(async (event) => {
 				),
 			);
 	} catch (error) {
-		logError(LOG_MODULE, `Failed Delete of UserLoginId: ${id}`, error);
+		void logError(LOG_MODULE, `Failed Delete of UserLoginId: ${id}`, error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

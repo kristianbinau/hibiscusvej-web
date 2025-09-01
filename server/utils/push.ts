@@ -29,7 +29,11 @@ export const sendPushNotificationToUserIds = async (
 			await sendPushNotification(pushSubscription, message);
 		}
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed to send push notification to userIds', error);
+		void logError(
+			LOG_MODULE,
+			'Failed to send push notification to userIds',
+			error,
+		);
 	}
 };
 
@@ -59,7 +63,7 @@ export const sendPushNotification = async (
 
 		return true;
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed to send push notification', error);
+		void logError(LOG_MODULE, 'Failed to send push notification', error);
 		return false;
 	}
 };

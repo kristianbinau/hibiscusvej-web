@@ -14,7 +14,7 @@ export const useServiceWorker = () => {
 		() => {
 			// If we are on an auth route and service workers are not supported, show the modal
 			if (route.path.includes('/auth/') && !serviceWorkerSupported.value) {
-				modal.open();
+				void modal.open();
 				return;
 			}
 
@@ -76,7 +76,8 @@ export const useServiceWorker = () => {
 					`ServiceWorker failed to re-register after hard-refresh, reloading the page!`,
 					err,
 				);
-				return location.reload();
+				location.reload();
+				return;
 			}
 		}
 
@@ -183,7 +184,7 @@ export const useServiceWorker = () => {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
-	registerServiceWorker();
+	void registerServiceWorker();
 
 	return { serviceWorkerSupported };
 };

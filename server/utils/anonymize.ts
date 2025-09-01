@@ -54,7 +54,7 @@ export const anonymizeUser = async (userId: number) => {
 				),
 			);
 	} catch (error) {
-		logError(LOG_MODULE, `Failed Delete of UserId: ${userId}`, error);
+		void logError(LOG_MODULE, `Failed Delete of UserId: ${userId}`, error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

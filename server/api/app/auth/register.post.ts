@@ -19,7 +19,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	// If Email is already in use, return 409 Conflict
 	const userByEmail = await useDrizzle()
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
 			.returning()
 			.get();
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Create User', error);
+		void logError(LOG_MODULE, 'Failed Create User', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -90,7 +90,7 @@ export default defineEventHandler(async (event) => {
 		// Remove user if userLogin fails
 		await useDrizzle().delete(tables.users).where(eq(tables.users.id, user.id));
 
-		logError(LOG_MODULE, 'Failed Create UserLogin', error);
+		void logError(LOG_MODULE, 'Failed Create UserLogin', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -125,7 +125,7 @@ export default defineEventHandler(async (event) => {
 			.delete(tables.userPersons)
 			.where(eq(tables.userPersons.userId, user.id));
 
-		logError(LOG_MODULE, 'Failed Create Persons', error);
+		void logError(LOG_MODULE, 'Failed Create Persons', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -166,7 +166,7 @@ export default defineEventHandler(async (event) => {
 
 		await sendPushNotificationToUserIds(adminUserIds, pushMessage);
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Notify Admins', error);
+		void logError(LOG_MODULE, 'Failed Notify Admins', error);
 	}
 
 	setResponseStatus(event, 201);

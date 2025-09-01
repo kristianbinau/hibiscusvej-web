@@ -5,7 +5,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 	const authUser = await useAuthValidatedUser(
 		event,
 		body.currentSessionPassword,

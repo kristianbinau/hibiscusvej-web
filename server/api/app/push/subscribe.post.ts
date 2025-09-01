@@ -17,7 +17,7 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	const pushSubscription = body.subscription;
 
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
 			.returning()
 			.get();
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Insert', error);
+		void logError(LOG_MODULE, 'Failed Insert', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

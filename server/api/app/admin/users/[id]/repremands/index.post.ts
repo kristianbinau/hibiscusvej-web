@@ -14,8 +14,10 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
 	await useAuthAdmin(event);
-	const params = await getValidatedRouterParams(event, routeSchema.parse);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const params = await getValidatedRouterParams(event, (data) =>
+		routeSchema.parse(data),
+	);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	const userId = params.id;
 	const type = body.type;
@@ -38,7 +40,7 @@ export default defineEventHandler(async (event) => {
 			.returning()
 			.get();
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Insert', error);
+		void logError(LOG_MODULE, 'Failed Insert', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

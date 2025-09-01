@@ -14,8 +14,10 @@ const bodySchema = z.object({
 const ADMIN_ACTION = 'ResetPassword';
 
 export default defineEventHandler(async (event) => {
-	const params = await getValidatedRouterParams(event, routeSchema.parse);
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const params = await getValidatedRouterParams(event, (data) =>
+		routeSchema.parse(data),
+	);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 	const authAdmin = await useAuthValidatedAdmin(
 		event,
 		body.currentSessionPassword,
@@ -68,7 +70,7 @@ export default defineEventHandler(async (event) => {
 					createdAt: now,
 				});
 		} catch (error) {
-			logError(LOG_MODULE, 'Failed AdminLog', error);
+			void logError(LOG_MODULE, 'Failed AdminLog', error);
 			throw createError({
 				statusCode: 500,
 				statusMessage: 'Internal Server Error',
@@ -80,7 +82,7 @@ export default defineEventHandler(async (event) => {
 			newPassword: tempPassword,
 		};
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Update', error);
+		void logError(LOG_MODULE, 'Failed Update', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

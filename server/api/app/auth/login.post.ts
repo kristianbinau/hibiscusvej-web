@@ -8,7 +8,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	const body = await readValidatedBody(event, bodySchema.parse);
+	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	// If UserLogin w/ Email is not found, return 401 Unauthorized
 	const userLogin = await useDrizzle()
@@ -99,7 +99,7 @@ export default defineEventHandler(async (event) => {
 			accessToken: accessToken,
 		};
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Login Response', error);
+		void logError(LOG_MODULE, 'Failed Login Response', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

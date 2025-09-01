@@ -10,7 +10,9 @@ const ADMIN_ACTION = 'DeleteBooking';
 
 export default defineEventHandler(async (event) => {
 	const authAdmin = await useAuthAdmin(event);
-	const params = await getValidatedRouterParams(event, routeSchema.parse);
+	const params = await getValidatedRouterParams(event, (data) =>
+		routeSchema.parse(data),
+	);
 
 	const id = params.id;
 	const now = new Date();
@@ -28,7 +30,7 @@ export default defineEventHandler(async (event) => {
 				),
 			);
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed Update', error);
+		void logError(LOG_MODULE, 'Failed Update', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -44,7 +46,7 @@ export default defineEventHandler(async (event) => {
 				createdAt: now,
 			});
 	} catch (error) {
-		logError(LOG_MODULE, 'Failed AdminLog', error);
+		void logError(LOG_MODULE, 'Failed AdminLog', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',

@@ -6,7 +6,7 @@
 		</div>
 
 		<AdminBookingCalendar
-			@update:userId="($event) => (filteredByUserId = $event)"
+			@update:userId="($event: number | null) => (filteredByUserId = $event)"
 			class="mb-8"
 		/>
 

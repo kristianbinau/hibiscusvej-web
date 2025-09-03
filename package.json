@@ -58,9 +58,6 @@
 	"volta": {
 		"node": "24.5.0"
 	},
-	"overrides": {
-		"vite": "npm:rolldown-vite@latest"
-	},
 	"prettier": {
 		"singleQuote": true,
 		"useTabs": true,

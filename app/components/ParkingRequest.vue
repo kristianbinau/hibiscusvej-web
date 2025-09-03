@@ -72,15 +72,38 @@
 
 				<p class="text-muted">
 					<small>
-						Vær opmærksom på, at anmodningen vil blive sendt til AB Odense for
+						Vær opmærksom på, at anmodningen skal sendes til AB Odense for
 						godkendelse. <br />
 						Du vil modtage en <b>individuel bekræftelse per zone</b> via e-mail,
 						når din anmodning er godkendt.
 					</small>
 				</p>
 
+				<p class="text-muted">
+					<small>
+						Anmodningen vil blive åbnet i dit standard mailprogram med alle
+						oplysninger udfyldt. Du skal selv søge for at klikke på send og
+						verificere at alle oplysninger er korrekte.
+					</small>
+				</p>
+
+				<div v-if="customMailBody" class="relative">
+					<UTooltip
+						text="Kopier til udklipsholder"
+						class="absolute top-2 right-2 z-10"
+					>
+						<UButton
+							@click="copyToClipboard()"
+							icon="i-material-symbols-content-copy"
+							size="md"
+							color="primary"
+						/>
+					</UTooltip>
+					<UTextarea :modelValue="customMailBody" autoresize class="w-full" />
+				</div>
+
 				<UButton :loading="onSubmitLoading" type="submit" icon="i-lucide-send">
-					Anmod om parkeringstilladelse
+					Åben anmodning i mailprogram
 				</UButton>
 			</UForm>
 		</template>
@@ -90,11 +113,13 @@
 <script lang="ts" setup>
 import * as z from 'zod/v3';
 import type { FormSubmitEvent } from '@nuxt/ui';
+import { ApartmentSelect } from '#components';
 
 const MAIL_TO =
 	'mailto:ab@abodense.dk?subject=Parkering%20-%20Afdeling%20Garterbyen%20(0128)&body=Hej%2C%0A%0AKan%20jeg%20f%C3%A5%20parkeringstilladelse%20til%20--PLADSER--%3F%0APladsnumre%3A%20--PLADSNUMRE--%0A%0ANummerplade%3A%20(--LANDEKODE--)%20--NUMMERPLADE--%0A%0AMvh.%0A--NAVN--%0A--ADDRESSE--%0AAfdeling%200128%2C%20Gartnerbyen';
 
-const apartmentSelect = useTemplateRef('apartmentSelect');
+const apartmentSelect =
+	useTemplateRef<typeof ApartmentSelect>('apartmentSelect');
 
 const countries = [
 	{ value: 'DK', label: 'Danmark' },
@@ -182,27 +207,63 @@ const state = reactive<Partial<Schema>>({
 	zone: [],
 });
 
+const customMailTo = computed<string>(() => {
+	if (
+		!state.name ||
+		!state.apartmentId ||
+		!state.numberplate?.country ||
+		!state.numberplate?.number ||
+		!state.zone ||
+		state.zone.length === 0
+	) {
+		return '';
+	}
+
+	return MAIL_TO.replace(
+		'--PLADSER--',
+		encodeURIComponent(zonesValueToText(state.zone)),
+	)
+		.replace('--PLADSNUMRE--', encodeURIComponent(state.zone.join(', ')))
+		.replace('--LANDEKODE--', encodeURIComponent(state.numberplate.country))
+		.replace('--NUMMERPLADE--', encodeURIComponent(state.numberplate.number))
+		.replace('--NAVN--', encodeURIComponent(state.name))
+		.replace(
+			'--ADDRESSE--',
+			encodeURIComponent(
+				apartmentSelect.value?.getLabelById(state.apartmentId) || '',
+			),
+		);
+});
+
+const customMailBody = computed(() => {
+	const customMailBodyRaw = customMailTo.value.split('body=')[1];
+
+	if (!customMailBodyRaw) return '';
+
+	return decodeURIComponent(customMailBodyRaw);
+});
+
 const toast = useToast();
 const onSubmitLoading = ref(false);
 async function onSubmit(event: FormSubmitEvent<Schema>) {
 	onSubmitLoading.value = true;
 
-	const mailTo = MAIL_TO.replace(
-		'--PLADSER--',
-		zonesValueToText(event.data.zone),
-	)
-		.replace('--PLADSNUMRE--', event.data.zone.join(', '))
-		.replace('--LANDEKODE--', event.data.numberplate.country)
-		.replace('--NUMMERPLADE--', event.data.numberplate.number)
-		.replace('--NAVN--', event.data.name)
-		.replace(
-			'--ADDRESSE--',
-			apartmentSelect.value?.getLabelById(event.data.apartmentId!) || '',
-		);
-
-	window.location.href = mailTo;
+	window.location.href = customMailTo.value;
 
 	onSubmitLoading.value = false;
+}
+
+function copyToClipboard() {
+	const text = customMailBody.value;
+	if (!text) return;
+
+	navigator.clipboard.writeText(text).then(() => {
+		toast.add({
+			title: 'Kopieret til udklipsholderen',
+			description: text,
+			duration: 3000,
+		});
+	});
 }
 </script>
 

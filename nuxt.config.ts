@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	compatibilityDate: '2024-12-12',
+	compatibilityDate: '2025-09-01',
 	modules: [
 		'@nuxthub/core',
 		'@nuxtjs/seo',

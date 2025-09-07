@@ -12,7 +12,10 @@ export default defineEventHandler(async (event) => {
 		.where(
 			and(
 				isNull(tables.communalBookings.deletedAt),
-				gte(tables.communalBookings.fromTimestamp, subDays(new Date(), HISTORY_DAYS)),
+				gte(
+					tables.communalBookings.fromTimestamp,
+					subDays(new Date(), HISTORY_DAYS),
+				),
 				eq(tables.communalBookings.userId, authUser.user.id),
 			),
 		)

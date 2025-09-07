@@ -44,7 +44,7 @@
 					<BookingCalendar
 						ref="bookingCalendar"
 						v-if="currentUser"
-						@update:modelValue="($event: Date) => (date = $event)"
+						@update:modelValue="($event: Date | null) => (date = $event)"
 						:userId="currentUser.auth.user.id"
 					/>
 

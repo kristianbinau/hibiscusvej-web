@@ -139,8 +139,8 @@ export const communalBookings = sqliteTable(
 	{
 		id: integer('id').primaryKey({ autoIncrement: true }),
 		userId: integer('user_id').notNull(),
-		fromTimestamp: integer('from', { mode: 'timestamp' }).notNull(),
-		toTimestamp: integer('to', { mode: 'timestamp' }).notNull(),
+		fromTimestamp: integer('from_timestamp', { mode: 'timestamp' }).notNull(),
+		toTimestamp: integer('to_timestamp', { mode: 'timestamp' }).notNull(),
 		deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),

@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 		.select()
 		.from(tables.communalBookings)
 		.where(isNull(tables.communalBookings.deletedAt))
-		.orderBy(desc(tables.communalBookings.from))
+		.orderBy(desc(tables.communalBookings.fromTimestamp))
 		.all();
 
 	return {

@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 			.where(
 				and(
 					eq(tables.communalBookings.id, id),
-					gte(tables.communalBookings.from, now),
+					gte(tables.communalBookings.fromTimestamp, now),
 				),
 			);
 	} catch (error) {

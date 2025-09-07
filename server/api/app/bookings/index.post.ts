@@ -85,12 +85,12 @@ export default defineEventHandler(async (event) => {
 				isNull(tables.communalBookings.deletedAt),
 				or(
 					and(
-						gte(tables.communalBookings.from, from),
-						lte(tables.communalBookings.from, to),
+						gte(tables.communalBookings.fromTimestamp, from),
+						lte(tables.communalBookings.fromTimestamp, to),
 					),
 					and(
-						gte(tables.communalBookings.to, from),
-						lte(tables.communalBookings.to, to),
+						gte(tables.communalBookings.toTimestamp, from),
+						lte(tables.communalBookings.toTimestamp, to),
 					),
 				),
 			),
@@ -112,8 +112,8 @@ export default defineEventHandler(async (event) => {
 			.insert(tables.communalBookings)
 			.values({
 				userId: authUser.user.id,
-				from: from,
-				to: to,
+				fromTimestamp: from,
+				toTimestamp: to,
 				createdAt: new Date(),
 				updatedAt: new Date(),
 			})

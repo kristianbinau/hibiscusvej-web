@@ -50,7 +50,7 @@ export const anonymizeUser = async (userId: number) => {
 			.where(
 				and(
 					eq(tables.communalBookings.userId, userId),
-					gte(tables.communalBookings.from, now),
+					gte(tables.communalBookings.fromTimestamp, now),
 				),
 			);
 	} catch (error) {

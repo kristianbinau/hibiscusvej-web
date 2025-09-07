@@ -28,12 +28,12 @@ export default defineEventHandler(async (event) => {
 				isNull(tables.communalBookings.deletedAt),
 				or(
 					and(
-						gte(tables.communalBookings.from, startDate),
-						lte(tables.communalBookings.from, endDate),
+						gte(tables.communalBookings.fromTimestamp, startDate),
+						lte(tables.communalBookings.fromTimestamp, endDate),
 					),
 					and(
-						gte(tables.communalBookings.to, startDate),
-						lte(tables.communalBookings.to, endDate),
+						gte(tables.communalBookings.toTimestamp, startDate),
+						lte(tables.communalBookings.toTimestamp, endDate),
 					),
 				),
 			),

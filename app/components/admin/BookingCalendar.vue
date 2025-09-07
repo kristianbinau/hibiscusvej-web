@@ -245,7 +245,7 @@ async function fetchMonth(
 			if (!data) resolve([]);
 
 			const bookingsThisMonth = data.map((booking) => {
-				const date = new Date(booking.from);
+				const date = new Date(booking.fromTimestamp);
 
 				return {
 					id: booking.id,

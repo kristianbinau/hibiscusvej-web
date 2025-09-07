@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
 				and(
 					eq(tables.communalBookings.id, id),
 					eq(tables.communalBookings.userId, authUser.user.id),
-					gte(tables.communalBookings.from, now),
+					gte(tables.communalBookings.fromTimestamp, now),
 				),
 			);
 	} catch (error) {

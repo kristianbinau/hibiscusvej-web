@@ -139,16 +139,16 @@ export const communalBookings = sqliteTable(
 	{
 		id: integer('id').primaryKey({ autoIncrement: true }),
 		userId: integer('user_id').notNull(),
-		from: integer('from', { mode: 'timestamp' }).notNull(),
-		to: integer('to', { mode: 'timestamp' }).notNull(),
+		fromTimestamp: integer('from', { mode: 'timestamp' }).notNull(),
+		toTimestamp: integer('to', { mode: 'timestamp' }).notNull(),
 		deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 	},
 	(booking) => [
 		index('communal_bookings_user_idx').on(booking.userId),
-		index('communal_bookings_from_idx').on(booking.from),
-		index('communal_bookings_to_idx').on(booking.to),
+		index('communal_bookings_from_timestamp_idx').on(booking.fromTimestamp),
+		index('communal_bookings_to_timestamp_idx').on(booking.toTimestamp),
 	],
 );
 

@@ -71,7 +71,7 @@ const columns: TableColumn<MyBookingRow>[] = [
 
 const rows = computed<MyBookingRow[]>(() => {
 	return myBookings.value.map((booking) => ({
-		date: new Date(booking.from),
+		date: new Date(booking.fromTimestamp),
 		createdAt: new Date(booking.createdAt),
 		id: booking.id,
 	}));

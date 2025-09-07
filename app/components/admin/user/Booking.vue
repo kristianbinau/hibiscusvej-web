@@ -11,7 +11,7 @@
 		<UFormField label="Starts At">
 			<UInput
 				disabled
-				:model-value="String(new Date(booking.from).toLocaleString())"
+				:model-value="String(new Date(booking.fromTimestamp).toLocaleString())"
 				class="mb-4 disabled:*:cursor-default"
 			/>
 		</UFormField>
@@ -19,7 +19,7 @@
 		<UFormField label="Ends At">
 			<UInput
 				disabled
-				:model-value="String(new Date(booking.to).toLocaleString())"
+				:model-value="String(new Date(booking.toTimestamp).toLocaleString())"
 				class="mb-4 disabled:*:cursor-default"
 			/>
 		</UFormField>

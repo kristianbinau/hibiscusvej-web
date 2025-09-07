@@ -169,7 +169,7 @@ const rows = computed<BookingRow[]>(() => {
 		.map((booking) => {
 			return {
 				...booking,
-				date: new Date(booking.from),
+				date: new Date(booking.fromTimestamp),
 				createdAt: new Date(booking.createdAt),
 				updatedAt: new Date(booking.updatedAt),
 				actions: booking.id,

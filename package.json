@@ -13,7 +13,8 @@
 		"format": "prettier --write .",
 		"lint": "oxlint --type-aware --deny-warnings",
 		"typecheck": "nuxi typecheck",
-		"update-dependencies": "npx npm-check-updates"
+		"update-dependencies": "npx npm-check-updates",
+		"backup-database": "npx wrangler d1 export hibiscusvej-web --remote --output=./database.sql"
 	},
 	"dependencies": {
 		"@block65/webcrypto-web-push": "^1.0.2",

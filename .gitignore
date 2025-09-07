@@ -27,3 +27,6 @@ logs
 
 # Temporary block, until we implement Git LFS
 assets/videos
+
+# Production SQLite database
+prod-database.sql

@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Lint JS
-        run: npm run lint
+        run: npm run check:lint
 
   format:
     name: Format Check
@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Check formatting
-        run: npm run format -- --check
+        run: npm run check:format
 
   typecheck:
     name: Type Check
@@ -60,7 +60,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Type check
-        run: npm run typecheck
+        run: npm run check:types
 
   deploy:
     name: 'Deploy to NuxtHub'

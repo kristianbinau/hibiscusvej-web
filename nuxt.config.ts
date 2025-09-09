@@ -79,7 +79,7 @@ export default defineNuxtConfig({
 		bindings: {
 			compatibilityDate: '2025-09-01',
 			compatibilityFlags: [],
-		}
+		},
 	},
 
 	content: {

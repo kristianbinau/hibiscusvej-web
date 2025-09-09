@@ -76,6 +76,10 @@ export default defineNuxtConfig({
 		database: true,
 		cache: true,
 		blob: true,
+		bindings: {
+			compatibilityDate: '2025-09-01',
+			compatibilityFlags: [],
+		}
 	},
 
 	content: {

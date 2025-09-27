@@ -3,11 +3,9 @@ export default defineNuxtConfig({
 	compatibilityDate: '2025-09-01',
 	modules: [
 		'@nuxthub/core',
-		'@nuxtjs/seo',
 		'@nuxt/ui',
 		'@nuxt/content',
 		'@nuxt/test-utils/module',
-		'@compodium/nuxt',
 	],
 
 	/**
@@ -33,10 +31,6 @@ export default defineNuxtConfig({
 				statusCode: 302,
 			},
 		},
-		// Disable robots & sitemap
-		'/u/**': { robots: false },
-		'/auth/reset': { robots: false },
-		'/board': { robots: false },
 	},
 
 	runtimeConfig: {
@@ -68,34 +62,10 @@ export default defineNuxtConfig({
 		blob: true,
 		bindings: {
 			compatibilityDate: '2025-09-01',
-			compatibilityFlags: [],
 		},
 	},
 
 	content: {
-		experimental: { nativeSqlite: true },
-	},
-
-	site: {
-		url: 'https://hibiscusvej.dk',
-		name: 'Hibiscsuvej 2-30',
-	},
-
-	sitemap: {
-		// Wait for SEO module to update to support Nuxt/Content v3.6.0
-		enabled: false,
-	},
-
-	linkChecker: {
-		// Wait for SEO module to update to support Nuxt/Content v3.6.0
-		enabled: false,
-	},
-
-	ogImage: {
-		enabled: false,
-	},
-
-	schemaOrg: {
-		enabled: false,
+		experimental: { sqliteConnector: 'better-sqlite3' },
 	},
 });

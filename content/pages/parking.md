@@ -26,7 +26,7 @@ _Pladsnummer_: 3930
 #### Ekstra pladser
 
 De ekstra pladser ligger for enden af Lavsenvænget, der er der en stor parkeringsplads, hvor vi har 4 pladser.  
-Pladserne er helt for enden af parkeringspladsen, og der er et skilt, som viser, at det er vores pladser. [Klik for at se parkeringsskiltet](/images/parking-sign.webp)  
+Pladserne er helt for enden af parkeringspladsen, og der er et skilt, som viser, at det er vores pladser. <a href="/images/parking-sign.webp" target="_blank">Klik for at se parkeringsskiltet</a>  
 _Pladsnummer_: 4744
 
 #### Kort over parkeringspladser

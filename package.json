@@ -26,28 +26,27 @@
 		"@nuxt/content": "^3.7.1",
 		"@nuxt/ui": "^4.0.0",
 		"@nuxthub/core": "^0.9.0",
-		"@nuxtjs/seo": "^3.2.2",
 		"@popperjs/core": "^2.11.8",
 		"bcryptjs": "^3.0.2",
+		"better-sqlite3": "^12.4.1",
 		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.44.5",
 		"jose": "^6.1.0",
 		"nuxt": "^4.1.2",
 		"ohash": "^2.0.11",
-		"reka-ui": "^2.5.0",
+		"reka-ui": "^2.5.1",
 		"uncrypto": "^0.1.3",
 		"vue": "latest",
 		"vue-router": "latest",
 		"zod": "^4.1.11"
 	},
 	"devDependencies": {
-		"@compodium/nuxt": "^0.1.0-beta.11",
 		"@iconify-json/lucide": "^1.2.68",
-		"@iconify-json/material-symbols": "^1.2.38",
+		"@iconify-json/material-symbols": "^1.2.39",
 		"@iconify-json/mdi": "^1.2.3",
 		"@nuxt/test-utils": "^3.19.2",
 		"@vue/test-utils": "^2.4.6",
-		"drizzle-kit": "^0.31.4",
+		"drizzle-kit": "^0.31.5",
 		"happy-dom": "^18.0.1",
 		"oxlint": "^1.18.0",
 		"oxlint-tsgolint": "^0.2.0",
@@ -56,7 +55,7 @@
 		"typescript": "^5.9.2",
 		"vitest": "^3.2.4",
 		"vue-tsc": "^3.0.8",
-		"wrangler": "^4.39.0"
+		"wrangler": "^4.40.2"
 	},
 	"volta": {
 		"node": "24.5.0"

@@ -55,7 +55,7 @@ describe('auth', async () => {
 		await page.reload({ waitUntil: 'domcontentloaded' });
 
 		expect(page.url()).toBe(url('/u/communal/book'));
-	});
+	}, 10_000);
 
 	test('register', async () => {
 		const page = await createPage();

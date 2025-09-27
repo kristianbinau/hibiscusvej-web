@@ -10,11 +10,6 @@ export default defineNuxtConfig({
 		'@compodium/nuxt',
 	],
 
-	// We only want to use the Sentry module in production
-	$production: {
-		modules: ['@sentry/nuxt/module'],
-	},
-
 	/**
 	 * Options
 	 */
@@ -23,11 +18,6 @@ export default defineNuxtConfig({
 		experimental: {
 			tasks: true,
 		},
-	},
-
-	sourcemap: {
-		// Used for Sentry
-		client: true,
 	},
 
 	routeRules: {

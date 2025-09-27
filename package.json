@@ -28,7 +28,6 @@
 		"@nuxthub/core": "^0.9.0",
 		"@nuxtjs/seo": "^3.2.2",
 		"@popperjs/core": "^2.11.8",
-		"@sentry/nuxt": "^10.15.0",
 		"bcryptjs": "^3.0.2",
 		"date-fns": "^4.1.0",
 		"drizzle-orm": "^0.44.5",

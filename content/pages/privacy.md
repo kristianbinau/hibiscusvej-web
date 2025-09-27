@@ -48,8 +48,6 @@ Vi bruger tredjepartstjenester til at hjælpe os med at administrere vores hjemm
   - Server hosting og sikkerhed.
 - [NuxtHub](https://admin.hub.nuxt.com/privacy)
   - Server administration og vedligeholdelse.
-- [Sentry](https://sentry.io/privacy/)
-  - Fejlrapportering og overvågning.
 
 ## Dine rettigheder
 

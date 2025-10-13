@@ -43,6 +43,13 @@
       "when": 1757277007409,
       "tag": "0005_unique_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1759775942210,
+      "tag": "0006_lying_giant_girl",
+      "breakpoints": true
     }
   ]
 }

@@ -1,25 +1,26 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Mine bookinger</h1>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Mine booking anmodninger</h1>
 			<p>
-				Her kan du se dine bookinger og slette dem hvis du har brug for det.<br />
-				Bookinger kan ikke slettes hvis de er startet.
+				Her kan du se dine booking anmodninger og slette dem hvis du har brug
+				for det.<br />
+				Anmodninger kan ikke slettes efter de er blevet håndteret.
 			</p>
 		</div>
 
 		<ClientOnly>
 			<UTable :data="rows" :columns="columns">
 				<template #id-cell="{ row }">
-					<UTooltip text="Klik for at fjerne booking">
+					<UTooltip text="Klik for at fjerne booking anmodning">
 						<UButton
 							size="md"
-							label="Slet denne booking"
+							label="Slet denne anmodning"
 							color="error"
 							variant="soft"
 							:disabled="isAfter(now, row.getValue<Date>('date'))"
-							@click="deleteBooking(row.getValue('id'))"
-							:loading="deleteBookingLoading"
+							@click="deleteBookingRequest(row.getValue('id'))"
+							:loading="deleteBookingRequestLoading"
 						/>
 					</UTooltip>
 				</template>
@@ -31,7 +32,7 @@
 <script lang="ts" setup>
 import type { InternalApi } from 'nitropack';
 import type { TableColumn } from '@nuxt/ui';
-type MyBookingsApiResponse = InternalApi['/api/app/bookings/me']['get'];
+type MyBookingRequestsApiResponse = InternalApi['/api/app/bookings/requests/me']['get'];
 
 import { isAfter } from 'date-fns';
 
@@ -71,7 +72,7 @@ const columns: TableColumn<MyBookingRow>[] = [
 
 const rows = computed<MyBookingRow[]>(() => {
 	return (
-		myBookings.value?.map((booking) => ({
+		myBookingRequests.value?.map((booking) => ({
 			date: new Date(booking.fromTimestamp),
 			createdAt: new Date(booking.createdAt),
 			id: booking.id,
@@ -82,27 +83,27 @@ const rows = computed<MyBookingRow[]>(() => {
 const now = ref(new Date());
 
 /**
- * Fetch Bookings
+ * Fetch Booking Requests
  */
 
-const { data: myBookings } = useNuxtData<MyBookingsApiResponse>('my-bookings');
+const { data: myBookingRequests } = useNuxtData<MyBookingRequestsApiResponse>('my-booking-requests');
 
 /**
  * Delete Bookings
  */
 
-const deleteBookingLoading = ref<boolean>(false);
+const deleteBookingRequestLoading = ref<boolean>(false);
 
-async function deleteBooking(id: number) {
-	deleteBookingLoading.value = true;
+async function deleteBookingRequest(id: number) {
+	deleteBookingRequestLoading.value = true;
 
 	try {
-		const res = await $fetch(`/api/app/bookings/${id}`, {
+		const res = await $fetch(`/api/app/bookings/requests/${id}`, {
 			method: 'DELETE',
 		});
 
 		if (res) {
-			await refreshNuxtData(['my-bookings']);
+			await refreshNuxtData(['my-booking-requests']);
 
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
@@ -118,13 +119,13 @@ async function deleteBooking(id: number) {
 			actions: [
 				{
 					label: 'Prøv igen',
-					onClick: () => deleteBooking(id),
+					onClick: () => deleteBookingRequest(id),
 				},
 			],
 		});
 	}
 
-	deleteBookingLoading.value = false;
+	deleteBookingRequestLoading.value = false;
 }
 </script>
 

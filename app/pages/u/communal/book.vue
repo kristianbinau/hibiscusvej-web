@@ -76,6 +76,7 @@
 
 <script lang="ts" setup>
 import { format } from 'date-fns';
+import { LazyBookingRequestModal } from '#components';
 
 definePageMeta({
 	layout: 'logged-in',
@@ -87,11 +88,14 @@ useHead({
 });
 
 const toast = useToast();
+const overlay = useOverlay();
 
 const hasReadTerms = ref(false);
 const date = ref<Date | null>(null);
 
 const bookingCalendarRef = useTemplateRef('bookingCalendar');
+
+const modal = overlay.create(LazyBookingRequestModal);
 
 /**
  * Current User
@@ -136,14 +140,15 @@ async function onSubmit() {
 
 	onSubmitLoading.value = true;
 
-	try {
-		const bookAsDate = date.value;
+	const bookAsDate = date.value;
+	const formattedBookAsDate = format(bookAsDate, 'yyyy-MM-dd');
 
+	try {
 		const res = await $fetch('/api/app/bookings', {
 			method: 'POST',
 			body: {
 				// Formatted as 2024-12-24
-				date: format(bookAsDate, 'yyyy-MM-dd'),
+				date: formattedBookAsDate,
 			},
 		});
 
@@ -155,6 +160,7 @@ async function onSubmit() {
 				title: 'Success!',
 				description: `Du har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
 			});
+			refreshNuxtData(['my-bookings']);
 		}
 	} catch (error: any) {
 		if (error.statusCode === 409) {
@@ -164,11 +170,27 @@ async function onSubmit() {
 				description: 'Der er allerede en booking i det tidsrum',
 			});
 		} else {
-			if (error.statusMessage) {
+			if (
+				[
+					'Max Consecutive Bookings Reached',
+					'Max Weekly Bookings Reached',
+					'Max Monthly Bookings Reached',
+				].includes(error.statusMessage)
+			) {
+				const createdBookingRequest: Date | undefined = await modal.open({
+					date: formattedBookAsDate,
+					reason: error.data.message,
+				});
+
+				if (createdBookingRequest) {
+					bookingCalendarRef.value?.refetchByDate(createdBookingRequest);
+					refreshNuxtData(['my-booking-requests']);
+				}
+			} else if (error.data.message) {
 				toast.add({
 					icon: 'i-material-symbols-error-outline-rounded',
 					title: 'Fejl!',
-					description: error.statusMessage,
+					description: error.data.message,
 					actions: [
 						{
 							label: 'Prøv igen',

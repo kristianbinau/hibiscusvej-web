@@ -1,14 +1,16 @@
 import { z } from 'zod/v4';
-import { UTCDateMini } from '@date-fns/utc';
+import { type UTCDate, UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays } from 'date-fns';
 
 const LOG_MODULE = 'Api/Booking/Create';
 
 const bodySchema = z.object({
-	date: z.string().date(),
+	date: z.iso.date(),
 });
 
-const maxConsecutiveDays = 2;
+const maxConsecutiveDays = 1;
+const maxDaysPerWeek = 3;
+const maxDaysPerMonth = 10;
 
 export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
@@ -37,7 +39,8 @@ export default defineEventHandler(async (event) => {
 	if (user.verifiedAt === null) {
 		throw createError({
 			statusCode: 403,
-			statusMessage: 'Din bruger er ikke verificeret.',
+			statusMessage: 'Forbidden',
+			message: 'Din bruger er ikke verificeret.',
 		});
 	}
 
@@ -52,8 +55,8 @@ export default defineEventHandler(async (event) => {
 	if (isAfter(from, to)) {
 		throw createError({
 			statusCode: 400,
-			statusMessage:
-				'Start tidspunktet skal være tidligere end slut tidspunktet.',
+			statusMessage: 'Invalid Time Range',
+			message: 'Start tidspunktet skal være tidligere end slut tidspunktet.',
 		});
 	}
 
@@ -61,18 +64,8 @@ export default defineEventHandler(async (event) => {
 	if (!isAfter(from, endOfYesterday())) {
 		throw createError({
 			statusCode: 400,
-			statusMessage: 'Booking kan ikke starte i fortiden.',
-		});
-	}
-
-	// If booking is longer than maxConsecutiveDays, return 400 Bad Request
-	if (
-		to.getTime() - from.getTime() >
-		maxConsecutiveDays * 24 * 60 * 60 * 1000
-	) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Booking vare længere end max tilladt.',
+			statusMessage: 'Invalid Time Range',
+			message: 'Booking kan ikke starte i fortiden.',
 		});
 	}
 
@@ -105,6 +98,40 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
+	/**
+	 * Check booking limits
+	 *
+	 * TODO: ALLOW IF USER IS ADMIN
+	 * TODO: ALLOW IF DATE 2 DAYS OFF FROM TODAY, SO USERS CAN BOOK LAST MINUTE
+	 */
+
+	if ((await checkConsecutiveBookings(user.id, date)) >= maxConsecutiveDays) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Max Consecutive Bookings Reached',
+			message:
+				maxConsecutiveDays > 1
+					? `Du kan maksimalt have ${maxConsecutiveDays} sammenhængende bookinger.`
+					: 'Du kan ikke have sammenhængende bookinger.',
+		});
+	}
+
+	if ((await checkWeekBookings(user.id, date)) >= maxDaysPerWeek) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Max Weekly Bookings Reached',
+			message: `Du kan maksimalt have ${maxDaysPerWeek} bookinger hver 7. dag.`,
+		});
+	}
+
+	if ((await checkMonthBookings(user.id, date)) >= maxDaysPerMonth) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Max Monthly Bookings Reached',
+			message: `Du kan maksimalt have ${maxDaysPerMonth} bookinger hver 31. dag.`,
+		});
+	}
+
 	// Insert the new booking
 	let booking;
 	try {
@@ -131,3 +158,124 @@ export default defineEventHandler(async (event) => {
 		booking: booking,
 	};
 });
+
+/**
+ * Count number of consecutive bookings the user has before and after the given date
+ */
+async function checkConsecutiveBookings(
+	userId: number,
+	date: UTCDate,
+): Promise<number> {
+	let amount = 0;
+
+	let previousDate = addDays(date, -1);
+
+	while (true) {
+		const res = await useDrizzle()
+			.select({ count: count() })
+			.from(tables.communalBookings)
+			.where(
+				and(
+					eq(tables.communalBookings.userId, userId),
+					isNull(tables.communalBookings.deletedAt),
+					gte(
+						tables.communalBookings.fromTimestamp,
+						new UTCDateMini(previousDate),
+					),
+					lte(
+						tables.communalBookings.fromTimestamp,
+						addDays(new UTCDateMini(previousDate), 1),
+					),
+				),
+			)
+			.get();
+
+		if (res?.count && res.count > 0) {
+			amount++;
+			previousDate = addDays(previousDate, -1);
+		} else {
+			break;
+		}
+	}
+
+	let nextDate = addDays(date, 1);
+
+	while (true) {
+		const res = await useDrizzle()
+			.select({ count: count() })
+			.from(tables.communalBookings)
+			.where(
+				and(
+					eq(tables.communalBookings.userId, userId),
+					isNull(tables.communalBookings.deletedAt),
+					gte(tables.communalBookings.fromTimestamp, new UTCDateMini(nextDate)),
+					lte(
+						tables.communalBookings.fromTimestamp,
+						addDays(new UTCDateMini(nextDate), 1),
+					),
+				),
+			)
+			.get();
+
+		if (res?.count && res.count > 0) {
+			amount++;
+			nextDate = addDays(nextDate, 1);
+		} else {
+			break;
+		}
+	}
+
+	return amount;
+}
+
+/**
+ * Count number of bookings the user has in the nearest 7 days, going back 3 days and forward 3 days from the given date
+ */
+async function checkWeekBookings(
+	userId: number,
+	date: UTCDate,
+): Promise<number> {
+	const startOfPeriod = addDays(date, -3);
+	const endOfPeriod = addDays(date, 3);
+
+	const res = await useDrizzle()
+		.select({ count: count() })
+		.from(tables.communalBookings)
+		.where(
+			and(
+				eq(tables.communalBookings.userId, userId),
+				isNull(tables.communalBookings.deletedAt),
+				gte(tables.communalBookings.fromTimestamp, startOfPeriod),
+				lte(tables.communalBookings.fromTimestamp, endOfPeriod),
+			),
+		)
+		.get();
+
+	return res?.count ?? 0;
+}
+
+/**
+ * Count number of bookings the user has in the nearest 30 days, going backwards 15 days and forwards 15 days from the given date
+ */
+async function checkMonthBookings(
+	userId: number,
+	date: UTCDate,
+): Promise<number> {
+	const startOfPeriod = addDays(date, -15);
+	const endOfPeriod = addDays(date, 15);
+
+	const res = await useDrizzle()
+		.select({ count: count() })
+		.from(tables.communalBookings)
+		.where(
+			and(
+				eq(tables.communalBookings.userId, userId),
+				isNull(tables.communalBookings.deletedAt),
+				gte(tables.communalBookings.fromTimestamp, startOfPeriod),
+				lte(tables.communalBookings.fromTimestamp, endOfPeriod),
+			),
+		)
+		.get();
+
+	return res?.count ?? 0;
+}

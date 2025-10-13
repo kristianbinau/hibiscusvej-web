@@ -35,11 +35,6 @@ const links = ref<NavigationMenuItem[][]>([
 			icon: 'i-material-symbols-add-home-work-rounded',
 			to: '/u/communal/book',
 		},
-		{
-			label: 'Mine bookinger',
-			icon: 'i-material-symbols-home-work-rounded',
-			to: '/u/communal/me',
-		},
 	],
 	[
 		{
@@ -65,6 +60,70 @@ if (authUser.value && authUser.value.user.admin) {
 	// @ts-ignore
 	links.value[2].unshift(link);
 }
+
+const { data: myBookings, pending: fetchingBookings } = await useFetch(
+	'/api/app/bookings/me',
+	{
+		key: 'my-bookings',
+	},
+);
+
+watch(
+	[fetchingBookings, myBookings],
+	([loading, requests]) => {
+		const link = {
+			label: 'Mine bookinger',
+			icon: 'i-material-symbols-home-work-rounded',
+			to: '/u/communal/me',
+		};
+
+		console.log({ loading, requests });
+
+		// Depending on if we have any requests, add link or not
+		if (!loading && requests && requests.length > 0) {
+			// @ts-ignore
+			if (!links.value[1].find((l) => l.to === link.to)) {
+				// @ts-ignore
+				links.value[1].push(link);
+			}
+		} else {
+			// @ts-ignore
+			links.value[1] = links.value[1]?.filter((l) => l.to !== link.to);
+		}
+	},
+	{ immediate: true },
+);
+
+const { data: myBookingRequests, pending: fetchingBookingRequests } =
+	await useFetch('/api/app/bookings/requests/me', {
+		key: 'my-booking-requests',
+	});
+
+watch(
+	[fetchingBookingRequests, myBookingRequests],
+	([loading, requests]) => {
+		const link = {
+			label: 'Mine anmodninger',
+			icon: 'i-material-symbols-home-work-outline-rounded',
+			to: '/u/communal/me-requests',
+		};
+
+		console.log({ loading, requests });
+
+		// Depending on if we have any requests, add link or not
+		if (!loading && requests && requests.length > 0) {
+			// @ts-ignore
+			if (!links.value[1].find((l) => l.to === link.to)) {
+				// @ts-ignore
+				links.value[1].push(link);
+			}
+		} else {
+			// @ts-ignore
+			links.value[1] = links.value[1]?.filter((l) => l.to !== link.to);
+		}
+	},
+	{ immediate: true },
+);
 
 async function logout() {
 	try {

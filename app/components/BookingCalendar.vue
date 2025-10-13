@@ -37,7 +37,7 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', value: Date | null): void;
 }>();
 
-defineExpose({ addBooking });
+defineExpose({ addBooking, refetchByDate });
 
 emit('update:modelValue', null);
 
@@ -53,11 +53,21 @@ watch(selectedDate, (newValue) => {
 		selectedDate.value = undefined;
 
 		if (booking.userId === userId) {
-			toast.add({
-				icon: 'i-material-symbols-warning-outline-rounded',
-				title: 'Advarsel!',
-				description: 'Du har allerede en booking den dag',
-			});
+			if (booking.request) {
+				toast.add({
+					icon: 'i-material-symbols-warning-outline-rounded',
+					title: 'Advarsel!',
+					description:
+						'Du har allerede en booking-anmodning den dag. Vent på at den bliver godkendt eller afvist.',
+					duration: 10000,
+				});
+			} else {
+				toast.add({
+					icon: 'i-material-symbols-info-outline-rounded',
+					title: 'Info',
+					description: 'Du har allerede en booking den dag',
+				});
+			}
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-warning-outline-rounded',
@@ -131,10 +141,13 @@ async function handleMonthChange(date: DateValue) {
 
 function getColorByBooking(
 	booking?: DayBooking,
-): 'success' | 'error' | undefined {
+): 'success' | 'warning' | 'error' | undefined {
 	if (!booking) return undefined;
 
 	if (booking.userId === userId) {
+		if (booking.request) {
+			return 'warning';
+		}
 		return 'success';
 	} else {
 		return 'error';
@@ -149,6 +162,7 @@ type DayBooking = {
 	id: number;
 	date: CalendarDate;
 	userId: number;
+	request: boolean;
 };
 
 const bookings = computed<Record<string, DayBooking>>(() => {
@@ -184,15 +198,14 @@ async function fetchMonth(
 	if (!forceUpdate && cache) return cache.data;
 
 	const promise = new Promise<DayBooking[]>((resolve) => {
-		$fetch<Booking[]>('/api/app/bookings', {
+		let bookingsThisMonth: DayBooking[] = [];
+		const bookingsFetch = $fetch<Booking[]>('/api/app/bookings', {
 			params: {
 				year: month.year,
 				month: month.month,
 			},
 		}).then((data) => {
-			if (!data) resolve([]);
-
-			const bookingsThisMonth = data.map((booking) => {
+			bookingsThisMonth = data.map((booking) => {
 				const date = new Date(booking.fromTimestamp);
 
 				return {
@@ -203,10 +216,39 @@ async function fetchMonth(
 						date.getDate(),
 					),
 					userId: booking.userId,
+					request: false,
 				};
 			});
+		});
 
-			resolve(bookingsThisMonth);
+		let requestsThisMonth: DayBooking[] = [];
+		const requestsFetch = $fetch<Booking[]>('/api/app/bookings/requests', {
+			params: {
+				year: month.year,
+				month: month.month,
+			},
+		}).then((data) => {
+			requestsThisMonth = data.map((booking) => {
+				const date = new Date(booking.fromTimestamp);
+
+				return {
+					id: booking.id,
+					date: new CalendarDate(
+						date.getFullYear(),
+						date.getMonth() + 1,
+						date.getDate(),
+					),
+					userId: booking.userId,
+					request: true,
+				};
+			});
+		});
+
+		Promise.all([bookingsFetch, requestsFetch]).then(() => {
+			const allBookings = [...bookingsThisMonth, ...requestsThisMonth].sort(
+				(a, b) => a.date.day - b.date.day,
+			);
+			resolve(allBookings);
 		});
 	});
 
@@ -232,6 +274,17 @@ async function fetchMonth(
 	}
 
 	return promise;
+}
+
+async function refetchByDate(date: Date) {
+	const year = date.getFullYear();
+	const month = date.getMonth() + 1;
+
+	await fetchMonth({ year, month }, true);
+
+	nextTick(() => {
+		reload.value++;
+	});
 }
 
 async function addBooking(date: Date) {

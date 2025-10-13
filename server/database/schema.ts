@@ -12,9 +12,12 @@ export const users = sqliteTable(
 	{
 		id: integer('id').primaryKey({ autoIncrement: true }),
 		apartmentId: integer('apartment_id').notNull(),
+
 		admin: integer('admin', { mode: 'boolean' }).notNull(),
+
 		verifiedByUserId: integer('verified_by_user_id'),
 		verifiedAt: integer('verified_at', { mode: 'timestamp' }),
+
 		deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
@@ -30,6 +33,7 @@ export const userPersons = sqliteTable(
 		name: text('first_name').notNull(),
 		phone: text('phone').notNull(),
 		email: text('email').notNull(),
+
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 	},
@@ -44,6 +48,7 @@ export const userLogins = sqliteTable(
 		email: text('email').notNull().unique(),
 		password: text('password').notNull(),
 		singleUse: integer('single_use', { mode: 'boolean' }).notNull(),
+
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 	},
@@ -60,6 +65,7 @@ export const userSessions = sqliteTable(
 		userLoginId: integer('user_login_id').notNull(),
 		refreshToken: text('refresh_token').notNull().unique(),
 		tokenFamily: text('token_family').notNull().unique(),
+
 		expiredAt: integer('expired_at', { mode: 'timestamp' }).notNull(),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
@@ -77,6 +83,7 @@ export const userSubscriptions = sqliteTable(
 		id: integer('id').primaryKey({ autoIncrement: true }),
 		userId: integer('user_id').notNull(),
 		subscriptionObject: text('subscription_object', { mode: 'json' }).notNull(),
+
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	},
 	(subscription) => [
@@ -105,6 +112,7 @@ export const userRepremands = sqliteTable(
 		userId: integer('user_id').notNull(),
 		type: text('type', { enum: ['ban', 'warning'] }).notNull(),
 		reason: text('reason').notNull(),
+
 		expiresAt: integer('expires_at', { mode: 'timestamp' }),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
@@ -141,14 +149,49 @@ export const communalBookings = sqliteTable(
 		userId: integer('user_id').notNull(),
 		fromTimestamp: integer('from_timestamp', { mode: 'timestamp' }).notNull(),
 		toTimestamp: integer('to_timestamp', { mode: 'timestamp' }).notNull(),
+
+		communalBookingRequestId: integer('communal_booking_request_id'),
+
 		deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 	},
 	(booking) => [
 		index('communal_bookings_user_idx').on(booking.userId),
+		index('communal_bookings_request_id_idx').on(
+			booking.communalBookingRequestId,
+		),
 		index('communal_bookings_from_timestamp_idx').on(booking.fromTimestamp),
 		index('communal_bookings_to_timestamp_idx').on(booking.toTimestamp),
+	],
+);
+
+export const communalBookingRequests = sqliteTable(
+	'communal_booking_requests',
+	{
+		id: integer('id').primaryKey({ autoIncrement: true }),
+		userId: integer('user_id').notNull(),
+		fromTimestamp: integer('from_timestamp', { mode: 'timestamp' }).notNull(),
+		toTimestamp: integer('to_timestamp', { mode: 'timestamp' }).notNull(),
+
+		requestNeededReasons: text('request_needed_reasons', { mode: 'json' }),
+		requestText: text('request_text'),
+
+		permitted: integer('permitted', { mode: 'boolean' }),
+		handledText: text('handled_text'),
+		handledBy: integer('handled_by_user_id'),
+		handledAt: integer('handled_at', { mode: 'timestamp' }),
+
+		deletedAt: integer('deleted_at', { mode: 'timestamp' }),
+		createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+		updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+	},
+	(booking) => [
+		index('communal_booking_requests_user_idx').on(booking.userId),
+		index('communal_booking_requests_from_timestamp_idx').on(
+			booking.fromTimestamp,
+		),
+		index('communal_booking_requests_to_timestamp_idx').on(booking.toTimestamp),
 	],
 );
 
@@ -203,3 +246,31 @@ export const userSessionsRelations = relations(userSessions, ({ one }) => ({
 export const apartmentRelations = relations(apartments, ({ many }) => ({
 	users: many(users),
 }));
+
+export const communalBookingsRelations = relations(
+	communalBookings,
+	({ one }) => ({
+		user: one(users, {
+			fields: [communalBookings.userId],
+			references: [users.id],
+		}),
+		request: one(communalBookingRequests, {
+			fields: [communalBookings.communalBookingRequestId],
+			references: [communalBookingRequests.id],
+		}),
+	}),
+);
+
+export const communalBookingRequestsRelations = relations(
+	communalBookingRequests,
+	({ one }) => ({
+		user: one(users, {
+			fields: [communalBookingRequests.userId],
+			references: [users.id],
+		}),
+		handledByUser: one(users, {
+			fields: [communalBookingRequests.handledBy],
+			references: [users.id],
+		}),
+	}),
+);

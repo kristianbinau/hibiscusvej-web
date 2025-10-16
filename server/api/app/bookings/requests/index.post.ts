@@ -145,13 +145,51 @@ export default defineEventHandler(async (event) => {
 				createdAt: new Date(),
 				updatedAt: new Date(),
 			})
-			.execute();
+			.returning()
+			.get();
 	} catch (error) {
 		void logError(LOG_MODULE, 'Failed Insert', error);
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
 		});
+	}
+
+	/**
+	 * Notify Admins
+	 */
+	try {
+		const admins = await useDrizzle()
+			.select()
+			.from(tables.users)
+			.where(eq(tables.users.admin, true))
+			.all();
+		const adminUserIds = admins.map((admin) => admin.id);
+
+		const topic = `admin_notify_new_booking_request-${bookingRequest.userId}-${bookingRequest.id}`;
+		const title = 'Ny booking anmodning!';
+		const body = `#${bookingRequest.userId} har lavet en ny anmodning, der skal behandles.`;
+
+		const pushMessage = {
+			data: JSON.stringify({
+				title: title,
+				options: {
+					body: body,
+					tag: topic,
+					link: `/u/admin/booking-requests`,
+					silent: true,
+				},
+			}),
+			options: {
+				topic: topic,
+				ttl: 86400,
+				urgency: 'normal' as const,
+			},
+		} as WebPushMessage;
+
+		await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+	} catch (error) {
+		void logError(LOG_MODULE, 'Failed Notify Admins', error);
 	}
 
 	setResponseStatus(event, 201);

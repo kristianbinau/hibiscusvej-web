@@ -1,7 +1,9 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Mine booking anmodninger</h1>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">
+				Mine booking anmodninger
+			</h1>
 			<p>
 				Her kan du se dine booking anmodninger og slette dem hvis du har brug
 				for det.<br />
@@ -18,7 +20,10 @@
 							label="Slet denne anmodning"
 							color="error"
 							variant="soft"
-							:disabled="isAfter(now, row.getValue<Date>('date'))"
+							:disabled="
+								isAfter(now, row.getValue<Date>('date')) ||
+								row.getValue<Date>('handledAt') === null
+							"
 							@click="deleteBookingRequest(row.getValue('id'))"
 							:loading="deleteBookingRequestLoading"
 						/>
@@ -32,7 +37,8 @@
 <script lang="ts" setup>
 import type { InternalApi } from 'nitropack';
 import type { TableColumn } from '@nuxt/ui';
-type MyBookingRequestsApiResponse = InternalApi['/api/app/bookings/requests/me']['get'];
+type MyBookingRequestsApiResponse =
+	InternalApi['/api/app/bookings/requests/me']['get'];
 
 import { isAfter } from 'date-fns';
 
@@ -47,13 +53,14 @@ useHead({
 
 const toast = useToast();
 
-type MyBookingRow = {
+type MyBookingRequestRow = {
 	date: Date;
 	createdAt: Date;
+	handledAt: Date | null;
 	id: number;
 };
 
-const columns: TableColumn<MyBookingRow>[] = [
+const columns: TableColumn<MyBookingRequestRow>[] = [
 	{
 		accessorKey: 'date',
 		header: 'Dato',
@@ -70,11 +77,12 @@ const columns: TableColumn<MyBookingRow>[] = [
 	},
 ];
 
-const rows = computed<MyBookingRow[]>(() => {
+const rows = computed<MyBookingRequestRow[]>(() => {
 	return (
 		myBookingRequests.value?.map((booking) => ({
 			date: new Date(booking.fromTimestamp),
 			createdAt: new Date(booking.createdAt),
+			handledAt: booking.handledAt ? new Date(booking.handledAt) : null,
 			id: booking.id,
 		})) || []
 	);
@@ -86,7 +94,9 @@ const now = ref(new Date());
  * Fetch Booking Requests
  */
 
-const { data: myBookingRequests } = useNuxtData<MyBookingRequestsApiResponse>('my-booking-requests');
+const { data: myBookingRequests } = useNuxtData<MyBookingRequestsApiResponse>(
+	'my-booking-requests',
+);
 
 /**
  * Delete Bookings
@@ -108,7 +118,7 @@ async function deleteBookingRequest(id: number) {
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
 				title: 'Success!',
-				description: 'Booking blev slettet',
+				description: 'Booking anmodning blev slettet',
 			});
 		}
 	} catch (error) {

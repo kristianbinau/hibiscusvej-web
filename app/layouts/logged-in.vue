@@ -35,6 +35,18 @@ const links = ref<NavigationMenuItem[][]>([
 			icon: 'i-material-symbols-add-home-work-rounded',
 			to: '/u/communal/book',
 		},
+		{
+			label: 'Mine bookinger',
+			icon: 'i-material-symbols-home-work-rounded',
+			to: '/u/communal/me',
+			class: 'hidden',
+		},
+		{
+			label: 'Mine anmodninger',
+			icon: 'i-material-symbols-home-work-outline-rounded',
+			to: '/u/communal/me-requests',
+			class: 'hidden',
+		},
 	],
 	[
 		{
@@ -70,25 +82,18 @@ const { data: myBookings, pending: fetchingBookings } = await useFetch(
 
 watch(
 	[fetchingBookings, myBookings],
-	([loading, requests]) => {
-		const link = {
-			label: 'Mine bookinger',
-			icon: 'i-material-symbols-home-work-rounded',
-			to: '/u/communal/me',
-		};
+	([loading, bookings]) => {
+		const link = '/u/communal/me';
 
-		console.log({ loading, requests });
+		// @ts-ignore
+		const meBookingLink = links.value[1]?.find((l) => l.to === link);
+		if (!meBookingLink) return;
 
-		// Depending on if we have any requests, add link or not
-		if (!loading && requests && requests.length > 0) {
-			// @ts-ignore
-			if (!links.value[1].find((l) => l.to === link.to)) {
-				// @ts-ignore
-				links.value[1].push(link);
-			}
+		// Depending on if we have any requests, add or remove "hidden" class
+		if (!loading && bookings && bookings.length > 0) {
+			meBookingLink.class = '';
 		} else {
-			// @ts-ignore
-			links.value[1] = links.value[1]?.filter((l) => l.to !== link.to);
+			meBookingLink.class = 'hidden';
 		}
 	},
 	{ immediate: true },
@@ -102,24 +107,17 @@ const { data: myBookingRequests, pending: fetchingBookingRequests } =
 watch(
 	[fetchingBookingRequests, myBookingRequests],
 	([loading, requests]) => {
-		const link = {
-			label: 'Mine anmodninger',
-			icon: 'i-material-symbols-home-work-outline-rounded',
-			to: '/u/communal/me-requests',
-		};
+		const link = '/u/communal/me-requests';
 
-		console.log({ loading, requests });
+		// @ts-ignore
+		const meRequestsLink = links.value[1]?.find((l) => l.to === link);
+		if (!meRequestsLink) return;
 
-		// Depending on if we have any requests, add link or not
+		// Depending on if we have any requests, add or remove "hidden" class
 		if (!loading && requests && requests.length > 0) {
-			// @ts-ignore
-			if (!links.value[1].find((l) => l.to === link.to)) {
-				// @ts-ignore
-				links.value[1].push(link);
-			}
+			meRequestsLink.class = '';
 		} else {
-			// @ts-ignore
-			links.value[1] = links.value[1]?.filter((l) => l.to !== link.to);
+			meRequestsLink.class = 'hidden';
 		}
 	},
 	{ immediate: true },

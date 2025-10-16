@@ -37,7 +37,7 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', value: Date | null): void;
 }>();
 
-defineExpose({ addBooking, refetchByDate });
+defineExpose({ addBooking, refetchByDate, navigateToDate });
 
 emit('update:modelValue', null);
 
@@ -83,8 +83,9 @@ watch(selectedDate, (newValue) => {
 // Is used to keep state of the calendar, when we force refresh.
 const placeholderValue = ref<undefined | CalendarDate>();
 
-const { userId } = defineProps<{
+const { userId, forceSelectDate } = defineProps<{
 	userId: number;
+	forceSelectDate?: Date;
 }>();
 
 /**
@@ -294,6 +295,23 @@ async function addBooking(date: Date) {
 	const month = date.getMonth() + 1;
 
 	await fetchMonth({ year, month }, true);
+
+	nextTick(() => {
+		reload.value++;
+	});
+}
+
+function navigateToDate(date: Date) {
+	selectedDate.value = new CalendarDate(
+		date.getFullYear(),
+		date.getMonth() + 1,
+		date.getDate(),
+	);
+	placeholderValue.value = new CalendarDate(
+		date.getFullYear(),
+		date.getMonth() + 1,
+		1,
+	);
 
 	nextTick(() => {
 		reload.value++;

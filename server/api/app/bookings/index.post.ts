@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 import { type UTCDate, UTCDateMini } from '@date-fns/utc';
-import { endOfYesterday, isAfter, addDays } from 'date-fns';
+import { endOfYesterday, isAfter, addDays, isBefore } from 'date-fns';
 
 const LOG_MODULE = 'Api/Booking/Create';
 
@@ -100,36 +100,35 @@ export default defineEventHandler(async (event) => {
 
 	/**
 	 * Check booking limits
-	 *
-	 * TODO: ALLOW IF USER IS ADMIN
-	 * TODO: ALLOW IF DATE 2 DAYS OFF FROM TODAY, SO USERS CAN BOOK LAST MINUTE
 	 */
 
-	if ((await checkConsecutiveBookings(user.id, date)) >= maxConsecutiveDays) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Max Consecutive Bookings Reached',
-			message:
-				maxConsecutiveDays > 1
-					? `Du kan maksimalt have ${maxConsecutiveDays} sammenhængende bookinger.`
-					: 'Du kan ikke have sammenhængende bookinger.',
-		});
-	}
+	if (shouldCheckBookingLimits(user, date)) {
+		if ((await checkConsecutiveBookings(user.id, date)) >= maxConsecutiveDays) {
+			throw createError({
+				statusCode: 400,
+				statusMessage: 'Max Consecutive Bookings Reached',
+				message:
+					maxConsecutiveDays > 1
+						? `Du kan maksimalt have ${maxConsecutiveDays} sammenhængende bookinger.`
+						: 'Du kan ikke have sammenhængende bookinger.',
+			});
+		}
 
-	if ((await checkWeekBookings(user.id, date)) >= maxDaysPerWeek) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Max Weekly Bookings Reached',
-			message: `Du kan maksimalt have ${maxDaysPerWeek} bookinger hver 7. dag.`,
-		});
-	}
+		if ((await checkWeekBookings(user.id, date)) >= maxDaysPerWeek) {
+			throw createError({
+				statusCode: 400,
+				statusMessage: 'Max Weekly Bookings Reached',
+				message: `Du kan maksimalt have ${maxDaysPerWeek} bookinger hver 7. dag.`,
+			});
+		}
 
-	if ((await checkMonthBookings(user.id, date)) >= maxDaysPerMonth) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Max Monthly Bookings Reached',
-			message: `Du kan maksimalt have ${maxDaysPerMonth} bookinger hver 31. dag.`,
-		});
+		if ((await checkMonthBookings(user.id, date)) >= maxDaysPerMonth) {
+			throw createError({
+				statusCode: 400,
+				statusMessage: 'Max Monthly Bookings Reached',
+				message: `Du kan maksimalt have ${maxDaysPerMonth} bookinger hver 31. dag.`,
+			});
+		}
 	}
 
 	// Insert the new booking
@@ -153,11 +152,137 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
+	// Close any existing booking requests that overlap with the new booking
+	try {
+		const updatedBookingRequests = await useDrizzle()
+			.update(tables.communalBookingRequests)
+			.set({
+				handledBy: authUser.user.id,
+				handledText:
+					'Automatisk lukket ved oprettelse af booking af anden bruger',
+				handledAt: new Date(),
+				updatedAt: new Date(),
+			})
+			.where(
+				and(
+					isNull(tables.communalBookingRequests.deletedAt),
+					isNull(tables.communalBookingRequests.handledAt),
+					or(
+						and(
+							gte(tables.communalBookingRequests.fromTimestamp, from),
+							lte(tables.communalBookingRequests.fromTimestamp, to),
+						),
+						and(
+							gte(tables.communalBookingRequests.toTimestamp, from),
+							lte(tables.communalBookingRequests.toTimestamp, to),
+						),
+					),
+				),
+			)
+			.returning()
+			.all();
+
+		/**
+		 * Notify Admins
+		 */
+		try {
+			const admins = await useDrizzle()
+				.select()
+				.from(tables.users)
+				.where(eq(tables.users.admin, true))
+				.all();
+			const adminUserIds = admins.map((admin) => admin.id);
+
+			for (const bookingRequest of updatedBookingRequests) {
+				const topic = `admin_notify_new_booking_request-${bookingRequest.userId}-${bookingRequest.id}`;
+				const title = 'Booking anmodning, lukket automatisk';
+				const body = `#${bookingRequest.userId} fik lukket en anmodning automatisk, da der blev oprettet en booking.`;
+
+				const pushMessage = {
+					data: JSON.stringify({
+						title: title,
+						options: {
+							body: body,
+							tag: topic,
+							link: `/u/admin/booking-requests`,
+							silent: true,
+						},
+					}),
+					options: {
+						topic: topic,
+						ttl: 86400,
+						urgency: 'normal' as const,
+					},
+				} as WebPushMessage;
+
+				await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+			}
+		} catch (error) {
+			void logError(LOG_MODULE, 'Failed Notify Admins', error);
+		}
+
+		/**
+		 * Notify Users
+		 */
+		try {
+			for (const bookingRequest of updatedBookingRequests) {
+				const topic = `user_notify_booking_request-${bookingRequest.userId}-${bookingRequest.id}`;
+				const title = 'Booking anmodning, lukket automatisk';
+				const body = `Din booking anmodning blev lukket automatisk, da der blev oprettet en booking af en anden bruger.`;
+
+				const pushMessage = {
+					data: JSON.stringify({
+						title: title,
+						options: {
+							body: body,
+							tag: topic,
+							link: `/u/me-requests`,
+							silent: true,
+						},
+					}),
+					options: {
+						topic: topic,
+						ttl: 86400,
+						urgency: 'normal' as const,
+					},
+				} as WebPushMessage;
+
+				await sendPushNotificationToUserIds(
+					[bookingRequest.userId],
+					pushMessage,
+				);
+			}
+		} catch (error) {
+			void logError(LOG_MODULE, 'Failed Notify Users', error);
+		}
+	} catch (error) {
+		void logError(LOG_MODULE, 'Failed Update', error);
+		throw createError({
+			statusCode: 500,
+			statusMessage: 'Internal Server Error',
+		});
+	}
+
 	setResponseStatus(event, 201);
 	return {
 		booking: booking,
 	};
 });
+
+function shouldCheckBookingLimits(user: User, date: UTCDate): boolean {
+	// Admins are not subject to booking limits
+	//if (user.admin) return false;
+
+	const today = new UTCDateMini();
+	const twoDaysFromNow = addDays(today, 2);
+
+	// If the booking is within the next two days, do not check limits
+	if (isBefore(date, twoDaysFromNow)) {
+		return false;
+	}
+
+	return true;
+}
 
 /**
  * Count number of consecutive bookings the user has before and after the given date

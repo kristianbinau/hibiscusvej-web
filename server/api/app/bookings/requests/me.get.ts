@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
 		.where(
 			and(
 				isNull(tables.communalBookingRequests.deletedAt),
-				isNull(tables.communalBookingRequests.handledAt),
 				gte(
 					tables.communalBookingRequests.fromTimestamp,
 					subDays(new Date(), HISTORY_DAYS),

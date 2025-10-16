@@ -1,14 +1,10 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Bookings</h1>
-			<p>Her kan vi se alle bookings.</p>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Booking Requests</h1>
+			<p>Her kan vi se alle booking anmodninger.</p>
+			<p>Booking anmodninger skal håndteres af en administrator.</p>
 		</div>
-
-		<AdminBookingCalendar
-			@update:userId="($event: number | null) => (filteredByUserId = $event)"
-			class="mb-8"
-		/>
 
 		<ClientOnly>
 			<UTable :data="rows" :columns="columns">
@@ -37,46 +33,17 @@
 				</template>
 
 				<template #actions-cell="{ row }">
-					<UPopover
-						class="mr-auto"
-						:content="{
-							align: 'start',
-							side: 'top',
-						}"
-					>
-						<UTooltip text="Klik for at fjerne booking">
-							<UButton
-								size="md"
-								icon="i-material-symbols-delete-outline"
-								label="Slet"
-								color="error"
-								variant="soft"
-								:disabled="isAfter(now, row.getValue<Date>('date'))"
-								:loading="deleteBookingLoading"
-							/>
-						</UTooltip>
-
-						<template #content>
-							<div class="p-4">
-								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
-								<p class="text-xs">
-									Du er ved fjerne denne booking. <br />
-									Er du sikker på at du vil fjerne denne booking?
-								</p>
-
-								<UButton
-									label="Godkend"
-									icon="i-material-symbols-check-circle-rounded"
-									color="error"
-									variant="soft"
-									size="xs"
-									@click="deleteBooking(row.getValue('id'))"
-									:loading="deleteBookingLoading"
-									class="mt-4"
-								/>
-							</div>
-						</template>
-					</UPopover>
+					<UTooltip text="Klik for at håndtere anmodning">
+						<UButton
+							@click="openBookingRequestHandlingModal(row.getValue('id'))"
+							size="md"
+							icon="i-material-symbols-open-in-new"
+							label="Håndter"
+							color="primary"
+							variant="soft"
+							:disabled="isAfter(now, row.getValue<Date>('date'))"
+						/>
+					</UTooltip>
 				</template>
 			</UTable>
 
@@ -117,7 +84,7 @@ definePageMeta({
 });
 
 useHead({
-	title: 'Admin: Bookings',
+	title: 'Admin: Booking Requests',
 });
 
 const toast = useToast();
@@ -129,6 +96,7 @@ type BookingRow = {
 	id: number;
 	userId: number;
 	date: Date;
+	handledAt: Date | null;
 	createdAt: Date;
 	updatedAt: Date;
 };
@@ -169,6 +137,7 @@ const rows = computed<BookingRow[]>(() => {
 			return {
 				...booking,
 				date: new Date(booking.fromTimestamp),
+				handledAt: booking.handledAt ? new Date(booking.handledAt) : null,
 				createdAt: new Date(booking.createdAt),
 				updatedAt: new Date(booking.updatedAt),
 				actions: booking.id,
@@ -193,15 +162,15 @@ const rows = computed<BookingRow[]>(() => {
 const bookingsJoined = computed(() => {
 	if (!response.value) return [];
 
-	return response.value.communalBookings.map((communalBooking) => {
+	return response.value.communalBookingRequests.map((communalBooking) => {
 		return {
 			...communalBooking,
 		};
 	});
 });
 
-const { data: response } = await useFetch('/api/app/admin/bookings', {
-	key: 'admin-bookings',
+const { data: response } = await useFetch('/api/app/admin/bookings/requests', {
+	key: 'admin-booking-requests',
 });
 
 /**
@@ -219,7 +188,7 @@ async function deleteBooking(id: number) {
 		});
 
 		if (res) {
-			await refreshNuxtData(['admin-bookings']);
+			await refreshNuxtData(['admin-booking-requests']);
 
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
@@ -260,7 +229,26 @@ function openUser(id: number) {
 
 function atUserSlideClose() {
 	selectedUserIdForSlide.value = null;
-	refreshNuxtData(['admin-bookings']);
+	refreshNuxtData(['admin-booking-requests']);
+}
+
+/**
+ * Booking Request Handling
+ */
+
+import { AdminBookingRequestHandlingModal } from '#components';
+
+const overlay = useOverlay();
+const bookingRequestHandlingModal = overlay.create(
+	AdminBookingRequestHandlingModal,
+);
+
+async function openBookingRequestHandlingModal(id: number) {
+	const bookingRequest = bookingsJoined.value.find((b) => b.id === id);
+	if (!bookingRequest) return;
+
+	await bookingRequestHandlingModal.open({ bookingRequest: bookingRequest });
+	refreshNuxtData(['admin-booking-requests']);
 }
 </script>
 

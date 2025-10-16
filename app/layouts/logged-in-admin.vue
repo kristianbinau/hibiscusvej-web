@@ -38,6 +38,11 @@ const links: NavigationMenuItem[][] = [
 			icon: 'i-material-symbols-home-work-rounded',
 			to: '/u/admin/bookings',
 		},
+		{
+			label: 'Booking Requests',
+			icon: 'i-material-symbols-home-work-outline-rounded',
+			to: '/u/admin/booking-requests',
+		},
 	],
 	[
 		{

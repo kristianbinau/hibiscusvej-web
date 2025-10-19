@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { logAdminAction } from '~~/server/utils/log';
 
 const LOG_MODULE = 'Api/Admin/Users/UnVerify';
 
@@ -24,14 +25,6 @@ export default defineEventHandler(async (event) => {
 				updatedAt: now,
 			})
 			.where(inArray(tables.users.id, userIds));
-
-		await useDrizzle()
-			.insert(tables.adminLogs)
-			.values({
-				userId: authAdmin.user.id,
-				action: `${ADMIN_ACTION}: ${userIds.join(', ')}`,
-				createdAt: now,
-			});
 	} catch (error) {
 		void logError(LOG_MODULE, 'Failed Update', error);
 		throw createError({
@@ -39,6 +32,13 @@ export default defineEventHandler(async (event) => {
 			statusMessage: 'Internal Server Error',
 		});
 	}
+
+	await logAdminAction({
+		logModule: LOG_MODULE,
+		adminAction: ADMIN_ACTION,
+		adminActionParam: `${userIds.join(', ')}`,
+		adminUserId: authAdmin.user.id,
+	});
 
 	return true;
 });

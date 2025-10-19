@@ -6,6 +6,8 @@ import {
 import { da } from 'date-fns/locale';
 
 import { z } from 'zod/v4';
+import { logAdminAction } from '~~/server/utils/log';
+import { sendVerifiedNotificationForUser } from '~~/server/utils/notification';
 
 const LOG_MODULE = 'Api/Admin/Users/Verify';
 
@@ -31,14 +33,6 @@ export default defineEventHandler(async (event) => {
 				updatedAt: now,
 			})
 			.where(inArray(tables.users.id, userIds));
-
-		await useDrizzle()
-			.insert(tables.adminLogs)
-			.values({
-				userId: authAdmin.user.id,
-				action: `${ADMIN_ACTION}: ${userIds.join(', ')}`,
-				createdAt: now,
-			});
 	} catch (error) {
 		void logError(LOG_MODULE, 'Failed Update', error);
 		throw createError({
@@ -47,26 +41,25 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
+	await logAdminAction({
+		logModule: LOG_MODULE,
+		adminAction: ADMIN_ACTION,
+		adminActionParam: `${userIds.join(', ')}`,
+		adminUserId: authAdmin.user.id,
+	});
+
 	/**
 	 * Notify Users
 	 */
-	const pushMessage = {
-		data: JSON.stringify({
-			title: 'Konto verificeret!',
-			options: {
-				body: 'Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!',
-				tag: 'verification_update',
-				silent: true,
-			},
-		}),
-		options: {
-			topic: 'verification_update',
-			ttl: 86400,
-			urgency: 'normal' as const,
-		},
-	} as WebPushMessage;
 
-	await sendPushNotificationToUserIds(userIds, pushMessage);
+	for (const userId of userIds) {
+		await sendVerifiedNotificationForUser({
+			logModule: LOG_MODULE,
+			userId: userId,
+			title: 'Konto verificeret!',
+			body: 'Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!',
+		});
+	}
 
 	/**
 	 * Notify Admins

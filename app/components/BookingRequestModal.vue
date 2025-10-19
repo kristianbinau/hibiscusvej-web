@@ -9,7 +9,8 @@
 			<UAlert color="neutral" variant="subtle" title="Hvorfor?" class="mb-4">
 				<template #description>
 					Bestyrelsen har oplevet, at der bliver foretaget bookinger uden hensyn
-					til andre brugere. <br />
+					til andre brugere. <br /><br />
+					Eksempelvis at brugere foretager..
 					<ul class="my-1">
 						<li class="list-disc ml-6">
 							Reservationer for at kunne sove længe og først gøre rent sent på
@@ -19,7 +20,7 @@
 							Reservationer af hele weekender, hvor lokalet kun benyttes én dag.
 						</li>
 					</ul>
-
+					<br />
 					Derfor skal nogle bookinger nu godkendes manuelt af bestyrelsen for at
 					sikre, at alle får en fair chance for at bruge fælleslokalet.
 				</template>

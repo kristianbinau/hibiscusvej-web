@@ -1,6 +1,10 @@
 import { z } from 'zod/v4';
 import { type UTCDate, UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays, isBefore } from 'date-fns';
+import {
+	sendBookingRequestNotificationForAdmin,
+	sendBookingRequestNotificationForUser,
+} from '~~/server/utils/notification';
 
 const LOG_MODULE = 'Api/Booking/Create';
 
@@ -8,9 +12,9 @@ const bodySchema = z.object({
 	date: z.iso.date(),
 });
 
-const maxConsecutiveDays = 1;
-const maxDaysPerWeek = 3;
-const maxDaysPerMonth = 10;
+export const maxConsecutiveDays = 1;
+export const maxDaysPerWeek = 3;
+export const maxDaysPerMonth = 10;
 
 export default defineEventHandler(async (event) => {
 	const authUser = await useAuthUser(event);
@@ -51,84 +55,18 @@ export default defineEventHandler(async (event) => {
 	from.setHours(10, 0, 0, 0);
 	to.setHours(9, 59, 59, 0);
 
-	// If from is later than to, return 400 Bad Request
-	if (isAfter(from, to)) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid Time Range',
-			message: 'Start tidspunktet skal være tidligere end slut tidspunktet.',
-		});
-	}
+	/**
+	 * Check Booking Validity
+	 */
 
-	// If from is yesterday, return 400 Bad Request
-	if (!isAfter(from, endOfYesterday())) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid Time Range',
-			message: 'Booking kan ikke starte i fortiden.',
-		});
-	}
-
-	// Is there a booking that overlaps with the new booking?
-	const overlappingBooking = await useDrizzle()
-		.select()
-		.from(tables.communalBookings)
-		.where(
-			and(
-				isNull(tables.communalBookings.deletedAt),
-				or(
-					and(
-						gte(tables.communalBookings.fromTimestamp, from),
-						lte(tables.communalBookings.fromTimestamp, to),
-					),
-					and(
-						gte(tables.communalBookings.toTimestamp, from),
-						lte(tables.communalBookings.toTimestamp, to),
-					),
-				),
-			),
-		)
-		.get();
-
-	// If there is an overlapping booking, return 409 Conflict
-	if (overlappingBooking) {
-		throw createError({
-			statusCode: 409,
-			statusMessage: 'Conflict',
-		});
-	}
+	await checkBookingValidity(from, to);
 
 	/**
-	 * Check booking limits
+	 * Check Booking Limits
 	 */
 
 	if (shouldCheckBookingLimits(user, date)) {
-		if ((await checkConsecutiveBookings(user.id, date)) >= maxConsecutiveDays) {
-			throw createError({
-				statusCode: 400,
-				statusMessage: 'Max Consecutive Bookings Reached',
-				message:
-					maxConsecutiveDays > 1
-						? `Du kan maksimalt have ${maxConsecutiveDays} sammenhængende bookinger.`
-						: 'Du kan ikke have sammenhængende bookinger.',
-			});
-		}
-
-		if ((await checkWeekBookings(user.id, date)) >= maxDaysPerWeek) {
-			throw createError({
-				statusCode: 400,
-				statusMessage: 'Max Weekly Bookings Reached',
-				message: `Du kan maksimalt have ${maxDaysPerWeek} bookinger hver 7. dag.`,
-			});
-		}
-
-		if ((await checkMonthBookings(user.id, date)) >= maxDaysPerMonth) {
-			throw createError({
-				statusCode: 400,
-				statusMessage: 'Max Monthly Bookings Reached',
-				message: `Du kan maksimalt have ${maxDaysPerMonth} bookinger hver 31. dag.`,
-			});
-		}
+		await checkBookingLimits(user, date);
 	}
 
 	// Insert the new booking
@@ -182,78 +120,28 @@ export default defineEventHandler(async (event) => {
 			.returning()
 			.all();
 
-		/**
-		 * Notify Admins
-		 */
-		try {
-			const admins = await useDrizzle()
-				.select()
-				.from(tables.users)
-				.where(eq(tables.users.admin, true))
-				.all();
-			const adminUserIds = admins.map((admin) => admin.id);
+		for (const bookingRequest of updatedBookingRequests) {
+			/**
+			 * Notify Admins
+			 */
+			await sendBookingRequestNotificationForAdmin({
+				logModule: LOG_MODULE,
+				userId: bookingRequest.userId,
+				bookingRequestId: bookingRequest.id,
+				title: 'Booking anmodning, lukket automatisk',
+				body: `#${bookingRequest.userId} fik lukket en anmodning automatisk, da der blev oprettet en booking af ${authUser.user.id}.`,
+			});
 
-			for (const bookingRequest of updatedBookingRequests) {
-				const topic = `admin_notify_new_booking_request-${bookingRequest.userId}-${bookingRequest.id}`;
-				const title = 'Booking anmodning, lukket automatisk';
-				const body = `#${bookingRequest.userId} fik lukket en anmodning automatisk, da der blev oprettet en booking.`;
-
-				const pushMessage = {
-					data: JSON.stringify({
-						title: title,
-						options: {
-							body: body,
-							tag: topic,
-							link: `/u/admin/booking-requests`,
-							silent: true,
-						},
-					}),
-					options: {
-						topic: topic,
-						ttl: 86400,
-						urgency: 'normal' as const,
-					},
-				} as WebPushMessage;
-
-				await sendPushNotificationToUserIds(adminUserIds, pushMessage);
-			}
-		} catch (error) {
-			void logError(LOG_MODULE, 'Failed Notify Admins', error);
-		}
-
-		/**
-		 * Notify Users
-		 */
-		try {
-			for (const bookingRequest of updatedBookingRequests) {
-				const topic = `user_notify_booking_request-${bookingRequest.userId}-${bookingRequest.id}`;
-				const title = 'Booking anmodning, lukket automatisk';
-				const body = `Din booking anmodning blev lukket automatisk, da der blev oprettet en booking af en anden bruger.`;
-
-				const pushMessage = {
-					data: JSON.stringify({
-						title: title,
-						options: {
-							body: body,
-							tag: topic,
-							link: `/u/me-requests`,
-							silent: true,
-						},
-					}),
-					options: {
-						topic: topic,
-						ttl: 86400,
-						urgency: 'normal' as const,
-					},
-				} as WebPushMessage;
-
-				await sendPushNotificationToUserIds(
-					[bookingRequest.userId],
-					pushMessage,
-				);
-			}
-		} catch (error) {
-			void logError(LOG_MODULE, 'Failed Notify Users', error);
+			/**
+			 * Notify Users
+			 */
+			await sendBookingRequestNotificationForUser({
+				logModule: LOG_MODULE,
+				userId: bookingRequest.userId,
+				bookingRequestId: bookingRequest.id,
+				title: 'Booking anmodning, lukket automatisk',
+				body: `Din booking anmodning blev lukket automatisk, da der blev oprettet en booking af en anden bruger.`,
+			});
 		}
 	} catch (error) {
 		void logError(LOG_MODULE, 'Failed Update', error);
@@ -269,10 +157,62 @@ export default defineEventHandler(async (event) => {
 	};
 });
 
-function shouldCheckBookingLimits(user: User, date: UTCDate): boolean {
-	// Admins are not subject to booking limits
-	//if (user.admin) return false;
+/**
+ * Check if the booking is valid
+ */
+export async function checkBookingValidity(from: UTCDate, to: UTCDate) {
+	// If from is later than to, return 400 Bad Request
+	if (isAfter(from, to)) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Invalid Time Range',
+			message: 'Start tidspunktet skal være tidligere end slut tidspunktet.',
+		});
+	}
 
+	// If from is yesterday, return 400 Bad Request
+	if (!isAfter(from, endOfYesterday())) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Invalid Time Range',
+			message: 'Booking kan ikke starte i fortiden.',
+		});
+	}
+
+	// Is there a booking that overlaps with the new booking?
+	const overlappingBooking = await useDrizzle()
+		.select()
+		.from(tables.communalBookings)
+		.where(
+			and(
+				isNull(tables.communalBookings.deletedAt),
+				or(
+					and(
+						gte(tables.communalBookings.fromTimestamp, from),
+						lte(tables.communalBookings.fromTimestamp, to),
+					),
+					and(
+						gte(tables.communalBookings.toTimestamp, from),
+						lte(tables.communalBookings.toTimestamp, to),
+					),
+				),
+			),
+		)
+		.get();
+
+	// If there is an overlapping booking, return 409 Conflict
+	if (overlappingBooking) {
+		throw createError({
+			statusCode: 409,
+			statusMessage: 'Conflict',
+		});
+	}
+}
+
+/**
+ * Determine if booking limits should be checked for the user on the given date
+ */
+function shouldCheckBookingLimits(_user: User, date: UTCDate): boolean {
 	const today = new UTCDateMini();
 	const twoDaysFromNow = addDays(today, 2);
 
@@ -282,6 +222,38 @@ function shouldCheckBookingLimits(user: User, date: UTCDate): boolean {
 	}
 
 	return true;
+}
+
+/**
+ * Check booking limits for the user on the given date
+ */
+async function checkBookingLimits(user: User, date: UTCDate) {
+	if ((await checkConsecutiveBookings(user.id, date)) >= maxConsecutiveDays) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Max Consecutive Bookings Reached',
+			message:
+				maxConsecutiveDays > 1
+					? `Du kan maksimalt have ${maxConsecutiveDays} sammenhængende bookinger.`
+					: 'Du kan ikke have sammenhængende bookinger.',
+		});
+	}
+
+	if ((await checkWeekBookings(user.id, date)) >= maxDaysPerWeek) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Max Weekly Bookings Reached',
+			message: `Du kan maksimalt have ${maxDaysPerWeek} bookinger hver 7. dag.`,
+		});
+	}
+
+	if ((await checkMonthBookings(user.id, date)) >= maxDaysPerMonth) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Max Monthly Bookings Reached',
+			message: `Du kan maksimalt have ${maxDaysPerMonth} bookinger hver 31. dag.`,
+		});
+	}
 }
 
 /**

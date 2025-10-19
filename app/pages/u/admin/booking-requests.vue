@@ -32,18 +32,30 @@
 					</UTooltip>
 				</template>
 
-				<template #actions-cell="{ row }">
-					<UTooltip text="Klik for at håndtere anmodning">
+				<template #id-cell="{ row }">
+					<UTooltip
+						v-if="row.getValue<Date | null>('handledAt') === null"
+						text="Klik for at håndtere anmodning"
+					>
 						<UButton
 							@click="openBookingRequestHandlingModal(row.getValue('id'))"
 							size="md"
 							icon="i-material-symbols-open-in-new"
 							label="Håndter"
 							color="primary"
-							variant="soft"
 							:disabled="isAfter(now, row.getValue<Date>('date'))"
 						/>
 					</UTooltip>
+
+					<UBadge
+						v-else
+						size="md"
+						icon="i-material-symbols-check"
+						color="success"
+						variant="solid"
+					>
+						Håndteret
+					</UBadge>
 				</template>
 			</UTable>
 
@@ -96,6 +108,7 @@ type BookingRow = {
 	id: number;
 	userId: number;
 	date: Date;
+	handledText: string | null;
 	handledAt: Date | null;
 	createdAt: Date;
 	updatedAt: Date;
@@ -104,7 +117,7 @@ type BookingRow = {
 const columns: TableColumn<BookingRow>[] = [
 	{
 		accessorKey: 'id',
-		header: 'ID',
+		header: 'Status',
 	},
 	{
 		accessorKey: 'userId',
@@ -112,22 +125,24 @@ const columns: TableColumn<BookingRow>[] = [
 	},
 	{
 		accessorKey: 'date',
-		header: 'Dato',
+		header: 'Date',
 		cell: ({ row }) => row.getValue<Date>('date').toLocaleDateString(),
 	},
 	{
+		accessorKey: 'handledText',
+		header: 'Text From Admin',
+	},
+	{
 		accessorKey: 'createdAt',
-		header: 'Oprettet',
+		header: 'Requested At',
 		cell: ({ row }) => row.getValue<Date>('createdAt').toLocaleDateString(),
 	},
 	{
-		accessorKey: 'updatedAt',
-		header: 'Opdateret',
-		cell: ({ row }) => row.getValue<Date>('updatedAt').toLocaleDateString(),
-	},
-	{
-		accessorKey: 'actions',
-		header: 'Handlinger',
+		accessorKey: 'handledAt',
+		header: 'Handled At',
+		cell: ({ row }) =>
+			row.getValue<Date | null>('handledAt')?.toLocaleDateString() ??
+			'Unhandled',
 	},
 ];
 

@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { logAdminAction } from '~~/server/utils/log';
 
 const LOG_MODULE = 'Api/Admin/Users/[id]/Delete';
 
@@ -22,27 +23,16 @@ export default defineEventHandler(async (event) => {
 		body.currentSessionPassword,
 	);
 
-	const now = new Date();
-
 	const userId = params.id;
 
 	await anonymizeUser(userId);
 
-	try {
-		await useDrizzle()
-			.insert(tables.adminLogs)
-			.values({
-				userId: authAdmin.user.id,
-				action: `${ADMIN_ACTION}: ${userId}`,
-				createdAt: now,
-			});
-	} catch (error) {
-		void logError(LOG_MODULE, 'Failed AdminLog', error);
-		throw createError({
-			statusCode: 500,
-			statusMessage: 'Internal Server Error',
-		});
-	}
+	await logAdminAction({
+		logModule: LOG_MODULE,
+		adminAction: ADMIN_ACTION,
+		adminActionParam: `${userId}`,
+		adminUserId: authAdmin.user.id,
+	});
 
 	return true;
 });

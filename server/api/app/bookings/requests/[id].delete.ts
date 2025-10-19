@@ -37,5 +37,17 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
+	/**
+	 * Notify Admins
+	 */
+
+	await sendBookingRequestNotificationForAdmin({
+		logModule: LOG_MODULE,
+		userId: authUser.user.id,
+		bookingRequestId: id,
+		title: 'Booking anmodning, slettet',
+		body: `#${authUser.user.id} har slettet sin booking anmodning #${id}.`,
+	});
+
 	return true;
 });

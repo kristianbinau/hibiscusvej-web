@@ -11,10 +11,41 @@
 				at få sin booking godkendt?
 			</p>
 
+			<USeparator class="my-4" />
+
+			<p class="mb-2 text-sm">Brugerens Kalender:</p>
 			<BookingCalendar
 				ref="calendar"
 				:userId="bookingRequest.userId"
 				class="pointer-events-none p-2 mt-4 bg-(--ui-bg) rounded-lg border border-(--ui-border)"
+			/>
+
+			<p class="mt-4 mb-2 text-sm">Anmodning Nødvendig:</p>
+			<UChatMessage
+				id="user-message"
+				role="user"
+				variant="soft"
+				:ui="{ container: 'pb-0' }"
+				:parts="[
+					{
+						type: 'text',
+						text: bookingRequest.requestNeededReasons ?? 'Ingen grund givet.',
+					},
+				]"
+			/>
+
+			<p class="mt-4 mb-2 text-sm">Besked fra Brugeren:</p>
+			<UChatMessage
+				id="user-message"
+				role="user"
+				variant="soft"
+				:ui="{ container: 'pb-0' }"
+				:parts="[
+					{
+						type: 'text',
+						text: bookingRequest.requestText ?? 'Ingen besked givet.',
+					},
+				]"
 			/>
 
 			<USeparator class="my-4" />
@@ -26,20 +57,20 @@
 				@submit.prevent="onSubmit"
 				class="w-full"
 			>
-				<UFormField label="Godkend?" name="permitted" class="w-full mt-3 mb-5" required>
-					<UCheckbox
-						v-model="state.permitted"
-						label="Ja, jeg vil godkende denne booking anmodning"
-						class="select-none"
-					/>
+				<UFormField
+					label="Beslutning"
+					name="permitted"
+					class="w-full mt-3 mb-5"
+					required
+				>
+					<URadioGroup v-model="state.permitted" :items="items" />
 				</UFormField>
 
 				<UFormField
 					label="Forklaring"
 					name="handledText"
-					help="Angiv en forklaring for din beslutning"
+					hint="Angiv en forklaring for din beslutning"
 					class="w-full"
-					required
 				>
 					<UTextarea
 						v-model="state.handledText"
@@ -58,9 +89,9 @@
 					class="mt-4"
 				/>
 
-				<UButton :loading="onSubmitLoading" type="submit" class="mt-4"
-					>Anmod om godkendelse</UButton
-				>
+				<UButton :loading="onSubmitLoading" type="submit" class="mt-4">
+					Håndter Anmodning
+				</UButton>
 			</UForm>
 		</template>
 	</UModal>
@@ -68,7 +99,7 @@
 
 <script lang="ts" setup>
 import { z } from 'zod/v4';
-import type { Form, FormSubmitEvent } from '#ui/types';
+import type { Form, FormSubmitEvent, RadioGroupItem } from '#ui/types';
 import type { BookingRequest } from '~/utils/types/admin';
 import { BookingCalendar } from '#components';
 
@@ -92,7 +123,9 @@ const emit = defineEmits<{ close: [Date] }>();
 const toast = useToast();
 
 const schema = z.object({
-	permitted: z.boolean().default(false),
+	permitted: z.boolean(
+		'Tag stilling til om bookingen skal godkendes, eller ej.',
+	),
 	handledText: z.string().max(500).optional(),
 });
 
@@ -101,9 +134,22 @@ type Schema = z.output<typeof schema>;
 const form = ref<Form<Schema>>();
 
 const state = reactive<Partial<Schema>>({
-	permitted: false,
+	permitted: undefined,
 	handledText: '',
 });
+
+const items = ref<RadioGroupItem[]>([
+	{
+		label: 'Godkendt',
+		description: 'Brugeren har en berettiget grund.',
+		value: true,
+	},
+	{
+		label: 'Afvist',
+		description: 'Brugeren har ikke en berettiget grund.',
+		value: false,
+	},
+]);
 
 const errorMessage = ref<string | null>(null);
 

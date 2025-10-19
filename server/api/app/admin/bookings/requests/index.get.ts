@@ -4,11 +4,7 @@ export default defineEventHandler(async (event) => {
 	const communalBookingRequests = await useDrizzle()
 		.select()
 		.from(tables.communalBookingRequests)
-		.where(
-			and(
-				isNull(tables.communalBookingRequests.deletedAt),
-			),
-		)
+		.where(and(isNull(tables.communalBookingRequests.deletedAt)))
 		.orderBy(desc(tables.communalBookingRequests.fromTimestamp))
 		.all();
 

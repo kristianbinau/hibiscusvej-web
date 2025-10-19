@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 import { UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays } from 'date-fns';
+import { sendBookingRequestNotificationForAdmin } from '~~/server/utils/notification';
 
 const LOG_MODULE = 'Api/Booking/Request/Create';
 
@@ -105,7 +106,6 @@ export default defineEventHandler(async (event) => {
 			and(
 				eq(tables.communalBookingRequests.userId, authUser.user.id),
 				isNull(tables.communalBookingRequests.deletedAt),
-				isNull(tables.communalBookingRequests.handledAt),
 				or(
 					and(
 						gte(tables.communalBookingRequests.fromTimestamp, from),
@@ -125,7 +125,7 @@ export default defineEventHandler(async (event) => {
 		throw createError({
 			statusCode: 409,
 			statusMessage: 'Conflict',
-			message: 'Du har allerede en åben anmodning i det tidsrum',
+			message: 'Du har allerede en anmodning i det tidsrum',
 		});
 	}
 
@@ -158,39 +158,14 @@ export default defineEventHandler(async (event) => {
 	/**
 	 * Notify Admins
 	 */
-	try {
-		const admins = await useDrizzle()
-			.select()
-			.from(tables.users)
-			.where(eq(tables.users.admin, true))
-			.all();
-		const adminUserIds = admins.map((admin) => admin.id);
 
-		const topic = `admin_notify_new_booking_request-${bookingRequest.userId}-${bookingRequest.id}`;
-		const title = 'Ny booking anmodning!';
-		const body = `#${bookingRequest.userId} har lavet en ny anmodning, der skal behandles.`;
-
-		const pushMessage = {
-			data: JSON.stringify({
-				title: title,
-				options: {
-					body: body,
-					tag: topic,
-					link: `/u/admin/booking-requests`,
-					silent: true,
-				},
-			}),
-			options: {
-				topic: topic,
-				ttl: 86400,
-				urgency: 'normal' as const,
-			},
-		} as WebPushMessage;
-
-		await sendPushNotificationToUserIds(adminUserIds, pushMessage);
-	} catch (error) {
-		void logError(LOG_MODULE, 'Failed Notify Admins', error);
-	}
+	await sendBookingRequestNotificationForAdmin({
+		logModule: LOG_MODULE,
+		userId: user.id,
+		bookingRequestId: bookingRequest.id,
+		title: 'Ny booking anmodning!',
+		body: `#${user.id} har lavet en ny anmodning, der skal behandles.`,
+	});
 
 	setResponseStatus(event, 201);
 	return {

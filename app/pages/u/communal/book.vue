@@ -175,7 +175,7 @@ async function onSubmit() {
 					'Max Consecutive Bookings Reached',
 					'Max Weekly Bookings Reached',
 					'Max Monthly Bookings Reached',
-				].includes(error.statusMessage)
+				].includes(error.data.statusMessage)
 			) {
 				const createdBookingRequest: Date | undefined = await modal.open({
 					date: formattedBookAsDate,

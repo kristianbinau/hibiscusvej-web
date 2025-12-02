@@ -29,4 +29,4 @@ logs
 assets/videos
 
 # Production SQLite database
-prod-database.sql
+prod-database-*.sql

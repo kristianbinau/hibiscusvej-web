@@ -4,7 +4,7 @@ Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduct
 
 ## Prerequisites
 
-- NodeJS (v22.11.0)
+- NodeJS (v24.5.0)
 
 ## Setup
 

@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "hibiscusvej-web",
+	"name": "hibiscusvej-web-preview",
 	"main": "./.output/server/index.mjs",
 	"compatibility_date": "2026-01-18",
 	"assets": {

@@ -1,4 +1,3 @@
-import { drizzle } from 'drizzle-orm/d1';
 export {
 	sql,
 	count,
@@ -13,12 +12,12 @@ export {
 	inArray,
 } from 'drizzle-orm';
 
-import * as schema from '../database/schema';
+import * as schema from '../db/schema';
 
 export const tables = schema;
 
 export function useDrizzle() {
-	return drizzle(hubDatabase(), { schema });
+	return db;
 }
 
 export type User = typeof schema.users.$inferSelect;

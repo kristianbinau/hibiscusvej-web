@@ -23,9 +23,10 @@
 		"@block65/webcrypto-web-push": "^1.0.2",
 		"@date-fns/utc": "^2.1.1",
 		"@internationalized/date": "^3.10.1",
+		"@libsql/client": "^0.17.0",
 		"@nuxt/content": "^3.11.0",
 		"@nuxt/ui": "^4.3.0",
-		"@nuxthub/core": "^0.9.1",
+		"@nuxthub/core": "^0.10.4",
 		"@popperjs/core": "^2.11.8",
 		"bcryptjs": "^3.0.3",
 		"better-sqlite3": "^12.6.2",
@@ -58,7 +59,7 @@
 		"wrangler": "^4.59.2"
 	},
 	"volta": {
-		"node": "24.5.0"
+		"node": "24.13.0"
 	},
 	"prettier": {
 		"singleQuote": true,

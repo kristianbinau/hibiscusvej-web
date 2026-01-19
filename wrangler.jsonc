@@ -1,0 +1,29 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "hibiscusvej-web",
+	"main": "./.output/server/index.mjs",
+	"compatibility_date": "2026-01-18",
+	"assets": {
+		"directory": "./.output/public/",
+		"binding": "ASSETS",
+	},
+	"observability": {
+		"enabled": true,
+	},
+	"env": {
+		"preview": {
+			"kv_namespaces": [
+				{
+					"binding": "CACHE",
+					"id": "303d3f366fcc4946874db1c6899bb1eb",
+				},
+			],
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_id": "3d7e1492-7d97-4d9b-8050-b799f66d3c7d",
+				},
+			],
+		},
+	},
+}

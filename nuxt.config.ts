@@ -2,7 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	compatibilityDate: '2025-09-01',
+	compatibilityDate: '2026-01-18',
 
 	ssr: false,
 
@@ -18,6 +18,11 @@ export default defineNuxtConfig({
 	 */
 
 	nitro: {
+		preset: 'cloudflare_module',
+		cloudflare: {
+			deployConfig: true,
+			nodeCompat: true,
+		},
 		experimental: {
 			tasks: true,
 		},
@@ -62,15 +67,22 @@ export default defineNuxtConfig({
 	 */
 
 	hub: {
-		database: true,
-		cache: true,
-		blob: true,
-		bindings: {
-			compatibilityDate: '2025-09-01',
+		db: {
+			dialect: 'sqlite',
+			driver: 'd1',
+			connection: { databaseId: '5fd56c7d-770c-413d-8ce5-8dc549df8989' },
+		},
+		cache: {
+			driver: 'cloudflare-kv-binding',
+			namespaceId: '4f2c15c5d6ee4546b6ba27f1c1e249f5',
 		},
 	},
 
 	content: {
+		database: {
+			type: 'd1',
+			bindingName: 'DB',
+		},
 		experimental: { sqliteConnector: 'better-sqlite3' },
 	},
 });

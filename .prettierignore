@@ -3,5 +3,5 @@ dist
 .nuxt
 .data
 .output
-server/database/migrations/meta
+server/db/migrations/sqlite/meta
 LICENSE

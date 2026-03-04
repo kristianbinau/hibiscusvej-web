@@ -10,20 +10,16 @@
 	"observability": {
 		"enabled": true,
 	},
-	"env": {
-		"preview": {
-			"kv_namespaces": [
-				{
-					"binding": "CACHE",
-					"id": "303d3f366fcc4946874db1c6899bb1eb",
-				},
-			],
-			"d1_databases": [
-				{
-					"binding": "DB",
-					"database_id": "3d7e1492-7d97-4d9b-8050-b799f66d3c7d",
-				},
-			],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "5fd56c7d-770c-413d-8ce5-8dc549df8989",
 		},
-	},
+	],
+	"kv_namespaces": [
+		{
+			"binding": "CACHE",
+			"id": "4f2c15c5d6ee4546b6ba27f1c1e249f5",
+		},
+	],
 }

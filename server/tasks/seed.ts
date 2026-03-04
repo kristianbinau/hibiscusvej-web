@@ -529,7 +529,8 @@ export default defineTask({
 				await useDrizzle()
 					.insert(tables.apartments)
 					.values(apartments.slice(i, i + 20))
-					.get();
+					.run();
+				console.info(`Seeded apartments ${i + 1}-${Math.min(i + 20, apartments.length)}`);
 			}
 			console.info('Apartments seeded');
 		}

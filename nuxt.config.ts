@@ -19,10 +19,6 @@ export default defineNuxtConfig({
 
 	nitro: {
 		preset: 'cloudflare_module',
-		cloudflare: {
-			deployConfig: true,
-			nodeCompat: true,
-		},
 		experimental: {
 			tasks: true,
 		},
@@ -83,6 +79,5 @@ export default defineNuxtConfig({
 			type: 'd1',
 			bindingName: 'DB',
 		},
-		experimental: { sqliteConnector: 'better-sqlite3' },
 	},
 });

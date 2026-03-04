@@ -11,6 +11,7 @@ export {
 	isNull,
 	inArray,
 } from 'drizzle-orm';
+import { db } from '@nuxthub/db'
 
 import * as schema from '../db/schema';
 

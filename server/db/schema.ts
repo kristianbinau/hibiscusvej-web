@@ -209,8 +209,9 @@ export const adminLogs = sqliteTable(
 export const userRelations = relations(users, ({ many, one }) => ({
 	persons: many(userPersons),
 	logins: many(userLogins),
-	subscriptions: many(userSubscriptions),
-	settings: many(userSettings),
+	communalBookings: many(communalBookings, { relationName: 'userBookings' }),
+	communalBookingRequests: many(communalBookingRequests, { relationName: 'userBookingRequests' }),
+	handledBookingRequests: many(communalBookingRequests, { relationName: 'handlerBookingRequests' }),
 	apartment: one(apartments, {
 		fields: [users.apartmentId],
 		references: [apartments.id],
@@ -218,7 +219,9 @@ export const userRelations = relations(users, ({ many, one }) => ({
 	verifiedBy: one(users, {
 		fields: [users.verifiedByUserId],
 		references: [users.id],
+		relationName: 'verifier',
 	}),
+	verifiedUsers: many(users, { relationName: 'verifier' }),
 }));
 
 export const userPersonsRelations = relations(userPersons, ({ one }) => ({
@@ -247,12 +250,44 @@ export const apartmentRelations = relations(apartments, ({ many }) => ({
 	users: many(users),
 }));
 
+export const userRepremandsRelations = relations(userRepremands, ({ one }) => ({
+	user: one(users, {
+		fields: [userRepremands.userId],
+		references: [users.id],
+	}),
+}));
+
+export const userSubscriptionsRelations = relations(
+	userSubscriptions,
+	({ one }) => ({
+		user: one(users, {
+			fields: [userSubscriptions.userId],
+			references: [users.id],
+		}),
+	}),
+);
+
+export const userSettingsRelations = relations(userSettings, ({ one }) => ({
+	user: one(users, {
+		fields: [userSettings.userId],
+		references: [users.id],
+	}),
+}));
+
+export const adminLogsRelations = relations(adminLogs, ({ one }) => ({
+	user: one(users, {
+		fields: [adminLogs.userId],
+		references: [users.id],
+	}),
+}));
+
 export const communalBookingsRelations = relations(
 	communalBookings,
 	({ one }) => ({
 		user: one(users, {
 			fields: [communalBookings.userId],
 			references: [users.id],
+			relationName: 'userBookings',
 		}),
 		request: one(communalBookingRequests, {
 			fields: [communalBookings.communalBookingRequestId],
@@ -263,14 +298,17 @@ export const communalBookingsRelations = relations(
 
 export const communalBookingRequestsRelations = relations(
 	communalBookingRequests,
-	({ one }) => ({
+	({ one, many }) => ({
 		user: one(users, {
 			fields: [communalBookingRequests.userId],
 			references: [users.id],
+			relationName: 'userBookingRequests',
 		}),
 		handledByUser: one(users, {
 			fields: [communalBookingRequests.handledBy],
 			references: [users.id],
+			relationName: 'handlerBookingRequests',
 		}),
+		bookings: many(communalBookings),
 	}),
 );

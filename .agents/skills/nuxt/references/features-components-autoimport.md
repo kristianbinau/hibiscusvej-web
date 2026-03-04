@@ -18,11 +18,11 @@ components/
 
 ```vue
 <template>
-  <!-- No imports needed -->
-  <AppHeader />
-  <Card>
-    <Button>Click me</Button>
-  </Card>
+	<!-- No imports needed -->
+	<AppHeader />
+	<Card>
+		<Button>Click me</Button>
+	</Card>
 </template>
 ```
 
@@ -49,16 +49,17 @@ components/
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  components: [
-    {
-      path: '~/components',
-      pathPrefix: false, // Use filename only
-    },
-  ],
-})
+	components: [
+		{
+			path: '~/components',
+			pathPrefix: false, // Use filename only
+		},
+	],
+});
 ```
 
 With `pathPrefix: false`:
+
 ```
 components/base/Button.vue → <Button />
 ```
@@ -69,17 +70,18 @@ Prefix with `Lazy` for dynamic imports:
 
 ```vue
 <script setup lang="ts">
-const showChart = ref(false)
+const showChart = ref(false);
 </script>
 
 <template>
-  <!-- Component code loaded only when rendered -->
-  <LazyHeavyChart v-if="showChart" />
-  <button @click="showChart = true">Show Chart</button>
+	<!-- Component code loaded only when rendered -->
+	<LazyHeavyChart v-if="showChart" />
+	<button @click="showChart = true">Show Chart</button>
 </template>
 ```
 
 Benefits:
+
 - Reduces initial bundle size
 - Code-splits component into separate chunk
 - Loads on-demand
@@ -94,7 +96,7 @@ Hydrate when component enters viewport:
 
 ```vue
 <template>
-  <LazyComments hydrate-on-visible />
+	<LazyComments hydrate-on-visible />
 </template>
 ```
 
@@ -104,7 +106,7 @@ Hydrate when browser is idle:
 
 ```vue
 <template>
-  <LazyAnalytics hydrate-on-idle />
+	<LazyAnalytics hydrate-on-idle />
 </template>
 ```
 
@@ -114,11 +116,11 @@ Hydrate on user interaction:
 
 ```vue
 <template>
-  <!-- Hydrates on click, focus, or pointerenter -->
-  <LazyDropdown hydrate-on-interaction />
+	<!-- Hydrates on click, focus, or pointerenter -->
+	<LazyDropdown hydrate-on-interaction />
 
-  <!-- Specific event -->
-  <LazyTooltip hydrate-on-interaction="mouseover" />
+	<!-- Specific event -->
+	<LazyTooltip hydrate-on-interaction="mouseover" />
 </template>
 ```
 
@@ -128,7 +130,7 @@ Hydrate when media query matches:
 
 ```vue
 <template>
-  <LazyMobileMenu hydrate-on-media-query="(max-width: 768px)" />
+	<LazyMobileMenu hydrate-on-media-query="(max-width: 768px)" />
 </template>
 ```
 
@@ -138,7 +140,7 @@ Hydrate after delay (milliseconds):
 
 ```vue
 <template>
-  <LazyAds :hydrate-after="3000" />
+	<LazyAds :hydrate-after="3000" />
 </template>
 ```
 
@@ -148,11 +150,11 @@ Hydrate on condition:
 
 ```vue
 <script setup lang="ts">
-const isReady = ref(false)
+const isReady = ref(false);
 </script>
 
 <template>
-  <LazyEditor :hydrate-when="isReady" />
+	<LazyEditor :hydrate-when="isReady" />
 </template>
 ```
 
@@ -162,7 +164,7 @@ Never hydrate (static only):
 
 ```vue
 <template>
-  <LazyStaticFooter hydrate-never />
+	<LazyStaticFooter hydrate-never />
 </template>
 ```
 
@@ -170,12 +172,12 @@ Never hydrate (static only):
 
 ```vue
 <template>
-  <LazyChart hydrate-on-visible @hydrated="onChartReady" />
+	<LazyChart hydrate-on-visible @hydrated="onChartReady" />
 </template>
 
 <script setup>
 function onChartReady() {
-  console.log('Chart is now interactive')
+	console.log('Chart is now interactive');
 }
 </script>
 ```
@@ -191,8 +193,8 @@ components/
 
 ```vue
 <template>
-  <!-- Only rendered in browser -->
-  <BrowserChart />
+	<!-- Only rendered in browser -->
+	<BrowserChart />
 </template>
 ```
 
@@ -205,8 +207,8 @@ components/
 
 ```vue
 <template>
-  <!-- Rendered on server, not hydrated -->
-  <ServerMarkdown :content="markdown" />
+	<!-- Rendered on server, not hydrated -->
+	<ServerMarkdown :content="markdown" />
 </template>
 ```
 
@@ -215,10 +217,10 @@ Requires experimental flag:
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  experimental: {
-    componentIslands: true,
-  },
-})
+	experimental: {
+		componentIslands: true,
+	},
+});
 ```
 
 ### Paired Components
@@ -235,14 +237,14 @@ Server version renders during SSR, client version takes over after hydration.
 
 ```vue
 <script setup lang="ts">
-import { SomeComponent } from '#components'
+import { SomeComponent } from '#components';
 
-const dynamicComponent = resolveComponent('MyButton')
+const dynamicComponent = resolveComponent('MyButton');
 </script>
 
 <template>
-  <component :is="dynamicComponent" />
-  <component :is="SomeComponent" />
+	<component :is="dynamicComponent" />
+	<component :is="SomeComponent" />
 </template>
 ```
 
@@ -252,7 +254,7 @@ Bypass auto-imports when needed:
 
 ```vue
 <script setup lang="ts">
-import { LazyMountainsList, NuxtLink } from '#components'
+import { LazyMountainsList, NuxtLink } from '#components';
 </script>
 ```
 
@@ -261,12 +263,12 @@ import { LazyMountainsList, NuxtLink } from '#components'
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  components: [
-    { path: '~/components/ui', prefix: 'Ui' },
-    { path: '~/components/forms', prefix: 'Form' },
-    '~/components', // Default, should come last
-  ],
-})
+	components: [
+		{ path: '~/components/ui', prefix: 'Ui' },
+		{ path: '~/components/forms', prefix: 'Form' },
+		'~/components', // Default, should come last
+	],
+});
 ```
 
 ## Global Components
@@ -276,11 +278,11 @@ Register globally (creates async chunks):
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  components: {
-    global: true,
-    dirs: ['~/components'],
-  },
-})
+	components: {
+		global: true,
+		dirs: ['~/components'],
+	},
+});
 ```
 
 Or use `.global.vue` suffix:
@@ -295,10 +297,10 @@ components/
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  components: {
-    dirs: [], // Disable auto-imports
-  },
-})
+	components: {
+		dirs: [], // Disable auto-imports
+	},
+});
 ```
 
 ## Library Authors
@@ -307,21 +309,21 @@ Register components from npm package:
 
 ```ts
 // my-ui-lib/nuxt.ts
-import { addComponentsDir, createResolver, defineNuxtModule } from '@nuxt/kit'
+import { addComponentsDir, createResolver, defineNuxtModule } from '@nuxt/kit';
 
 export default defineNuxtModule({
-  setup() {
-    const resolver = createResolver(import.meta.url)
+	setup() {
+		const resolver = createResolver(import.meta.url);
 
-    addComponentsDir({
-      path: resolver.resolve('./components'),
-      prefix: 'MyUi',
-    })
-  },
-})
+		addComponentsDir({
+			path: resolver.resolve('./components'),
+			prefix: 'MyUi',
+		});
+	},
+});
 ```
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/directory-structure/app/components
 - https://nuxt.com/docs/guide/concepts/auto-imports#auto-imported-components

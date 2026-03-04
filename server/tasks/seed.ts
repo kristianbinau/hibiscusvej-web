@@ -530,7 +530,9 @@ export default defineTask({
 					.insert(tables.apartments)
 					.values(apartments.slice(i, i + 20))
 					.run();
-				console.info(`Seeded apartments ${i + 1}-${Math.min(i + 20, apartments.length)}`);
+				console.info(
+					`Seeded apartments ${i + 1}-${Math.min(i + 20, apartments.length)}`,
+				);
 			}
 			console.info('Apartments seeded');
 		}

@@ -13,29 +13,29 @@ Optimized link component with prefetching:
 
 ```vue
 <template>
-  <!-- Basic usage -->
-  <NuxtLink to="/about">About</NuxtLink>
+	<!-- Basic usage -->
+	<NuxtLink to="/about">About</NuxtLink>
 
-  <!-- With route object -->
-  <NuxtLink :to="{ name: 'posts-id', params: { id: 1 } }">Post 1</NuxtLink>
+	<!-- With route object -->
+	<NuxtLink :to="{ name: 'posts-id', params: { id: 1 } }">Post 1</NuxtLink>
 
-  <!-- External link (opens in new tab) -->
-  <NuxtLink to="https://nuxt.com" external>Nuxt</NuxtLink>
+	<!-- External link (opens in new tab) -->
+	<NuxtLink to="https://nuxt.com" external>Nuxt</NuxtLink>
 
-  <!-- Disable prefetching -->
-  <NuxtLink to="/heavy-page" :prefetch="false">Heavy Page</NuxtLink>
+	<!-- Disable prefetching -->
+	<NuxtLink to="/heavy-page" :prefetch="false">Heavy Page</NuxtLink>
 
-  <!-- Replace history instead of push -->
-  <NuxtLink to="/page" replace>Replace</NuxtLink>
+	<!-- Replace history instead of push -->
+	<NuxtLink to="/page" replace>Replace</NuxtLink>
 
-  <!-- Custom active class -->
-  <NuxtLink
-    to="/dashboard"
-    active-class="text-primary"
-    exact-active-class="font-bold"
-  >
-    Dashboard
-  </NuxtLink>
+	<!-- Custom active class -->
+	<NuxtLink
+		to="/dashboard"
+		active-class="text-primary"
+		exact-active-class="font-bold"
+	>
+		Dashboard
+	</NuxtLink>
 </template>
 ```
 
@@ -46,9 +46,9 @@ Renders the current page component (used in layouts):
 ```vue
 <!-- app/app.vue -->
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+	<NuxtLayout>
+		<NuxtPage />
+	</NuxtLayout>
 </template>
 ```
 
@@ -56,7 +56,7 @@ With page transitions:
 
 ```vue
 <template>
-  <NuxtPage :transition="{ name: 'fade', mode: 'out-in' }" />
+	<NuxtPage :transition="{ name: 'fade', mode: 'out-in' }" />
 </template>
 ```
 
@@ -64,7 +64,7 @@ Pass props to page:
 
 ```vue
 <template>
-  <NuxtPage :page-key="route.fullPath" :foobar="123" />
+	<NuxtPage :page-key="route.fullPath" :foobar="123" />
 </template>
 ```
 
@@ -75,9 +75,9 @@ Controls layout rendering:
 ```vue
 <!-- app/app.vue -->
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+	<NuxtLayout>
+		<NuxtPage />
+	</NuxtLayout>
 </template>
 ```
 
@@ -85,13 +85,13 @@ Dynamic layout:
 
 ```vue
 <template>
-  <NuxtLayout :name="layout">
-    <NuxtPage />
-  </NuxtLayout>
+	<NuxtLayout :name="layout">
+		<NuxtPage />
+	</NuxtLayout>
 </template>
 
 <script setup>
-const layout = computed(() => isAdmin ? 'admin' : 'default')
+const layout = computed(() => (isAdmin ? 'admin' : 'default'));
 </script>
 ```
 
@@ -99,9 +99,9 @@ Layout with transitions:
 
 ```vue
 <template>
-  <NuxtLayout :transition="{ name: 'slide', mode: 'out-in' }">
-    <NuxtPage />
-  </NuxtLayout>
+	<NuxtLayout :transition="{ name: 'slide', mode: 'out-in' }">
+		<NuxtPage />
+	</NuxtLayout>
 </template>
 ```
 
@@ -112,15 +112,15 @@ Progress bar for page navigation:
 ```vue
 <!-- app/app.vue -->
 <template>
-  <NuxtLoadingIndicator
-    color="repeating-linear-gradient(to right, #00dc82 0%, #34cdfe 50%, #0047e1 100%)"
-    :height="3"
-    :duration="2000"
-    :throttle="200"
-  />
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+	<NuxtLoadingIndicator
+		color="repeating-linear-gradient(to right, #00dc82 0%, #34cdfe 50%, #0047e1 100%)"
+		:height="3"
+		:duration="2000"
+		:throttle="200"
+	/>
+	<NuxtLayout>
+		<NuxtPage />
+	</NuxtLayout>
 </template>
 ```
 
@@ -130,21 +130,21 @@ Catch and handle errors in child components:
 
 ```vue
 <template>
-  <NuxtErrorBoundary @error="handleError">
-    <ComponentThatMightFail />
+	<NuxtErrorBoundary @error="handleError">
+		<ComponentThatMightFail />
 
-    <template #error="{ error, clearError }">
-      <div class="error">
-        <p>Something went wrong: {{ error.message }}</p>
-        <button @click="clearError">Try again</button>
-      </div>
-    </template>
-  </NuxtErrorBoundary>
+		<template #error="{ error, clearError }">
+			<div class="error">
+				<p>Something went wrong: {{ error.message }}</p>
+				<button @click="clearError">Try again</button>
+			</div>
+		</template>
+	</NuxtErrorBoundary>
 </template>
 
 <script setup>
 function handleError(error) {
-  console.error('Error caught:', error)
+	console.error('Error caught:', error);
 }
 </script>
 ```
@@ -155,14 +155,14 @@ Render content only on client-side:
 
 ```vue
 <template>
-  <ClientOnly>
-    <!-- Browser-only component -->
-    <BrowserOnlyChart :data="chartData" />
+	<ClientOnly>
+		<!-- Browser-only component -->
+		<BrowserOnlyChart :data="chartData" />
 
-    <template #fallback>
-      <p>Loading chart...</p>
-    </template>
-  </ClientOnly>
+		<template #fallback>
+			<p>Loading chart...</p>
+		</template>
+	</ClientOnly>
 </template>
 ```
 
@@ -172,9 +172,9 @@ Render content only in development:
 
 ```vue
 <template>
-  <DevOnly>
-    <DebugPanel />
-  </DevOnly>
+	<DevOnly>
+		<DebugPanel />
+	</DevOnly>
 </template>
 ```
 
@@ -184,7 +184,7 @@ Server components (experimental):
 
 ```vue
 <template>
-  <NuxtIsland name="HeavyComponent" :props="{ data: complexData }" />
+	<NuxtIsland name="HeavyComponent" :props="{ data: complexData }" />
 </template>
 ```
 
@@ -194,21 +194,18 @@ Optimized images (requires `@nuxt/image` module):
 
 ```vue
 <template>
-  <!-- Basic optimized image -->
-  <NuxtImg src="/images/hero.jpg" width="800" height="600" />
+	<!-- Basic optimized image -->
+	<NuxtImg src="/images/hero.jpg" width="800" height="600" />
 
-  <!-- Responsive with srcset -->
-  <NuxtImg
-    src="/images/hero.jpg"
-    sizes="sm:100vw md:50vw lg:400px"
-    :modifiers="{ format: 'webp' }"
-  />
+	<!-- Responsive with srcset -->
+	<NuxtImg
+		src="/images/hero.jpg"
+		sizes="sm:100vw md:50vw lg:400px"
+		:modifiers="{ format: 'webp' }"
+	/>
 
-  <!-- Art direction with picture -->
-  <NuxtPicture
-    src="/images/hero.jpg"
-    :img-attrs="{ alt: 'Hero image' }"
-  />
+	<!-- Art direction with picture -->
+	<NuxtPicture src="/images/hero.jpg" :img-attrs="{ alt: 'Hero image' }" />
 </template>
 ```
 
@@ -218,14 +215,14 @@ Render content outside component tree:
 
 ```vue
 <template>
-  <button @click="showModal = true">Open Modal</button>
+	<button @click="showModal = true">Open Modal</button>
 
-  <Teleport to="body">
-    <div v-if="showModal" class="modal">
-      <p>Modal content</p>
-      <button @click="showModal = false">Close</button>
-    </div>
-  </Teleport>
+	<Teleport to="body">
+		<div v-if="showModal" class="modal">
+			<p>Modal content</p>
+			<button @click="showModal = false">Close</button>
+		</div>
+	</Teleport>
 </template>
 ```
 
@@ -233,11 +230,11 @@ For SSR, use `<ClientOnly>` with Teleport:
 
 ```vue
 <template>
-  <ClientOnly>
-    <Teleport to="#teleports">
-      <Modal />
-    </Teleport>
-  </ClientOnly>
+	<ClientOnly>
+		<Teleport to="#teleports">
+			<Modal />
+		</Teleport>
+	</ClientOnly>
 </template>
 ```
 
@@ -248,14 +245,14 @@ Accessibility: announces page changes to screen readers:
 ```vue
 <!-- app/app.vue -->
 <template>
-  <NuxtRouteAnnouncer />
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+	<NuxtRouteAnnouncer />
+	<NuxtLayout>
+		<NuxtPage />
+	</NuxtLayout>
 </template>
 ```
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/api/components/nuxt-link
 - https://nuxt.com/docs/api/components/nuxt-page

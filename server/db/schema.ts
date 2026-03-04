@@ -210,8 +210,12 @@ export const userRelations = relations(users, ({ many, one }) => ({
 	persons: many(userPersons),
 	logins: many(userLogins),
 	communalBookings: many(communalBookings, { relationName: 'userBookings' }),
-	communalBookingRequests: many(communalBookingRequests, { relationName: 'userBookingRequests' }),
-	handledBookingRequests: many(communalBookingRequests, { relationName: 'handlerBookingRequests' }),
+	communalBookingRequests: many(communalBookingRequests, {
+		relationName: 'userBookingRequests',
+	}),
+	handledBookingRequests: many(communalBookingRequests, {
+		relationName: 'handlerBookingRequests',
+	}),
 	apartment: one(apartments, {
 		fields: [users.apartmentId],
 		references: [apartments.id],

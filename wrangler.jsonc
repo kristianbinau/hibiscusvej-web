@@ -3,6 +3,8 @@
 	"name": "hibiscusvej-web",
 	"main": "./.output/server/index.mjs",
 	"compatibility_date": "2026-01-18",
+	"workers_dev": false,
+	"preview_urls": true,
 	"routes": [
 		{
 			"pattern": "hibiscusvej.dk",

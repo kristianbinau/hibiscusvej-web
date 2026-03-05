@@ -256,10 +256,10 @@ async function processTokenOnFetch(event) {
  * Refresh token. Get a new accessToken.
  * Call this if old token has become invalid.
  *
- * @param {Event} event
+ * @param {Event} _event
  * @return {String} Either a valid AccessToken or ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED, depending on the validity of the refresh token.
  */
-async function refreshTokens(event) {
+async function refreshTokens(_event) {
 	/**
 	 * Extra check before we start a refresh.
 	 * Check if there already is one started.
@@ -296,7 +296,6 @@ async function refreshTokens(event) {
 		signal: controller.signal,
 		credentials: 'include',
 	});
-	event.waitUntil(refreshResponse);
 
 	/**
 	 * Refresh token is valid, and we have received a new access token
@@ -327,7 +326,6 @@ async function refreshTokens(event) {
  */
 async function handleAuthorizes(event) {
 	let response = await fetch(event.request);
-	event.waitUntil(response);
 
 	if (response && response.ok) {
 		let clone = response.clone();
@@ -341,13 +339,12 @@ async function handleAuthorizes(event) {
 /**
  * Handle UnAuthorizes
  *
- * @param {Event} event
+ * @param {Event} _event
  * @param {Request} modifiedRequest
  * @return {Response}
  */
-async function HandleUnAuthorizes(event, modifiedRequest) {
+async function HandleUnAuthorizes(_event, modifiedRequest) {
 	let response = await fetch(modifiedRequest);
-	event.waitUntil(response);
 
 	await localforage.setItem(ACCESS_TOKEN, ACCESS_TOKEN_CONFIRMED_UNAUTHORIZED);
 

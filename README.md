@@ -30,18 +30,6 @@ Build the application for production:
 npm run build
 ```
 
-Preview deployment:
-
-```bash
-npx nuxthub preview
-```
-
-Deploy to production:
-
-```bash
-npx nuxthub deploy
-```
-
 ## Commands
 
 Generate migrations:
@@ -53,7 +41,13 @@ npm run db:generate
 Check for TypeScript errors:
 
 ```bash
-npx nuxi typecheck
+npm run types
+```
+
+Check for Lint errors:
+
+```bash
+npm run lint
 ```
 
 Format code:

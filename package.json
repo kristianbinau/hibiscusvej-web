@@ -11,12 +11,12 @@
 		"postinstall": "nuxt prepare",
 		"db:generate": "nuxt db generate",
 		"db:migrate": "nuxt db migrate",
-		"format": "prettier --write .",
-		"lint": "oxlint --type-aware --deny-warnings",
-		"typecheck": "nuxi typecheck",
+		"format": "oxfmt",
+		"lint": "oxlint --type-aware --deny-warnings --fix",
+		"types": "nuxi typecheck",
 		"update-dependencies": "npx npm-check-updates",
 		"backup-database": "npx wrangler d1 export hibiscusvej-web --remote --output=./prod-database.sql",
-		"check:format": "prettier --check .",
+		"check:format": "oxfmt --check",
 		"check:lint": "oxlint --type-aware --deny-warnings",
 		"check:types": "nuxi typecheck --noEmit"
 	},
@@ -50,10 +50,10 @@
 		"@vue/test-utils": "^2.4.6",
 		"drizzle-kit": "^0.31.9",
 		"happy-dom": "^20.8.3",
+		"oxfmt": "^0.36.0",
 		"oxlint": "^1.51.0",
 		"oxlint-tsgolint": "^0.16.0",
 		"playwright-core": "^1.58.2",
-		"prettier": "3.8.1",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.18",
 		"vue-tsc": "^3.2.5",
@@ -61,11 +61,5 @@
 	},
 	"volta": {
 		"node": "24.13.0"
-	},
-	"prettier": {
-		"singleQuote": true,
-		"useTabs": true,
-		"printWidth": 80,
-		"tabWidth": 2
 	}
 }

@@ -1,0 +1,18 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"singleQuote": true,
+	"useTabs": true,
+	"printWidth": 80,
+	"tabWidth": 2,
+	"ignorePatterns": [
+		"package-lock.json",
+		"dist",
+		".nuxt",
+		".data",
+		".output",
+		".agents",
+		"server/db/migrations/sqlite/meta",
+		"public/js/lib",
+		"LICENSE"
+	]
+}

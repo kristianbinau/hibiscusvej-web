@@ -66,11 +66,9 @@ export default defineNuxtConfig({
 		db: {
 			dialect: 'sqlite',
 			driver: 'd1',
-			connection: { databaseId: '5fd56c7d-770c-413d-8ce5-8dc549df8989' },
 		},
 		cache: {
 			driver: 'cloudflare-kv-binding',
-			namespaceId: '4f2c15c5d6ee4546b6ba27f1c1e249f5',
 		},
 	},
 

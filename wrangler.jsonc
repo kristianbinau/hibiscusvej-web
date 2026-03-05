@@ -10,16 +10,18 @@
 	"observability": {
 		"enabled": true,
 	},
-	/*"d1_databases": [
-		{
-			"binding": "DB",
-			"database_id": "5fd56c7d-770c-413d-8ce5-8dc549df8989",
-		},
-	],
 	"kv_namespaces": [
 		{
 			"binding": "CACHE",
 			"id": "4f2c15c5d6ee4546b6ba27f1c1e249f5",
 		},
-	],*/
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "5fd56c7d-770c-413d-8ce5-8dc549df8989",
+			"migrations_table": "_hub_migrations",
+			"migrations_dir": ".output/server/db/migrations/",
+		},
+	],
 }

@@ -3,6 +3,6 @@ dist
 .nuxt
 .data
 .output
-.agent
+.agents
 server/db/migrations/sqlite/meta
 LICENSE

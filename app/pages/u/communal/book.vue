@@ -39,6 +39,34 @@
 							>Mine bookinger</ULink
 						>.
 					</p>
+					<br />
+					<!-- Speaker Announcement: Added 2026/03/07 -->
+					<div
+						class="max-w-[368px] mt-3 p-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg"
+					>
+						<div class="flex items-start gap-2">
+							<UBadge
+								variant="solid"
+								color="success"
+								size="xs"
+								class="font-bold mt-0.5"
+							>
+								NYT
+							</UBadge>
+							<p class="text-sm">
+								<strong>Vi har fået indkøbt en højtaler, som kan lånes!</strong>
+								<br />
+								Så mangler du god lyd til festen, så send en mail til
+								bestyrelsen:
+								<a
+									href="mailto:hibiscusvejbestyrelse@outlook.dk"
+									class="text-success-600 dark:text-success-400 underline hover:text-success-700 dark:hover:text-success-300"
+								>
+									hibiscusvejbestyrelse@outlook.dk </a
+								>, så aftaler vi nærmere.
+							</p>
+						</div>
+					</div>
 				</div>
 				<div class="flex flex-col">
 					<BookingCalendar

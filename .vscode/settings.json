@@ -7,5 +7,18 @@
 	},
 	"tailwindCSS.experimental.configFile": "tailwind.config.ts",
 	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"],
-	"oxc.enable": true
+	"oxc.enable": true,
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"[vue]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[ts]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	}
 }

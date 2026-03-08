@@ -7,6 +7,10 @@
 		"nuxt-ui": {
 			"type": "http",
 			"url": "https://ui.nuxt.com/mcp"
+		},
+		"Sentry": {
+			"url": "https://mcp.sentry.dev/mcp/kristian-binau/hibiscusvej-web",
+			"type": "http"
 		}
 	}
 }

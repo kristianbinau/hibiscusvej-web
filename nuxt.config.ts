@@ -3,7 +3,6 @@ import { defineNuxtConfig } from 'nuxt/config';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	compatibilityDate: '2026-01-18',
-
 	ssr: false,
 
 	modules: [
@@ -11,6 +10,7 @@ export default defineNuxtConfig({
 		'@nuxt/ui',
 		'@nuxt/content',
 		'@nuxt/test-utils/module',
+		'@sentry/nuxt/module',
 	],
 
 	/**
@@ -45,6 +45,9 @@ export default defineNuxtConfig({
 		public: {
 			vapidSubject: process.env.NUXT_PUBLIC_VAPID_SUBJECT,
 			vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY,
+			sentry: {
+				dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
+			},
 		},
 	},
 
@@ -77,5 +80,15 @@ export default defineNuxtConfig({
 			type: 'd1',
 			bindingName: 'DB',
 		},
+	},
+
+	sentry: {
+		org: 'kristian-binau',
+		project: 'hibiscusvej-web',
+		authToken: process.env.SENTRY_AUTH_TOKEN,
+	},
+
+	sourcemap: {
+		client: 'hidden',
 	},
 });

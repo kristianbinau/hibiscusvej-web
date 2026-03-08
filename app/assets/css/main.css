@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
+@theme {
+	--font-sans: 'Poppins', sans-serif;
+}
+
 section.markdown-content {
 	@apply lg:w-3/4 px-4 mx-auto gap-4;
 }

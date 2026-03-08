@@ -54,7 +54,7 @@
 								NYT
 							</UBadge>
 							<p class="text-sm">
-								<strong>Vi har fået indkøbt en højtaler, som kan lånes!</strong>
+								<strong>Vi har indkøbt en højtaler, som kan lånes!</strong>
 								<br />
 								Så mangler du god lyd til festen, så send en mail til
 								bestyrelsen:

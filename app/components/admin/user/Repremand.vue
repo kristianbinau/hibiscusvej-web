@@ -11,7 +11,7 @@
 			<h4
 				class="text-sm font-semibold leading-5 text-neutral-900 dark:text-white"
 			>
-				Repremand ID: {{ repremand.id }}
+				{{ repremand.id ? `Repremand ID: ${repremand.id}` : 'New Repremand' }}
 			</h4>
 			<UBadge
 				v-if="editMode"
@@ -25,33 +25,30 @@
 
 		<template v-if="editMode">
 			<UForm
+				id="repremand-form"
 				ref="form"
 				:schema="schema"
 				:state="state"
 				class="flex flex-col gap-4"
 				@submit="saveRepremand"
 			>
-				<UFormField label="Type">
-					<UInput :model-value="repremand.type" />
-				</UFormField>
-				<UFormField label="Reason">
-					<UInput :model-value="repremand.reason" />
-				</UFormField>
-				<UFormField label="Expires At">
-					<UInput
-						:model-value="
-							repremand.expiresAt
-								? new Date(repremand.expiresAt).toLocaleDateString()
-								: 'Never'
-						"
+				<UFormField label="Type" name="type">
+					<USelect
+						v-model="state.type"
+						:items="['ban', 'warning']"
+						placeholder="Vælg type..."
+						class="w-full h-8.5"
 					/>
 				</UFormField>
-				<UFormField label="Created At">
+				<UFormField label="Reason" name="reason">
 					<UInput
-						disabled
-						:model-value="new Date(repremand.createdAt).toLocaleString()"
-						class="disabled:*:cursor-default"
+						v-model="state.reason"
+						placeholder="Årsag..."
+						class="w-full"
 					/>
+				</UFormField>
+				<UFormField label="Expires At" name="expiresAt">
+					<UInput type="date" v-model="expiresAtString" class="w-full h-8.5" />
 				</UFormField>
 			</UForm>
 		</template>
@@ -61,14 +58,14 @@
 				<UInput
 					disabled
 					:model-value="repremand.type"
-					class="disabled:*:cursor-default"
+					class="w-full disabled:*:cursor-default"
 				/>
 			</UFormField>
 			<UFormField label="Reason">
 				<UInput
 					disabled
 					:model-value="repremand.reason"
-					class="disabled:*:cursor-default"
+					class="w-full disabled:*:cursor-default"
 				/>
 			</UFormField>
 			<UFormField label="Expires At">
@@ -79,14 +76,7 @@
 							? new Date(repremand.expiresAt).toLocaleDateString()
 							: 'Never'
 					"
-					class="disabled:*:cursor-default"
-				/>
-			</UFormField>
-			<UFormField label="Created At">
-				<UInput
-					disabled
-					:model-value="new Date(repremand.createdAt).toLocaleString()"
-					class="disabled:*:cursor-default"
+					class="w-full disabled:*:cursor-default"
 				/>
 			</UFormField>
 		</template>
@@ -98,16 +88,18 @@
 						variant="soft"
 						color="warning"
 						icon="i-material-symbols-cancel-outline-rounded"
-						@click="disableEditMode"
+						@click="handleCancel"
 					/>
 				</UTooltip>
 
 				<UTooltip text="Gem" class="ml-3">
 					<UButton
 						type="submit"
+						form="repremand-form"
 						variant="soft"
 						color="success"
 						icon="i-material-symbols-save-as-outline-rounded"
+						:loading="saveRepremandLoading"
 					/>
 				</UTooltip>
 			</template>
@@ -180,18 +172,30 @@ import { z } from 'zod/v3';
 import type { Form, FormSubmitEvent } from '#ui/types';
 import type { UserRepremand } from '~/utils/types/admin';
 
-const repremand = defineModel<UserRepremand>('repremand', {
+const props = defineProps<{
+	userId: number;
+}>();
+
+const emit = defineEmits<{
+	deleted: [];
+	cancelled: [];
+	created: [];
+}>();
+
+const repremand = defineModel<Partial<UserRepremand>>('repremand', {
 	required: true,
 	type: Object,
 });
 
 const toast = useToast();
 
+const isCreating = computed(() => !repremand.value.id);
+
 /**
  * EDIT
  */
 
-const editMode = ref<boolean>(false);
+const editMode = ref<boolean>(isCreating.value);
 
 function enableEditMode() {
 	editMode.value = true;
@@ -199,12 +203,20 @@ function enableEditMode() {
 
 function disableEditMode() {
 	state.type = repremand.value.type;
-	state.reason = repremand.value.reason;
+	state.reason = repremand.value.reason ?? '';
 	state.expiresAt = repremand.value.expiresAt
 		? new Date(repremand.value.expiresAt)
 		: undefined;
 
 	editMode.value = false;
+}
+
+function handleCancel() {
+	if (isCreating.value) {
+		emit('cancelled');
+	} else {
+		disableEditMode();
+	}
 }
 
 const schema = z.object({
@@ -223,14 +235,23 @@ const form = ref<Form<Schema>>();
 
 const state = reactive<{
 	type: 'warning' | 'ban' | undefined;
-	reason: string | undefined;
+	reason: string;
 	expiresAt: Date | undefined;
 }>({
 	type: repremand.value.type ?? undefined,
-	reason: repremand.value.reason ?? undefined,
+	reason: repremand.value.reason ?? '',
 	expiresAt: repremand.value.expiresAt
 		? new Date(repremand.value.expiresAt)
 		: undefined,
+});
+
+const expiresAtString = computed({
+	get() {
+		return state.expiresAt ? state.expiresAt.toISOString().slice(0, 10) : '';
+	},
+	set(val: string) {
+		state.expiresAt = val ? new Date(val) : undefined;
+	},
 });
 
 const saveRepremandLoading = ref<boolean>(false);
@@ -240,26 +261,61 @@ async function saveRepremand(event: FormSubmitEvent<Schema>) {
 
 	form.value!.clear();
 	try {
-		// TODO: Update repremand
+		if (!isCreating.value) {
+			await $fetch(`/api/app/admin/repremands/${repremand.value.id}`, {
+				method: 'PATCH',
+				body: {
+					type: event.data.type,
+					reason: event.data.reason,
+					expiresAt: event.data.expiresAt
+						? event.data.expiresAt.toISOString().slice(0, 10)
+						: undefined,
+				},
+			});
 
-		toast.add({
-			icon: 'i-material-symbols-check-circle-outline-rounded',
-			title: 'Success!',
-			description: 'Repremand er blevet opdateret!',
-		});
+			repremand.value.type = event.data.type;
+			repremand.value.reason = event.data.reason;
+			repremand.value.expiresAt = event.data.expiresAt
+				? event.data.expiresAt.toISOString()
+				: null;
 
-		repremand.value.type = state.type!;
-		repremand.value.reason = state.reason!;
-		repremand.value.expiresAt = state.expiresAt
-			? state.expiresAt.toISOString()
-			: null;
+			toast.add({
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: 'Repremand er blevet opdateret!',
+			});
 
-		disableEditMode();
+			disableEditMode();
+		} else {
+			const res = await $fetch(
+				`/api/app/admin/users/${props.userId}/repremands`,
+				{
+					method: 'POST',
+					body: {
+						type: event.data.type,
+						reason: event.data.reason,
+						expiresAt: event.data.expiresAt
+							? event.data.expiresAt.toISOString().slice(0, 10)
+							: undefined,
+					},
+				},
+			);
+
+			Object.assign(repremand.value, res.repremand);
+
+			toast.add({
+				icon: 'i-material-symbols-check-circle-outline-rounded',
+				title: 'Success!',
+				description: 'Repremand er blevet oprettet!',
+			});
+
+			editMode.value = false;
+			emit('created');
+		}
 	} catch (error: any) {
 		if (error.statusCode === 422) {
 			form.value!.setErrors(
 				error.data.errors.map((error: any) => ({
-					// Map validation errors to { path: string, message: string }
 					message: error.message,
 					path: error.path,
 				})),
@@ -310,6 +366,8 @@ async function deleteRepremand() {
 				description: `Du har slettet repremand med ID: ${id}`,
 				duration: 10000,
 			});
+
+			emit('deleted');
 		}
 	} catch (error: any) {
 		if (error.status === 401) {

@@ -8,3 +8,4 @@ export type UserMeLoginsApiResponse =
 export type Me = UserMeApiResponse['user'];
 export type MePerson = UserMePersonsApiResponse['persons'][0];
 export type MeLogin = UserMeLoginsApiResponse['logins'][0];
+export type MeRepremand = UserMeApiResponse['activeRepremands'][0];

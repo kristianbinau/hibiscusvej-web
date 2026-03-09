@@ -43,6 +43,41 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
+	const activeRepremandBan = await useDrizzle()
+		.select()
+		.from(tables.userRepremands)
+		.where(
+			and(
+				eq(tables.userRepremands.userId, user.id),
+				eq(tables.userRepremands.type, 'ban'),
+				or(
+					isNull(tables.userRepremands.expiresAt),
+					gte(tables.userRepremands.expiresAt, new Date()),
+				),
+			),
+		)
+		.orderBy(desc(tables.userRepremands.createdAt))
+		.get();
+
+	// If user is banned, return 403 Forbidden
+	if (activeRepremandBan) {
+		const message = activeRepremandBan.expiresAt
+			? `Din bruger er midlertidigt udelukket fra at oprette booking indtil ${activeRepremandBan.expiresAt.toLocaleDateString(
+					'da-DK',
+					{
+						day: '2-digit',
+						month: 'long',
+						year: '2-digit',
+					},
+				)}.`
+			: 'Din bruger er udelukket fra at oprette booking.';
+		throw createError({
+			statusCode: 403,
+			statusMessage: 'Forbidden',
+			message: message,
+		});
+	}
+
 	const date = new UTCDateMini(body.date);
 	const from = new UTCDateMini(date);
 	const to = new UTCDateMini(addDays(from, 1));

@@ -9,7 +9,7 @@ const routeSchema = z.object({
 const bodySchema = z.object({
 	type: z.enum(['ban', 'warning']),
 	reason: z.string(),
-	expiresAt: z.string().date(),
+	expiresAt: z.string().date().optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 	const userId = params.id;
 	const type = body.type;
 	const reason = body.reason;
-	const expiresAt = new Date(body.expiresAt);
+	const expiresAt = body.expiresAt ? new Date(body.expiresAt) : null;
 	const now = new Date();
 
 	let repremand;

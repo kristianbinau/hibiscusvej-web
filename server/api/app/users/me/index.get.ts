@@ -19,8 +19,23 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
+	const activeRepremands = await useDrizzle()
+		.select()
+		.from(tables.userRepremands)
+		.where(
+			and(
+				eq(tables.userRepremands.userId, user.id),
+				or(
+					isNull(tables.userRepremands.expiresAt),
+					gte(tables.userRepremands.expiresAt, new Date()),
+				),
+			),
+		)
+		.all();
+
 	return {
 		auth: authUser,
 		user: user,
+		activeRepremands: activeRepremands,
 	};
 });

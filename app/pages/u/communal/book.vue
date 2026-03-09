@@ -21,6 +21,26 @@
 				]"
 			></UAlert>
 
+			<UAlert
+				v-if="currentUserWarned"
+				title="Advarsel!"
+				description="Du har en eller flere aktive advarsler."
+				icon="i-material-symbols-warning-outline-rounded"
+				color="warning"
+				variant="subtle"
+				class="mb-6"
+			></UAlert>
+
+			<UAlert
+				v-if="currentUserBanned"
+				title="Du er udelukket!"
+				description="Du har en eller flere aktive udelukkelser. Du kan ikke booke fælleslokalet mens du er udelukket."
+				icon="i-material-symbols-dangerous-outline-rounded"
+				color="error"
+				variant="subtle"
+				class="mb-6"
+			></UAlert>
+
 			<div
 				v-show="currentUser"
 				class="flex justify-center flex-wrap md:flex-nowrap mx-auto gap-6"
@@ -93,7 +113,12 @@
 					<UButton
 						:loading="onSubmitLoading"
 						@click="onSubmit"
-						:disabled="date === null || !hasReadTerms || !currentUserVerified"
+						:disabled="
+							date === null ||
+							!hasReadTerms ||
+							!currentUserVerified ||
+							currentUserBanned
+						"
 						>Book</UButton
 					>
 				</div>
@@ -134,6 +159,22 @@ const currentUserVerified = computed(() => {
 	if (!currentUser.value) return true;
 
 	return currentUser.value.user.verifiedAt !== null;
+});
+
+const currentUserBanned = computed(() => {
+	if (!currentUser.value) return false;
+
+	return currentUser.value.activeRepremands.some(
+		(repremand) => repremand.type === 'ban',
+	);
+});
+
+const currentUserWarned = computed(() => {
+	if (!currentUser.value) return false;
+
+	return currentUser.value.activeRepremands.some(
+		(repremand) => repremand.type === 'warning',
+	);
 });
 
 const { data: currentUser, refresh: currentUserRefresh } = await useFetch(

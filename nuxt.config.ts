@@ -13,6 +13,14 @@ export default defineNuxtConfig({
 		'@sentry/nuxt/module',
 	],
 
+	future: {
+		compatibilityVersion: 5,
+	},
+
+	experimental: {
+		nitroAutoImports: true,
+	},
+
 	/**
 	 * Options
 	 */
@@ -21,6 +29,19 @@ export default defineNuxtConfig({
 		preset: 'cloudflare_module',
 		experimental: {
 			tasks: true,
+		},
+	},
+
+	vite: {
+		optimizeDeps: {
+			include: [
+				'@vue/devtools-core',
+				'@vue/devtools-kit',
+				'date-fns',
+				'@internationalized/date',
+				'zod/v3',
+				'zod/v4',
+			],
 		},
 	},
 

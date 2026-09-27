@@ -26,7 +26,7 @@
 		"@internationalized/date": "^3.12.0",
 		"@libsql/client": "^0.17.0",
 		"@nuxt/content": "^3.12.0",
-		"@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@6197",
+		"@nuxt/ui": "^4.11.2",
 		"@nuxthub/core": "^0.10.7",
 		"@popperjs/core": "^2.11.8",
 		"@sentry/nuxt": "^10.43.0",

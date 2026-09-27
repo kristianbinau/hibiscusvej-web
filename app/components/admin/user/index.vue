@@ -39,11 +39,30 @@
 			</UFormField>
 
 			<UFormField label="Is Admin">
-				<UInput
-					disabled
-					:model-value="user.systemAdmin ? 'System Admin' : String(user.admin)"
-					class="mb-4 disabled:*:cursor-default"
-				/>
+				<div class="mb-4">
+					<UBadge
+						v-if="user.systemAdmin"
+						icon="i-material-symbols-admin-panel-settings-rounded"
+						color="primary"
+						variant="soft"
+						size="lg"
+						label="System"
+					/>
+					<UBadge
+						v-else-if="user.admin"
+						icon="i-material-symbols-check-box-rounded"
+						color="success"
+						variant="soft"
+						size="lg"
+					/>
+					<UBadge
+						v-else
+						icon="i-material-symbols-check-box-outline-blank"
+						color="error"
+						variant="soft"
+						size="lg"
+					/>
+				</div>
 			</UFormField>
 
 			<UFormField label="Verified">

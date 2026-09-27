@@ -42,11 +42,11 @@
 
 				<template #admin-cell="{ row }">
 					<UBadge
-						v-if="row.getValue('systemAdmin')"
+						v-if="row.original.systemAdmin"
 						class="px-1.5"
 						size="lg"
 						icon="i-material-symbols-admin-panel-settings-rounded"
-						color="warning"
+						color="primary"
 						variant="soft"
 					/>
 					<UBadge

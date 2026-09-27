@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 import { UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays } from 'date-fns';
+import { logAdminAction } from '~~/server/utils/log';
 
 const LOG_MODULE = 'Api/Admin/Bookings/System/Post';
 
@@ -9,7 +10,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	await useAuthAdmin(event);
+	const authAdmin = await useAuthAdmin(event);
 	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	const date = new UTCDateMini(body.date);
@@ -84,6 +85,17 @@ export default defineEventHandler(async (event) => {
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
 		});
+	}
+
+	try {
+		await logAdminAction({
+			logModule: LOG_MODULE,
+			adminAction: 'SystemBooking',
+			adminActionParam: body.date,
+			adminUserId: authAdmin.user.id,
+		});
+	} catch (error) {
+		void logError(LOG_MODULE, 'Failed Audit Log', error);
 	}
 
 	setResponseStatus(event, 201);

@@ -65,7 +65,9 @@ const _sendAdminNotification = async (
 		const admins = await useDrizzle()
 			.select()
 			.from(tables.users)
-			.where(eq(tables.users.admin, true))
+			.where(
+				and(eq(tables.users.admin, true), eq(tables.users.systemAdmin, false)),
+			)
 			.all();
 		const adminUserIds = admins.map((admin) => admin.id);
 

@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { logAdminAction } from '~~/server/utils/log';
 
 const LOG_MODULE = 'Api/Admin/Users/[id]/Repremands/Post';
 
@@ -47,6 +48,17 @@ export default defineEventHandler(async (event) => {
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
 		});
+	}
+
+	try {
+		await logAdminAction({
+			logModule: LOG_MODULE,
+			adminAction: 'CreateRepremand',
+			adminActionParam: `${userId}:${type}`,
+			adminUserId: authAdmin.user.id,
+		});
+	} catch (error) {
+		void logError(LOG_MODULE, 'Failed Audit Log', error);
 	}
 
 	return {

@@ -28,12 +28,16 @@ export default defineEventHandler(async (event) => {
 	await assertCanActOnTarget(authAdmin, userId);
 	await anonymizeUser(userId);
 
-	await logAdminAction({
-		logModule: LOG_MODULE,
-		adminAction: ADMIN_ACTION,
-		adminActionParam: `${userId}`,
-		adminUserId: authAdmin.user.id,
-	});
+	try {
+		await logAdminAction({
+			logModule: LOG_MODULE,
+			adminAction: ADMIN_ACTION,
+			adminActionParam: `${userId}`,
+			adminUserId: authAdmin.user.id,
+		});
+	} catch (error) {
+		void logError(LOG_MODULE, 'Failed Audit Log', error);
+	}
 
 	return true;
 });

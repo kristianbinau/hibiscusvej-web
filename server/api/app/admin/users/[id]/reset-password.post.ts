@@ -64,12 +64,16 @@ export default defineEventHandler(async (event) => {
 			throw new Error('UserLogin deleted between select and update');
 		}
 
-		await logAdminAction({
-			logModule: LOG_MODULE,
-			adminAction: ADMIN_ACTION,
-			adminActionParam: `${userId}`,
-			adminUserId: authAdmin.user.id,
-		});
+		try {
+			await logAdminAction({
+				logModule: LOG_MODULE,
+				adminAction: ADMIN_ACTION,
+				adminActionParam: `${userId}`,
+				adminUserId: authAdmin.user.id,
+			});
+		} catch (error) {
+			void logError(LOG_MODULE, 'Failed Audit Log', error);
+		}
 
 		return {
 			loginId: loginId,

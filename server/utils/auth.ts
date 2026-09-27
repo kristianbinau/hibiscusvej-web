@@ -140,9 +140,9 @@ export const useAuthValidatedAdmin = async (
 export const useAuthSystemAdmin = async (
 	event: H3Event<EventHandlerRequest>,
 ) => {
-	const authUser = await useAuthUser(event);
+	const authAdmin = await useAuthAdmin(event);
 
-	if (!authUser.user.systemAdmin) {
+	if (!authAdmin.user.systemAdmin) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'Forbidden',
@@ -150,7 +150,7 @@ export const useAuthSystemAdmin = async (
 	}
 
 	return {
-		...authUser,
+		...authAdmin,
 	};
 };
 

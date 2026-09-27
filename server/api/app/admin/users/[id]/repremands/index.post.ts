@@ -13,13 +13,15 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	await useAuthAdmin(event);
+	const authAdmin = await useAuthAdmin(event);
 	const params = await getValidatedRouterParams(event, (data) =>
 		routeSchema.parse(data),
 	);
 	const body = await readValidatedBody(event, (data) => bodySchema.parse(data));
 
 	const userId = params.id;
+
+	await assertCanActOnTarget(authAdmin, userId);
 	const type = body.type;
 	const reason = body.reason;
 	const expiresAt = body.expiresAt ? new Date(body.expiresAt) : null;

@@ -8,15 +8,18 @@ const ISSUER = 'hibiscusvej:web';
 const ACCESS_LIFETIME = '2 hours';
 export const ACCESS_AUDIENCE = 'hibiscusvej:access';
 export const ACCESS_AUDIENCE_ADMIN = 'hibiscusvej:access-admin';
+export const ACCESS_AUDIENCE_SYSTEM_ADMIN = 'hibiscusvej:access-system-admin';
 
 const REFRESH_LIFETIME = '60 days';
 export const REFRESH_AUDIENCE = 'hibiscusvej:refresh';
 export const REFRESH_AUDIENCE_ADMIN = 'hibiscusvej:refresh-admin';
+export const REFRESH_AUDIENCE_SYSTEM_ADMIN = 'hibiscusvej:refresh-system-admin';
 export const REFRESH_COOKIE_NAME = 'REFRESH-TOKEN';
 
 export async function generateTokens(
 	userId: number,
 	isAdmin: boolean,
+	isSystemAdmin: boolean,
 	family: string | null,
 ): Promise<{
 	refreshToken: string;
@@ -24,8 +27,18 @@ export async function generateTokens(
 }> {
 	const familyKey = family || randomUUID();
 
-	const refreshToken = await generateRefreshToken(userId, isAdmin, familyKey);
-	const accessToken = await generateAccessToken(userId, isAdmin, familyKey);
+	const refreshToken = await generateRefreshToken(
+		userId,
+		isAdmin,
+		isSystemAdmin,
+		familyKey,
+	);
+	const accessToken = await generateAccessToken(
+		userId,
+		isAdmin,
+		isSystemAdmin,
+		familyKey,
+	);
 
 	return {
 		refreshToken: refreshToken,
@@ -36,15 +49,21 @@ export async function generateTokens(
 async function generateRefreshToken(
 	subject: number,
 	isAdmin: boolean,
+	isSystemAdmin: boolean,
 	familyKey: string,
 ): Promise<string> {
 	const { alg, key } = getJWTSecret();
+	const audience = isSystemAdmin
+		? REFRESH_AUDIENCE_SYSTEM_ADMIN
+		: isAdmin
+			? REFRESH_AUDIENCE_ADMIN
+			: REFRESH_AUDIENCE;
 
 	return await new jose.SignJWT()
 		.setProtectedHeader({ alg })
 		.setIssuedAt()
 		.setIssuer(ISSUER)
-		.setAudience(isAdmin ? REFRESH_AUDIENCE_ADMIN : REFRESH_AUDIENCE)
+		.setAudience(audience)
 		.setSubject(subject.toString())
 		.setJti(familyKey)
 		.setExpirationTime(REFRESH_LIFETIME)
@@ -54,15 +73,21 @@ async function generateRefreshToken(
 async function generateAccessToken(
 	subject: number,
 	isAdmin: boolean,
+	isSystemAdmin: boolean,
 	familyKey: string,
 ): Promise<string> {
 	const { alg, key } = getJWTSecret();
+	const audience = isSystemAdmin
+		? ACCESS_AUDIENCE_SYSTEM_ADMIN
+		: isAdmin
+			? ACCESS_AUDIENCE_ADMIN
+			: ACCESS_AUDIENCE;
 
 	return await new jose.SignJWT()
 		.setProtectedHeader({ alg })
 		.setIssuedAt()
 		.setIssuer(ISSUER)
-		.setAudience(isAdmin ? ACCESS_AUDIENCE_ADMIN : ACCESS_AUDIENCE)
+		.setAudience(audience)
 		.setSubject(subject.toString())
 		.setJti(familyKey)
 		.setExpirationTime(ACCESS_LIFETIME)

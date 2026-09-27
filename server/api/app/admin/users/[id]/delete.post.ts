@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
 
 	const userId = params.id;
 
+	await assertCanActOnTarget(authAdmin, userId);
 	await anonymizeUser(userId);
 
 	await logAdminAction({

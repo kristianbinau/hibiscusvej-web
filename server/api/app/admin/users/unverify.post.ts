@@ -16,6 +16,8 @@ export default defineEventHandler(async (event) => {
 	const userIds = body.userIds;
 	const now = new Date();
 
+	await assertCanActOnTargets(authAdmin, userIds);
+
 	try {
 		await useDrizzle()
 			.update(tables.users)

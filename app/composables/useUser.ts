@@ -7,6 +7,7 @@ export const useUser = async () => {
 	try {
 		const { data } = await useFetch('/api/app/auth/user', {
 			deep: true,
+			key: 'auth-user',
 		});
 
 		if (!data.value) {

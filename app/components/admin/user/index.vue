@@ -41,7 +41,7 @@
 			<UFormField label="Is Admin">
 				<UInput
 					disabled
-					:model-value="String(user.admin)"
+					:model-value="user.systemAdmin ? 'System Admin' : String(user.admin)"
 					class="mb-4 disabled:*:cursor-default"
 				/>
 			</UFormField>
@@ -119,7 +119,10 @@
 		</UAccordion>
 
 		<template #footer>
-			<div class="flex items-center justify-between gap-3">
+			<div
+				v-if="!user.systemAdmin || isViewerSystemAdmin"
+				class="flex items-center justify-between gap-3"
+			>
 				<template v-if="user.verifiedAt === null">
 					<UPopover
 						:content="{
@@ -286,6 +289,11 @@ const {
 }>();
 
 const user = defineModel<User>('user', { required: false, type: Object });
+
+const { authUser } = await useUser();
+const isViewerSystemAdmin = computed(
+	() => authUser.value?.user.systemAdmin ?? false,
+);
 
 const toast = useToast();
 

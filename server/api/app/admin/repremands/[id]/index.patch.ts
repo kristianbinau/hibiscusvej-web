@@ -13,7 +13,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	await useAuthAdmin(event);
+	const authAdmin = await useAuthAdmin(event);
 	const params = await getValidatedRouterParams(event, (data) =>
 		routeSchema.parse(data),
 	);
@@ -33,6 +33,8 @@ export default defineEventHandler(async (event) => {
 			statusMessage: 'Not Found',
 		});
 	}
+
+	await assertCanActOnTarget(authAdmin, userRepremand.userId);
 
 	try {
 		const now = new Date();

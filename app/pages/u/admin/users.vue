@@ -42,7 +42,15 @@
 
 				<template #admin-cell="{ row }">
 					<UBadge
-						v-if="row.getValue('admin')"
+						v-if="row.getValue('systemAdmin')"
+						class="px-1.5"
+						size="lg"
+						icon="i-material-symbols-admin-panel-settings-rounded"
+						color="warning"
+						variant="soft"
+					/>
+					<UBadge
+						v-else-if="row.getValue('admin')"
 						class="px-1.5"
 						size="lg"
 						icon="i-material-symbols-check-box-rounded"
@@ -134,6 +142,7 @@ type UserRow = {
 	id: number;
 	apartmentId: number | null;
 	admin: boolean;
+	systemAdmin: boolean;
 	verified: string;
 	sessionCount: number;
 	loginCount: number;
@@ -179,7 +188,7 @@ const columns: TableColumn<UserRow>[] = [
 	{
 		accessorKey: 'updatedAt',
 		header: 'Opdateret',
-		cell: ({ row }) => row.getValue<Date>('createdAt').toLocaleDateString(),
+		cell: ({ row }) => row.getValue<Date>('updatedAt').toLocaleDateString(),
 	},
 ];
 
@@ -207,6 +216,7 @@ const rows = computed<UserRow[]>(() => {
 			id: user.id,
 			apartmentId: user.apartmentId,
 			admin: user.admin,
+			systemAdmin: user.systemAdmin,
 			verified: verified,
 			sessionCount: user.sessions.length,
 			loginCount: user.logins.length,

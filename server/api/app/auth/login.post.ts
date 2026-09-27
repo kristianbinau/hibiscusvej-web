@@ -66,6 +66,7 @@ export default defineEventHandler(async (event) => {
 		const { refreshToken, accessToken } = await generateTokens(
 			user.id,
 			user.admin,
+			user.systemAdmin,
 			null,
 		);
 		const decodedRefreshToken = (await verifyToken(refreshToken)) as {

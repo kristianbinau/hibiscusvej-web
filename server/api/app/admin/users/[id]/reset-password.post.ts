@@ -28,6 +28,8 @@ export default defineEventHandler(async (event) => {
 	const userId = params.id;
 	const loginId = body.loginId;
 
+	await assertCanActOnTarget(authAdmin, userId);
+
 	let userLogin = await useDrizzle()
 		.select()
 		.from(tables.userLogins)

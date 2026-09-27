@@ -19,7 +19,9 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '#ui/types';
 
-const links: NavigationMenuItem[][] = [
+const { authUser } = await useUser();
+
+const links = ref<NavigationMenuItem[][]>([
 	[
 		{
 			label: 'Hibiscusvej 2-30: Admin',
@@ -51,5 +53,16 @@ const links: NavigationMenuItem[][] = [
 			to: '/u',
 		},
 	],
-];
+]);
+
+if (authUser.value && authUser.value.user.systemAdmin) {
+	const link: NavigationMenuItem = {
+		icon: 'i-material-symbols-admin-panel-settings-rounded',
+		label: 'System Admin',
+		to: '/u/system-admin',
+	};
+
+	// @ts-ignore
+	links.value[2].unshift(link);
+}
 </script>

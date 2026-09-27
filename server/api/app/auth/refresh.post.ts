@@ -19,7 +19,8 @@ export default defineEventHandler(async (event) => {
 		// If refreshToken is not an REFRESH_AUDIENCE or REFRESH_AUDIENCE_ADMIN token, return 401 Unauthorized
 		if (
 			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE &&
-			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE_ADMIN
+			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE_ADMIN &&
+			currentDecodedRefreshToken.payload.aud !== REFRESH_AUDIENCE_SYSTEM_ADMIN
 		) {
 			deleteCookie(event, REFRESH_COOKIE_NAME);
 			throw createError({
@@ -122,6 +123,7 @@ export default defineEventHandler(async (event) => {
 		const { refreshToken, accessToken } = await generateTokens(
 			userLogin.userId,
 			user.admin,
+			user.systemAdmin,
 			currentDecodedRefreshToken.payload.jti,
 		);
 		const newDecodedRefreshToken = (await verifyToken(refreshToken)) as {

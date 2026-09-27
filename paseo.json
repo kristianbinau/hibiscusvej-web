@@ -1,0 +1,19 @@
+{
+	"worktree": {
+		"setup": "npm install --legacy-peer-deps\ncp \"$PASEO_SOURCE_CHECKOUT_PATH/.env\" .env\nnpm run db:migrate",
+		"servicePorts": { "range": "3000-3100" }
+	},
+	"scripts": {
+		"dev": {
+			"type": "service",
+			"command": "npm run dev -- --port $PASEO_PORT",
+			"port": 3000
+		},
+		"test": { "command": "npm test" },
+		"lint": { "command": "npm run check:lint" },
+		"format": { "command": "npm run check:format" },
+		"typecheck": { "command": "npm run check:types" },
+		"build": { "command": "npm run build" },
+		"backup-database": { "command": "npm run backup-database" }
+	}
+}

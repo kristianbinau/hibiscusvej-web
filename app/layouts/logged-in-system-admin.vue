@@ -26,7 +26,7 @@ import type { NavigationMenuItem } from '#ui/types';
 const links: NavigationMenuItem[][] = [
 	[
 		{
-			label: 'System Admin',
+			label: 'Hibiscusvej 2-30: System Admin',
 			icon: 'i-material-symbols-admin-panel-settings-rounded',
 			to: '/u/system-admin',
 		},
@@ -41,7 +41,7 @@ const links: NavigationMenuItem[][] = [
 	[
 		{
 			icon: 'i-material-symbols-backspace-rounded',
-			label: 'Back',
+			label: 'Tilbage',
 			to: '/u/admin',
 		},
 	],

@@ -1,105 +1,40 @@
-import * as jose from 'jose';
-import { randomUUID } from 'uncrypto';
+import {
+	ACCESS_AUDIENCE,
+	ACCESS_AUDIENCE_ADMIN,
+	ACCESS_AUDIENCE_SYSTEM_ADMIN,
+	REFRESH_AUDIENCE,
+	REFRESH_AUDIENCE_ADMIN,
+	REFRESH_AUDIENCE_SYSTEM_ADMIN,
+	REFRESH_COOKIE_NAME,
+	verifyTokenWithKey,
+	generateTokensWithKey,
+} from '../lib/jwt-core';
+
+export {
+	ACCESS_AUDIENCE,
+	ACCESS_AUDIENCE_ADMIN,
+	ACCESS_AUDIENCE_SYSTEM_ADMIN,
+	REFRESH_AUDIENCE,
+	REFRESH_AUDIENCE_ADMIN,
+	REFRESH_AUDIENCE_SYSTEM_ADMIN,
+	REFRESH_COOKIE_NAME,
+};
 
 const LOG_MODULE = 'Utils/JWT';
-
-const ISSUER = 'hibiscusvej:web';
-
-const ACCESS_LIFETIME = '2 hours';
-export const ACCESS_AUDIENCE = 'hibiscusvej:access';
-export const ACCESS_AUDIENCE_ADMIN = 'hibiscusvej:access-admin';
-export const ACCESS_AUDIENCE_SYSTEM_ADMIN = 'hibiscusvej:access-system-admin';
-
-const REFRESH_LIFETIME = '60 days';
-export const REFRESH_AUDIENCE = 'hibiscusvej:refresh';
-export const REFRESH_AUDIENCE_ADMIN = 'hibiscusvej:refresh-admin';
-export const REFRESH_AUDIENCE_SYSTEM_ADMIN = 'hibiscusvej:refresh-system-admin';
-export const REFRESH_COOKIE_NAME = 'REFRESH-TOKEN';
 
 export async function generateTokens(
 	userId: number,
 	isAdmin: boolean,
 	isSystemAdmin: boolean,
 	family: string | null,
-): Promise<{
-	refreshToken: string;
-	accessToken: string;
-}> {
-	const familyKey = family || randomUUID();
-
-	const refreshToken = await generateRefreshToken(
-		userId,
-		isAdmin,
-		isSystemAdmin,
-		familyKey,
-	);
-	const accessToken = await generateAccessToken(
-		userId,
-		isAdmin,
-		isSystemAdmin,
-		familyKey,
-	);
-
-	return {
-		refreshToken: refreshToken,
-		accessToken: accessToken,
-	};
-}
-
-async function generateRefreshToken(
-	subject: number,
-	isAdmin: boolean,
-	isSystemAdmin: boolean,
-	familyKey: string,
-): Promise<string> {
-	const { alg, key } = getJWTSecret();
-	const audience = isSystemAdmin
-		? REFRESH_AUDIENCE_SYSTEM_ADMIN
-		: isAdmin
-			? REFRESH_AUDIENCE_ADMIN
-			: REFRESH_AUDIENCE;
-
-	return await new jose.SignJWT()
-		.setProtectedHeader({ alg })
-		.setIssuedAt()
-		.setIssuer(ISSUER)
-		.setAudience(audience)
-		.setSubject(subject.toString())
-		.setJti(familyKey)
-		.setExpirationTime(REFRESH_LIFETIME)
-		.sign(key);
-}
-
-async function generateAccessToken(
-	subject: number,
-	isAdmin: boolean,
-	isSystemAdmin: boolean,
-	familyKey: string,
-): Promise<string> {
-	const { alg, key } = getJWTSecret();
-	const audience = isSystemAdmin
-		? ACCESS_AUDIENCE_SYSTEM_ADMIN
-		: isAdmin
-			? ACCESS_AUDIENCE_ADMIN
-			: ACCESS_AUDIENCE;
-
-	return await new jose.SignJWT()
-		.setProtectedHeader({ alg })
-		.setIssuedAt()
-		.setIssuer(ISSUER)
-		.setAudience(audience)
-		.setSubject(subject.toString())
-		.setJti(familyKey)
-		.setExpirationTime(ACCESS_LIFETIME)
-		.sign(key);
+): Promise<{ refreshToken: string; accessToken: string }> {
+	const { key } = getJWTSecret();
+	return generateTokensWithKey(userId, isAdmin, isSystemAdmin, family, key);
 }
 
 export function verifyToken(token: string) {
 	const { key } = getJWTSecret();
-
-	return jose.jwtVerify(token, key, {
-		issuer: ISSUER,
-	});
+	return verifyTokenWithKey(token, key);
 }
 
 export function decodeToken(token: string): {
@@ -126,8 +61,5 @@ function getJWTSecret() {
 	const key = new TextEncoder().encode(jwtSecret);
 	const alg = 'HS256';
 
-	return {
-		alg: alg,
-		key: key,
-	};
+	return { alg, key };
 }

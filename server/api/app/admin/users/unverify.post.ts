@@ -26,7 +26,14 @@ export default defineEventHandler(async (event) => {
 				verifiedByUserId: null,
 				updatedAt: now,
 			})
-			.where(inArray(tables.users.id, userIds));
+			.where(
+				and(
+					inArray(tables.users.id, userIds),
+					authAdmin.user.systemAdmin
+						? sql`true`
+						: eq(tables.users.systemAdmin, false),
+				),
+			);
 	} catch (error) {
 		void logError(LOG_MODULE, 'Failed Update', error);
 		throw createError({

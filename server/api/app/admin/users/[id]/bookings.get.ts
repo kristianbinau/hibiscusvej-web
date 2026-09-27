@@ -5,12 +5,14 @@ const routeSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	await useAuthAdmin(event);
+	const authAdmin = await useAuthAdmin(event);
 	const params = await getValidatedRouterParams(event, (data) =>
 		routeSchema.parse(data),
 	);
 
 	const id = params.id;
+
+	await assertCanActOnTarget(authAdmin, id);
 
 	const user = await useDrizzle()
 		.select()

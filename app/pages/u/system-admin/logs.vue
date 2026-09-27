@@ -48,7 +48,7 @@ useHead({
 type LogRow = {
 	id: number;
 	userId: number;
-	email: string | null;
+	adminName: string | null;
 	action: string;
 	actionType: string;
 	actionTarget: string;
@@ -61,7 +61,7 @@ const columns: TableColumn<LogRow>[] = [
 		header: 'ID',
 	},
 	{
-		accessorKey: 'email',
+		accessorKey: 'adminName',
 		header: 'Admin',
 	},
 	{
@@ -102,7 +102,7 @@ async function fetch() {
 			return {
 				id: log.id,
 				userId: log.userId,
-				email: log.email,
+				adminName: log.adminName,
 				action: log.action,
 				actionType: actionType,
 				actionTarget: actionTarget,

@@ -10,32 +10,32 @@ export default defineEventHandler(async (event) => {
 				userId: tables.adminLogs.userId,
 				action: tables.adminLogs.action,
 				createdAt: tables.adminLogs.createdAt,
-				email: tables.userLogins.email,
+				adminName: tables.userPersons.name,
 			})
 			.from(tables.adminLogs)
 			.leftJoin(
-				tables.userLogins,
-				eq(tables.adminLogs.userId, tables.userLogins.userId),
+				tables.userPersons,
+				eq(tables.adminLogs.userId, tables.userPersons.userId),
 			)
-			.orderBy(desc(tables.adminLogs.id))
+			.orderBy(desc(tables.adminLogs.id), asc(tables.userPersons.id))
 			.limit(100)
 			.all();
 
 		const seen = new Set<number>();
-		const userLogins = new Map<number, string | null>();
+		const userNames = new Map<number, string | null>();
 		const dedupedLogs = [];
 		for (const log of logs) {
 			if (seen.has(log.id)) continue;
 			seen.add(log.id);
-			if (log.email && !userLogins.has(log.userId)) {
-				userLogins.set(log.userId, log.email);
+			if (log.adminName && !userNames.has(log.userId)) {
+				userNames.set(log.userId, log.adminName);
 			}
 			dedupedLogs.push({
 				id: log.id,
 				userId: log.userId,
 				action: log.action,
 				createdAt: log.createdAt,
-				email: userLogins.get(log.userId) ?? null,
+				adminName: userNames.get(log.userId) ?? null,
 			});
 		}
 

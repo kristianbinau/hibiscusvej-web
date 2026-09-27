@@ -2,7 +2,8 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "hibiscusvej-web",
 	"main": "./.output/server/index.mjs",
-	"compatibility_date": "2026-01-18",
+	"compatibility_date": "2026-09-27",
+	"compatibility_flags": ["nodejs_compat"],
 	"workers_dev": false,
 	"preview_urls": true,
 	"version_metadata": {

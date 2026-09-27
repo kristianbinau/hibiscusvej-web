@@ -1,10 +1,6 @@
 <template>
 	<header class="md:container md:px-0 sm:px-3 px-1 w-full mx-auto">
-		<UNavigationMenu
-			orientation="horizontal"
-			:items="links"
-			class="border-b border-gray-200 dark:border-gray-800"
-		/>
+		<LayoutNavigation :links="links" />
 	</header>
 
 	<main class="md:container w-full md:px-0 sm:px-3 px-1 mb-12 mx-auto">

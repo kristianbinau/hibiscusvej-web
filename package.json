@@ -29,7 +29,7 @@
 		"@nuxt/ui": "^4.11.2",
 		"@nuxthub/core": "^0.10.8",
 		"@popperjs/core": "^2.11.8",
-		"@sentry/nuxt": "^10.43.0",
+		"@sentry/nuxt": "^11.0.0",
 		"bcryptjs": "^3.0.3",
 		"better-sqlite3": "^13.0.3",
 		"date-fns": "^4.4.0",

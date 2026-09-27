@@ -119,147 +119,216 @@
 		</UAccordion>
 
 		<template #footer>
-			<div
-				v-if="!user.systemAdmin || isViewerSystemAdmin"
-				class="flex items-center justify-between gap-3"
-			>
-				<template v-if="user.verifiedAt === null">
-					<UPopover
-						:content="{
-							align: 'start',
-							side: 'top',
-						}"
-					>
-						<UTooltip text="Klik for at verificere bruger">
-							<UButton
-								variant="soft"
-								color="warning"
-								icon="i-material-symbols-domain-verification-off-rounded"
-								:loading="verificationUpdateLoading"
-							>
-							</UButton>
-						</UTooltip>
-
-						<template #content>
-							<div class="p-4">
-								<p class="text-xs">
-									Du er ved at verificere denne bruger. <br />
-									Ved at verificere brugeren, godkender du brugeren adgang til
-									systemet.
-									<br />
-									<span class="italic">Brugeren vil blive underrettet.</span>
-								</p>
-
+			<div class="flex items-center justify-between gap-3">
+				<div
+					v-if="!user.systemAdmin || isViewerSystemAdmin"
+					class="flex items-center justify-between gap-3 flex-1"
+				>
+					<template v-if="user.verifiedAt === null">
+						<UPopover
+							:content="{
+								align: 'start',
+								side: 'top',
+							}"
+						>
+							<UTooltip text="Klik for at verificere bruger">
 								<UButton
-									label="Godkend"
-									icon="i-material-symbols-check-circle-rounded"
-									color="success"
 									variant="soft"
-									size="xs"
-									@click="verifyUser"
+									color="warning"
+									icon="i-material-symbols-domain-verification-off-rounded"
 									:loading="verificationUpdateLoading"
-									class="mt-4"
-								/>
-							</div>
-						</template>
-					</UPopover>
-
-					<UPopover
-						:content="{
-							align: 'start',
-							side: 'top',
-						}"
-					>
-						<UTooltip text="Klik for at permanent slette brugeren">
-							<UButton
-								icon="i-material-symbols-delete-forever-outline-rounded"
-								color="error"
-								variant="soft"
-							/>
-						</UTooltip>
-
-						<template #content>
-							<div class="p-4">
-								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
-								<p class="text-xs">
-									Du er ved at slette denne bruger. <br />
-									Dette kan ikke fortrydes, og alt data vil blive slettet.
-									<br />
-									<span class="italic"
-										>Fremtidige bookinger vil blive annulleret.</span
-									>
-								</p>
-
-								<UFormField
-									class="mt-4"
-									label="Adgangskode"
-									help="Indtast din adgangskode for at bekræfte."
-									:error="wrongCurrentSessionPassword && 'Forkert adgangskode!'"
-									size="xs"
 								>
-									<UInput
+								</UButton>
+							</UTooltip>
+
+							<template #content>
+								<div class="p-4">
+									<p class="text-xs">
+										Du er ved at verificere denne bruger. <br />
+										Ved at verificere brugeren, godkender du brugeren adgang til
+										systemet.
+										<br />
+										<span class="italic">Brugeren vil blive underrettet.</span>
+									</p>
+
+									<UButton
+										label="Godkend"
+										icon="i-material-symbols-check-circle-rounded"
+										color="success"
+										variant="soft"
 										size="xs"
-										type="password"
-										v-model="currentSessionPassword"
+										@click="verifyUser"
+										:loading="verificationUpdateLoading"
+										class="mt-4"
 									/>
-								</UFormField>
+								</div>
+							</template>
+						</UPopover>
 
+						<UPopover
+							:content="{
+								align: 'start',
+								side: 'top',
+							}"
+						>
+							<UTooltip text="Klik for at permanent slette brugeren">
 								<UButton
-									label="Godkend"
-									icon="i-material-symbols-check-circle-rounded"
+									icon="i-material-symbols-delete-forever-outline-rounded"
 									color="error"
 									variant="soft"
-									size="xs"
-									@click="deleteUser"
-									:loading="deleteAccountLoading"
-									class="mt-4"
 								/>
-							</div>
-						</template>
-					</UPopover>
-				</template>
+							</UTooltip>
 
-				<template v-else>
-					<UPopover
-						class="mr-auto"
-						:content="{
-							align: 'start',
-							side: 'top',
-						}"
-					>
-						<UTooltip text="Klik for at fjerne verificering">
-							<UButton
-								variant="soft"
-								color="success"
-								icon="i-material-symbols-domain-verification-rounded"
-								:loading="verificationUpdateLoading"
-							>
-							</UButton>
-						</UTooltip>
+							<template #content>
+								<div class="p-4">
+									<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+									<p class="text-xs">
+										Du er ved at slette denne bruger. <br />
+										Dette kan ikke fortrydes, og alt data vil blive slettet.
+										<br />
+										<span class="italic"
+											>Fremtidige bookinger vil blive annulleret.</span
+										>
+									</p>
 
-						<template #content>
-							<div class="p-4">
-								<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
-								<p class="text-xs">
-									Du er ved fjerne verificering af denne bruger. <br />
-									Ved at fjerne verificeringen, fjerner du brugerens adgang til
-									systemet.
-								</p>
+									<UFormField
+										class="mt-4"
+										label="Adgangskode"
+										help="Indtast din adgangskode for at bekræfte."
+										:error="
+											wrongCurrentSessionPassword && 'Forkert adgangskode!'
+										"
+										size="xs"
+									>
+										<UInput
+											size="xs"
+											type="password"
+											v-model="currentSessionPassword"
+										/>
+									</UFormField>
 
+									<UButton
+										label="Godkend"
+										icon="i-material-symbols-check-circle-rounded"
+										color="error"
+										variant="soft"
+										size="xs"
+										@click="deleteUser"
+										:loading="deleteAccountLoading"
+										class="mt-4"
+									/>
+								</div>
+							</template>
+						</UPopover>
+					</template>
+
+					<template v-else>
+						<UPopover
+							class="mr-auto"
+							:content="{
+								align: 'start',
+								side: 'top',
+							}"
+						>
+							<UTooltip text="Klik for at fjerne verificering">
 								<UButton
-									label="Godkend"
-									icon="i-material-symbols-check-circle-rounded"
-									color="error"
 									variant="soft"
-									size="xs"
-									@click="unverifyUser"
+									color="success"
+									icon="i-material-symbols-domain-verification-rounded"
 									:loading="verificationUpdateLoading"
-									class="mt-4"
+								>
+								</UButton>
+							</UTooltip>
+
+							<template #content>
+								<div class="p-4">
+									<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+									<p class="text-xs">
+										Du er ved fjerne verificering af denne bruger. <br />
+										Ved at fjerne verificeringen, fjerner du brugerens adgang
+										til systemet.
+									</p>
+
+									<UButton
+										label="Godkend"
+										icon="i-material-symbols-check-circle-rounded"
+										color="error"
+										variant="soft"
+										size="xs"
+										@click="unverifyUser"
+										:loading="verificationUpdateLoading"
+										class="mt-4"
+									/>
+								</div>
+							</template>
+						</UPopover>
+					</template>
+				</div>
+
+				<UPopover
+					v-if="isViewerSystemAdmin && !user.systemAdmin"
+					:content="{
+						align: 'end',
+						side: 'top',
+					}"
+				>
+					<UTooltip
+						:text="
+							user.admin
+								? 'Klik for at fjerne admin rolle'
+								: 'Klik for at give admin rolle'
+						"
+					>
+						<UButton
+							:icon="
+								user.admin
+									? 'i-material-symbols-shield-remove-outline-rounded'
+									: 'i-material-symbols-shield-add-outline-rounded'
+							"
+							:color="user.admin ? 'error' : 'primary'"
+							variant="soft"
+						/>
+					</UTooltip>
+
+					<template #content>
+						<div class="p-4">
+							<h3 class="text-sm font-semibold mb-2">
+								{{ user.admin ? 'Fjern admin rolle' : 'Giv admin rolle' }}
+							</h3>
+							<p class="text-xs mb-4">
+								{{
+									user.admin
+										? 'Brugeren vil miste admin adgang og blive logget ud.'
+										: 'Brugeren vil få admin adgang til systemet.'
+								}}
+							</p>
+
+							<UFormField
+								class="mb-2"
+								label="Adgangskode"
+								help="Indtast din adgangskode for at bekræfte."
+								:error="wrongRolePassword && 'Forkert adgangskode!'"
+								size="xs"
+							>
+								<UInput
+									size="xs"
+									type="password"
+									v-model="roleSessionPassword"
 								/>
-							</div>
-						</template>
-					</UPopover>
-				</template>
+							</UFormField>
+
+							<UButton
+								label="Godkend"
+								icon="i-material-symbols-check-circle-rounded"
+								:color="user.admin ? 'error' : 'primary'"
+								variant="soft"
+								size="xs"
+								@click="changeUserRole"
+								:loading="roleUpdateLoading"
+							/>
+						</div>
+					</template>
+				</UPopover>
 			</div>
 		</template>
 	</UCard>
@@ -563,6 +632,67 @@ async function deleteUser() {
 	}
 
 	deleteAccountLoading.value = false;
+}
+
+const roleSessionPassword = ref<string>('');
+const wrongRolePassword = ref<boolean>(false);
+const roleUpdateLoading = ref<boolean>(false);
+
+async function changeUserRole() {
+	roleUpdateLoading.value = true;
+	wrongRolePassword.value = false;
+
+	try {
+		const id = userId;
+		const newAdmin = !user.value?.admin;
+		const passwordHash = await hash(roleSessionPassword.value);
+
+		await $fetch(`/api/app/system-admin/users/${id}/role`, {
+			method: 'PATCH',
+			body: {
+				admin: newAdmin,
+				currentSessionPassword: passwordHash,
+			},
+		});
+
+		roleSessionPassword.value = '';
+
+		toast.add({
+			icon: 'i-material-symbols-check-circle-rounded',
+			title: 'Success!',
+			description: newAdmin
+				? `Bruger #${id} er nu admin.`
+				: `Bruger #${id} er ikke længere admin.`,
+			duration: 10000,
+		});
+
+		await fetchUser();
+	} catch (error: any) {
+		if (error.status === 401) {
+			wrongRolePassword.value = true;
+		} else if (error.status === 403) {
+			roleSessionPassword.value = '';
+			toast.add({
+				icon: 'i-material-symbols-block-rounded',
+				title: 'Ikke tilladt',
+				description: 'Du kan ikke ændre denne brugers rolle.',
+			});
+		} else {
+			toast.add({
+				icon: 'i-material-symbols-error-outline-rounded',
+				title: 'Fejl!',
+				description: 'Der skete en fejl...',
+				actions: [
+					{
+						label: 'Prøv igen',
+						onClick: changeUserRole,
+					},
+				],
+			});
+		}
+	}
+
+	roleUpdateLoading.value = false;
 }
 </script>
 

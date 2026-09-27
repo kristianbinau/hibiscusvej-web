@@ -1,6 +1,10 @@
 <template>
 	<header class="md:container md:px-0 sm:px-3 px-1 w-full mx-auto">
-		<LayoutNavigation :links="links" />
+		<UNavigationMenu
+			orientation="horizontal"
+			:items="links"
+			class="border-b border-gray-200 dark:border-gray-800"
+		/>
 	</header>
 
 	<main class="md:container w-full md:px-0 sm:px-3 px-1 mb-12 mx-auto">
@@ -22,9 +26,9 @@ import type { NavigationMenuItem } from '#ui/types';
 const links: NavigationMenuItem[][] = [
 	[
 		{
-			label: 'Hibiscusvej 2-30: System Admin',
-			icon: 'Logo',
-			to: '/',
+			label: 'System Admin',
+			icon: 'i-material-symbols-admin-panel-settings-rounded',
+			to: '/u/system-admin',
 		},
 	],
 	[

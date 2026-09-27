@@ -119,10 +119,10 @@
 		</UAccordion>
 
 		<template #footer>
-			<div class="flex items-center justify-between gap-3">
+			<div class="flex items-center justify-between gap-3 flex-wrap">
 				<div
 					v-if="!user.systemAdmin || isViewerSystemAdmin"
-					class="flex items-center justify-between gap-3 flex-1"
+					class="flex items-center gap-3"
 				>
 					<template v-if="user.verifiedAt === null">
 						<UPopover

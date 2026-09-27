@@ -16,7 +16,7 @@
 		},
 	],
 	"secrets": {
-		"required": ["NUXT_JWT_SECRET", "NUXT_VAPID_PRIVATE_KEY"]
+		"required": ["NUXT_JWT_SECRET", "NUXT_VAPID_PRIVATE_KEY"],
 	},
 	"keep_vars": true,
 	"assets": {

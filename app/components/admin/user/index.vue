@@ -29,7 +29,11 @@
 			<UFormField label="Apartment ID">
 				<UInput
 					disabled
-					:model-value="String(user.apartmentId)"
+					:model-value="
+						user.apartmentId === null
+							? 'Ingen lejlighed'
+							: String(user.apartmentId)
+					"
 					class="mb-4 disabled:*:cursor-default"
 				/>
 			</UFormField>

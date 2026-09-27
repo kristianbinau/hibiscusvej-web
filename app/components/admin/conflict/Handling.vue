@@ -57,25 +57,30 @@ const usersWithDuplicateApartments: Ref<
 		users: User[];
 	}[]
 > = computed(() => {
-	const usersWithDuplicateApartments = props.users.reduce(
-		(acc, user) => {
-			const existing = acc.find(
-				(item) => item.apartmentId === user.apartmentId,
-			);
+	const usersWithDuplicateApartments = props.users
+		.filter(
+			(user): user is User & { apartmentId: number } =>
+				user.apartmentId !== null,
+		)
+		.reduce(
+			(acc, user) => {
+				const existing = acc.find(
+					(item) => item.apartmentId === user.apartmentId,
+				);
 
-			if (existing) {
-				existing.users.push(user);
-			} else {
-				acc.push({
-					apartmentId: user.apartmentId,
-					users: [user],
-				});
-			}
+				if (existing) {
+					existing.users.push(user);
+				} else {
+					acc.push({
+						apartmentId: user.apartmentId,
+						users: [user],
+					});
+				}
 
-			return acc;
-		},
-		[] as { apartmentId: number; users: User[] }[],
-	);
+				return acc;
+			},
+			[] as { apartmentId: number; users: User[] }[],
+		);
 
 	return usersWithDuplicateApartments.filter((item) => item.users.length > 1);
 });

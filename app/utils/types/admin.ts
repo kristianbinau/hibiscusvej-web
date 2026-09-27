@@ -1,5 +1,4 @@
 import type { InternalApi } from 'nitropack';
-import type { Apartment } from './global';
 
 export type AdminUsersApiResponse = InternalApi['/api/app/admin/users']['get'];
 export type AdminBookingsApiResponse =
@@ -26,7 +25,7 @@ export type BookingRequest =
 	AdminBookingRequestsApiResponse['communalBookingRequests'][number];
 
 export type ConfictingApartment = {
-	apartmentId: Apartment['id'];
+	apartmentId: number;
 	users: User[];
 };
 

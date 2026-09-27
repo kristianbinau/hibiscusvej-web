@@ -11,9 +11,13 @@ export const users = sqliteTable(
 	'users',
 	{
 		id: integer('id').primaryKey({ autoIncrement: true }),
-		apartmentId: integer('apartment_id').notNull(),
+		apartmentId: integer('apartment_id'),
 
 		admin: integer('admin', { mode: 'boolean' }).notNull(),
+
+		systemAdmin: integer('system_admin', { mode: 'boolean' })
+			.notNull()
+			.default(false),
 
 		verifiedByUserId: integer('verified_by_user_id'),
 		verifiedAt: integer('verified_at', { mode: 'timestamp' }),

@@ -50,6 +50,13 @@
       "when": 1759775942210,
       "tag": "0006_lying_giant_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1790514239448,
+      "tag": "0007_large_speed_demon",
+      "breakpoints": true
     }
   ]
 }

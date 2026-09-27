@@ -27,7 +27,13 @@
 				</template>
 
 				<template #apartmentId-cell="{ row }">
-					<UTooltip :text="`ID: ${row.getValue('apartmentId')}`">
+					<UTooltip
+						:text="
+							row.getValue('apartmentId') === null
+								? 'Ingen lejlighed'
+								: `ID: ${row.getValue('apartmentId')}`
+						"
+					>
 						{{
 							convertApartmentIdToApartmentAdress(row.getValue('apartmentId'))
 						}}
@@ -126,7 +132,7 @@ const { query } = useRoute();
 
 type UserRow = {
 	id: number;
-	apartmentId: number;
+	apartmentId: number | null;
 	admin: boolean;
 	verified: string;
 	sessionCount: number;
@@ -311,7 +317,9 @@ async function fetchApartments() {
 }
 fetchApartments();
 
-function convertApartmentIdToApartmentAdress(apartmentId: number) {
+function convertApartmentIdToApartmentAdress(apartmentId: number | null) {
+	if (apartmentId === null) return 'Ingen lejlighed';
+
 	const apartment = apartments.value.find(
 		(apartment: Apartment) => apartment.id === apartmentId,
 	);

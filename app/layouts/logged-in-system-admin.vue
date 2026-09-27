@@ -24,7 +24,7 @@ const links: NavigationMenuItem[][] = [
 		{
 			label: 'Hibiscusvej 2-30: System Admin',
 			icon: 'i-material-symbols-admin-panel-settings-rounded',
-			to: '/u/system-admin',
+			to: '/',
 		},
 	],
 	[

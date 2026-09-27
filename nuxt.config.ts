@@ -78,6 +78,11 @@ export default defineNuxtConfig({
 
 	typescript: {
 		typeCheck: true,
+		tsConfig: {
+			compilerOptions: {
+				baseUrl: '.',
+			},
+		},
 	},
 
 	css: ['~/assets/css/main.css'],

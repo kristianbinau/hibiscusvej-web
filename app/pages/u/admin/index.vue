@@ -1,6 +1,4 @@
-<template>
-	<h1>Velkommen Administator, dette er under udvikling</h1>
-</template>
+<template></template>
 
 <script lang="ts" setup>
 definePageMeta({

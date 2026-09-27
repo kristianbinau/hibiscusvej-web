@@ -58,6 +58,12 @@ export default defineNuxtConfig({
 				statusCode: 302,
 			},
 		},
+		'/u/system-admin': {
+			redirect: {
+				to: '/u/system-admin/logs',
+				statusCode: 302,
+			},
+		},
 	},
 
 	runtimeConfig: {

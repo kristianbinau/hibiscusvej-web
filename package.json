@@ -57,7 +57,7 @@
 		"playwright-core": "^1.63.0",
 		"rolldown": "~1.2.11",
 		"typescript": "^5.9.3",
-		"vitest": "^4.1.0",
+		"vitest": "^5.0.2",
 		"vue-tsc": "^3.3.11",
 		"wrangler": "^4.141.0"
 	}

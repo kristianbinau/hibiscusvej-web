@@ -78,10 +78,24 @@ export default defineNuxtConfig({
 
 	typescript: {
 		typeCheck: true,
-		tsConfig: {
-			compilerOptions: {
-				baseUrl: '.',
-			},
+	},
+
+	hooks: {
+		'prepare:types': ({ tsConfig }) => {
+			const paths = tsConfig.compilerOptions?.paths;
+			if (paths) {
+				for (const [key, vals] of Object.entries(paths)) {
+					paths[key] = vals.map((v: string) =>
+						v === '.'
+							? './'
+							: v === '..'
+								? '../'
+								: v.startsWith('./') || v.startsWith('../')
+									? v
+									: `./${v}`,
+					);
+				}
+			}
 		},
 	},
 

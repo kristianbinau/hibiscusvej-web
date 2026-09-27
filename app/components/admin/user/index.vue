@@ -275,15 +275,15 @@
 					<UTooltip
 						:text="
 							user.admin
-								? 'Klik for at fjerne admin rolle'
-								: 'Klik for at give admin rolle'
+								? 'Click to demote from admin'
+								: 'Click to promote to admin'
 						"
 					>
 						<UButton
 							:icon="
 								user.admin
-									? 'i-material-symbols-shield-remove-outline-rounded'
-									: 'i-material-symbols-shield-add-outline-rounded'
+									? 'i-material-symbols-person-remove-outline-rounded'
+									: 'i-material-symbols-person-add-outline-rounded'
 							"
 							:color="user.admin ? 'error' : 'primary'"
 							variant="soft"
@@ -293,21 +293,21 @@
 					<template #content>
 						<div class="p-4">
 							<h3 class="text-sm font-semibold mb-2">
-								{{ user.admin ? 'Fjern admin rolle' : 'Giv admin rolle' }}
+								{{ user.admin ? 'Demote from Admin' : 'Promote to Admin' }}
 							</h3>
 							<p class="text-xs mb-4">
 								{{
 									user.admin
-										? 'Brugeren vil miste admin adgang og blive logget ud.'
-										: 'Brugeren vil få admin adgang til systemet.'
+										? 'The user will lose admin access and be logged out.'
+										: 'The user will gain admin access to the system.'
 								}}
 							</p>
 
 							<UFormField
 								class="mb-2"
-								label="Adgangskode"
-								help="Indtast din adgangskode for at bekræfte."
-								:error="wrongRolePassword && 'Forkert adgangskode!'"
+								label="Password"
+								help="Enter your password to confirm."
+								:error="wrongRolePassword && 'Wrong password!'"
 								size="xs"
 							>
 								<UInput
@@ -318,7 +318,7 @@
 							</UFormField>
 
 							<UButton
-								label="Godkend"
+								label="Confirm"
 								icon="i-material-symbols-check-circle-rounded"
 								:color="user.admin ? 'error' : 'primary'"
 								variant="soft"
@@ -661,8 +661,8 @@ async function changeUserRole() {
 			icon: 'i-material-symbols-check-circle-rounded',
 			title: 'Success!',
 			description: newAdmin
-				? `Bruger #${id} er nu admin.`
-				: `Bruger #${id} er ikke længere admin.`,
+				? `User #${id} is now admin.`
+				: `User #${id} is no longer admin.`,
 			duration: 10000,
 		});
 
@@ -673,18 +673,18 @@ async function changeUserRole() {
 		} else if (error.status === 403) {
 			roleSessionPassword.value = '';
 			toast.add({
-				icon: 'i-material-symbols-block-rounded',
-				title: 'Ikke tilladt',
-				description: 'Du kan ikke ændre denne brugers rolle.',
+				icon: 'i-material-symbols-block',
+				title: 'Forbidden',
+				description: "You cannot change this user's role.",
 			});
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: 'Error!',
+				description: 'Something went wrong...',
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: 'Try again',
 						onClick: changeUserRole,
 					},
 				],

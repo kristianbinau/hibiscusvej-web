@@ -34,14 +34,14 @@ const links: NavigationMenuItem[][] = [
 	[
 		{
 			label: 'Audit Logs',
-			icon: 'i-material-symbols-list-alt-reorder-rounded',
+			icon: 'i-material-symbols-event-list-rounded',
 			to: '/u/system-admin/logs',
 		},
 	],
 	[
 		{
 			icon: 'i-material-symbols-backspace-rounded',
-			label: 'Tilbage',
+			label: 'Back',
 			to: '/u/admin',
 		},
 	],

@@ -2,14 +2,14 @@
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
 			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Audit Logs</h1>
-			<p>Seneste 100 admin handlinger.</p>
+			<p>Last 100 admin actions.</p>
 		</div>
 
 		<ClientOnly>
 			<UTable :loading="fetching" :data="rows" :columns="columns">
 				<template #createdAt-cell="{ row }">
 					{{
-						new Date(row.getValue('createdAt')).toLocaleDateString('da-DK', {
+						new Date(row.getValue('createdAt')).toLocaleDateString('en-US', {
 							year: 'numeric',
 							month: 'short',
 							day: 'numeric',
@@ -66,15 +66,15 @@ const columns: TableColumn<LogRow>[] = [
 	},
 	{
 		accessorKey: 'actionType',
-		header: 'Handling',
+		header: 'Action',
 	},
 	{
 		accessorKey: 'actionTarget',
-		header: 'Mål',
+		header: 'Target',
 	},
 	{
 		accessorKey: 'createdAt',
-		header: 'Tidspunkt',
+		header: 'Timestamp',
 	},
 ];
 

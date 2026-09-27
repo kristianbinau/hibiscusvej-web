@@ -128,6 +128,15 @@ export default defineNuxtConfig({
 		},
 	},
 
+	// scan: true bundles literal icon usages from .vue/.md/etc. into the client bundle
+	// for instant SSR. Icons in .ts files or built dynamically (e.g., `i-${name}`) are
+	// NOT detected — extend scan.globInclude to add .ts/.js if icon names move there.
+	icon: {
+		clientBundle: {
+			scan: true,
+		},
+	},
+
 	sentry: {
 		org: 'kristian-binau',
 		project: 'hibiscusvej-web',

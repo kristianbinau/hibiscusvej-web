@@ -1,5 +1,14 @@
 import { setup, createPage, url } from '@nuxt/test-utils/e2e';
 import { describe, test, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { parse } from 'yaml';
+
+// Page strings are asserted against the Danish catalog (the source of
+// truth) instead of hardcoded text, so a copy edit cannot break the tests
+// and the assertions stay meaningful if the pinned test locale changes.
+const da = parse(
+	readFileSync(new URL('../../i18n/locales/da.yaml', import.meta.url), 'utf8'),
+) as Record<string, any>;
 
 describe('public', async () => {
 	await setup({
@@ -19,7 +28,7 @@ describe('public', async () => {
 		const page = await createDanishPage();
 		await page.goto(url('/'), { waitUntil: 'hydration' });
 		const text = await page.textContent('h1');
-		expect(text).toBe(' Velkommen til Hibiscusvej 2-30 ');
+		expect(text?.trim()).toBe(da.home.welcome);
 	});
 
 	test('privacy', async () => {

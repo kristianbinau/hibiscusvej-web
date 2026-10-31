@@ -3,11 +3,14 @@ import {
 	differenceInMinutes,
 	formatDuration,
 } from 'date-fns';
-import { da } from 'date-fns/locale';
+import { da, enUS } from 'date-fns/locale';
 
 import { z } from 'zod/v4';
 import { logAdminAction } from '~~/server/utils/log';
-import { sendVerifiedNotificationForUser } from '~~/server/utils/notification';
+import {
+	sendAdminNotification,
+	sendVerifiedNotificationForUser,
+} from '~~/server/utils/notification';
 
 const LOG_MODULE = 'Api/Admin/Users/Verify';
 
@@ -69,8 +72,8 @@ export default defineEventHandler(async (event) => {
 		await sendVerifiedNotificationForUser({
 			logModule: LOG_MODULE,
 			userId: userId,
-			title: 'Konto verificeret!',
-			body: 'Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!',
+			title: { key: 'push.user.accountVerified' },
+			body: { key: 'push.user.accountVerifiedBody' },
 		});
 	}
 
@@ -78,15 +81,6 @@ export default defineEventHandler(async (event) => {
 	 * Notify Admins
 	 */
 	try {
-		const admins = await useDrizzle()
-			.select()
-			.from(tables.users)
-			.where(
-				and(eq(tables.users.admin, true), eq(tables.users.systemAdmin, false)),
-			)
-			.all();
-		const adminUserIds = admins.map((admin) => admin.id);
-
 		const verifiedByUserPerson = await useDrizzle()
 			.select()
 			.from(tables.userPersons)
@@ -115,42 +109,37 @@ export default defineEventHandler(async (event) => {
 					? differenceInMinutes(now, verifiedUser.createdAt)
 					: 0;
 
-			const sinceText = formatDuration(
-				{
-					hours: hoursSinceCreation,
-					minutes: minutesSinceCreation,
-				},
-				{ locale: da },
-			);
-
 			const newUser = hoursSinceCreation < 48;
 
-			const topic = newUser
-				? `admin_notify_new_user-${userId}`
-				: `admin_notify_user_verification-${userId}`;
-			const title = newUser ? 'Ny bruger!' : 'Bruger verificeret!';
-			const body = newUser
-				? `${verifiedByUserPerson.name} har verificeret #${userId}, der blev oprettet for ${sinceText} siden.`
-				: `${verifiedByUserPerson.name} har verificeret #${userId}.`;
-
-			const pushMessage = {
-				data: JSON.stringify({
-					title: title,
-					options: {
-						body: body,
-						tag: topic,
-						openLink: `/u/admin/users?userId=${userId}`,
-						silent: true,
-					},
-				}),
-				options: {
-					topic: topic,
-					ttl: 86400,
-					urgency: 'normal' as const,
+			await sendAdminNotification({
+				logModule: LOG_MODULE,
+				topic: newUser
+					? `admin_notify_new_user-${userId}`
+					: `admin_notify_user_verification-${userId}`,
+				link: `/u/admin/users?userId=${userId}`,
+				linkField: 'openLink',
+				title: {
+					key: newUser ? 'push.admin.newUser' : 'push.admin.userVerified',
 				},
-			} as WebPushMessage;
-
-			await sendPushNotificationToUserIds(adminUserIds, pushMessage);
+				body: {
+					key: newUser
+						? 'push.admin.verifiedBodyRecent'
+						: 'push.admin.verifiedBody',
+					// The duration fragment is rendered per recipient language;
+					// date-fns durations have no locale-neutral representation.
+					params: (locale) => ({
+						admin: verifiedByUserPerson.name,
+						userId: userId,
+						duration: formatDuration(
+							{
+								hours: hoursSinceCreation,
+								minutes: minutesSinceCreation,
+							},
+							{ locale: locale === 'en' ? enUS : da },
+						),
+					}),
+				},
+			});
 		}
 	} catch (error) {
 		void logError(LOG_MODULE, 'Failed Notify Admins', error);

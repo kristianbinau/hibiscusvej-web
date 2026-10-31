@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 import { type UTCDate, UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays, isBefore } from 'date-fns';
+import { AUTO_CLOSE_HANDLED_TEXT } from '#shared/constants';
 import {
 	sendBookingRequestNotificationForAdmin,
 	sendBookingRequestNotificationForUser,
@@ -131,8 +132,7 @@ export default defineEventHandler(async (event) => {
 			.update(tables.communalBookingRequests)
 			.set({
 				handledBy: authUser.user.id,
-				handledText:
-					'Automatisk lukket ved oprettelse af booking af anden bruger',
+				handledText: AUTO_CLOSE_HANDLED_TEXT,
 				handledAt: new Date(),
 				updatedAt: new Date(),
 			})
@@ -163,8 +163,14 @@ export default defineEventHandler(async (event) => {
 				logModule: LOG_MODULE,
 				userId: bookingRequest.userId,
 				bookingRequestId: bookingRequest.id,
-				title: 'Booking anmodning, lukket automatisk',
-				body: `#${bookingRequest.userId} fik lukket en anmodning automatisk, da der blev oprettet en booking af ${authUser.user.id}.`,
+				title: { key: 'push.admin.bookingRequestClosed' },
+				body: {
+					key: 'push.admin.bookingRequestClosedBody',
+					params: {
+						userId: bookingRequest.userId,
+						bookedByUserId: authUser.user.id,
+					},
+				},
 			});
 
 			/**
@@ -174,8 +180,8 @@ export default defineEventHandler(async (event) => {
 				logModule: LOG_MODULE,
 				userId: bookingRequest.userId,
 				bookingRequestId: bookingRequest.id,
-				title: 'Booking anmodning, lukket automatisk',
-				body: `Din booking anmodning blev lukket automatisk, da der blev oprettet en booking af en anden bruger.`,
+				title: { key: 'push.user.bookingRequestClosed' },
+				body: { key: 'push.user.bookingRequestClosedBody' },
 			});
 		}
 	} catch (error) {

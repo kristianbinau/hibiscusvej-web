@@ -198,8 +198,11 @@ export default defineEventHandler(async (event) => {
 		logModule: LOG_MODULE,
 		userId: user.id,
 		bookingRequestId: bookingRequest.id,
-		title: 'Ny booking anmodning!',
-		body: `#${user.id} har lavet en ny anmodning, der skal behandles.`,
+		title: { key: 'push.admin.bookingRequestCreated' },
+		body: {
+			key: 'push.admin.bookingRequestCreatedBody',
+			params: { userId: user.id },
+		},
 	});
 
 	setResponseStatus(event, 201);

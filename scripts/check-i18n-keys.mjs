@@ -3,13 +3,14 @@
  *
  * Wraps `vue-i18n-extract`'s report so the CI job fails on:
  * - missing keys (used in `app/**` but absent from a locale file)
- * - unused LEAF keys — except the `errors.*` namespace, which is referenced
- *   from server code (`server/utils/i18n-errors.ts`) that vue-i18n-extract
- *   does not scan; server-referenced keys are covered by the server-key
- *   catalog unit test instead (implementation brief §5).
+ * - unused LEAF keys — except keys referenced from server code
+ *   (`server/**`), which vue-i18n-extract does not scan. Server-referenced
+ *   keys (`errors.*`, `push.*`) are covered by the server-key catalog unit
+ *   test instead (implementation brief §5); the same dotted-key candidates
+ *   the unit test matches are treated as used here.
  *
- * Empty namespace placeholders (e.g. `nav: {}` awaiting Phase 2) are not
- * leaf keys and are ignored.
+ * Empty namespace placeholders (e.g. `parking: {}`) are not leaf keys and
+ * are ignored.
  */
 import { createI18NReport } from 'vue-i18n-extract';
 import { readdir, readFile } from 'node:fs/promises';
@@ -28,6 +29,7 @@ const localeDir = new URL('../i18n/locales/', import.meta.url);
 const localeFiles = (await readdir(localeDir)).filter((name) =>
 	name.endsWith('.yaml'),
 );
+const daCatalog = parse(await readFile(new URL('da.yaml', localeDir), 'utf8'));
 const leafPaths = new Set(
 	(
 		await Promise.all(
@@ -39,6 +41,39 @@ const leafPaths = new Set(
 		)
 	).flat(),
 );
+
+/**
+ * Matches single/double-quoted dotted paths with a lowercase first segment,
+ * e.g. `'errors.booking.slotTaken'` — the same candidates the server-key
+ * catalog unit test matches. LOG_MODULE-style constants (`'Api/Booking/Create'`)
+ * and imports (`'~~/server/...'`) do not match.
+ */
+const KEY_PATTERN = /(['"])([a-z][a-zA-Z0-9]*(?:\.[a-zA-Z0-9_]+)+)\1/g;
+
+const namespaces = new Set(Object.keys(daCatalog));
+
+const collectServerReferencedKeys = async () => {
+	const referenced = new Set();
+	const walk = async (dir) => {
+		for (const entry of await readdir(dir, { withFileTypes: true })) {
+			if (entry.isDirectory()) {
+				await walk(new URL(`${entry.name}/`, dir));
+			} else if (entry.name.endsWith('.ts')) {
+				const source = await readFile(new URL(entry.name, dir), 'utf8');
+				for (const match of source.matchAll(KEY_PATTERN)) {
+					const candidate = match[2];
+					if (namespaces.has(candidate.split('.')[0])) {
+						referenced.add(candidate);
+					}
+				}
+			}
+		}
+	};
+	await walk(new URL('../server/', import.meta.url));
+	return referenced;
+};
+
+const serverReferencedKeys = await collectServerReferencedKeys();
 
 const report = await createI18NReport({
 	vueFiles: './app/**/*.{vue,ts}',
@@ -52,7 +87,7 @@ for (const { language, path } of report.missingKeys) {
 }
 
 const unused = report.unusedKeys.filter(
-	({ path }) => leafPaths.has(path) && !path.startsWith('errors.'),
+	({ path }) => leafPaths.has(path) && !serverReferencedKeys.has(path),
 );
 for (const { language, path } of unused) {
 	problems.push(`unused: [${language}] ${path}`);

@@ -333,10 +333,37 @@ home:
   facebookLink: Facebook group
   facebookOutro: ', where useful information is shared regularly.'
 
-# Filled by Phase 3 (server-rendered push notifications).
+# ---------------------------------------------------------------------------
+# Web-push notifications, rendered SERVER-side per recipient language
+# (see the header note in da.yaml). Admin voice and user voice are different
+# audiences - the two namespaces never share a string.
+# ---------------------------------------------------------------------------
 push:
-  user: {}
-  admin: {}
+  admin:
+    # A user registered themselves (sent from auth/register), and reused as
+    # the title when an admin verifies a user that registered recently.
+    newUser: New user!
+    newUserCreatedBody: '#{userId} has been created and is awaiting verification.'
+    userVerified: User verified!
+    verifiedBodyRecent: '{admin} verified #{userId}, created {duration} ago.'
+    verifiedBody: '{admin} verified #{userId}.'
+
+    bookingRequestCreated: New booking request!
+    bookingRequestCreatedBody: '#{userId} has made a new request that needs to be handled.'
+    bookingRequestDeleted: Booking request deleted
+    bookingRequestDeletedBody: '#{userId} has deleted their booking request #{requestId}.'
+    bookingRequestHandled: Booking request handled
+    bookingRequestHandledBody: 'The request from #{userId} has been handled.'
+    bookingRequestClosed: Booking request closed automatically
+    bookingRequestClosedBody: '#{userId} had a request closed automatically because a booking was created by {bookedByUserId}.'
+
+  user:
+    accountVerified: Account verified!
+    accountVerifiedBody: The board has verified your account, and you can now book the communal room!
+    bookingRequestHandled: Booking request handled
+    bookingRequestHandledBody: Your booking request has been handled, go to your requests to see the assessment.
+    bookingRequestClosed: Booking request closed automatically
+    bookingRequestClosedBody: Your booking request was closed automatically because another user created a booking.
 
 # Server error keys - the stable API contract lives in
 # `server/utils/i18n-errors.ts` (ERROR_KEYS).

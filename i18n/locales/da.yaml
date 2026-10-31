@@ -353,10 +353,44 @@ home:
   facebookLink: Facebook-gruppe
   facebookOutro: ', hvor der løbende bliver delt nyttig information.'
 
-# Filled by Phase 3 (server-rendered push notifications).
+# ---------------------------------------------------------------------------
+# Web-push notifications, rendered SERVER-side per recipient language
+# (`server/utils/notification.ts` resolves the recipient's `userSettings`
+# language; admins are grouped by language, one push per group).
+#
+# `push.admin.*` is admin voice (sent to the board), `push.user.*` is user
+# voice (sent to the resident). They are different audiences - the two
+# namespaces never share a string.
+#
+# Params are named vue-i18n params. The `duration` param is rendered per
+# language with date-fns `formatDuration` (hours/minutes, e.g. "2 timer").
+# ---------------------------------------------------------------------------
 push:
-  user: {}
-  admin: {}
+  admin:
+    # A user registered themselves (sent from auth/register), and reused as
+    # the title when an admin verifies a user that registered recently.
+    newUser: Ny bruger!
+    newUserCreatedBody: '#{userId} er blevet oprettet, og venter på verificering.'
+    userVerified: Bruger verificeret!
+    verifiedBodyRecent: '{admin} har verificeret #{userId}, der blev oprettet for {duration} siden.'
+    verifiedBody: '{admin} har verificeret #{userId}.'
+
+    bookingRequestCreated: Ny booking anmodning!
+    bookingRequestCreatedBody: '#{userId} har lavet en ny anmodning, der skal behandles.'
+    bookingRequestDeleted: Booking anmodning, slettet
+    bookingRequestDeletedBody: '#{userId} har slettet sin booking anmodning #{requestId}.'
+    bookingRequestHandled: Booking anmodning, behandlet
+    bookingRequestHandledBody: "#{userId}'s anmodning er blevet behandlet."
+    bookingRequestClosed: Booking anmodning, lukket automatisk
+    bookingRequestClosedBody: '#{userId} fik lukket en anmodning automatisk, da der blev oprettet en booking af {bookedByUserId}.'
+
+  user:
+    accountVerified: Konto verificeret!
+    accountVerifiedBody: Bestyrelsen har verificeret din bruger, du kan nu booke fælleslokalet!
+    bookingRequestHandled: Booking anmodning, behandlet
+    bookingRequestHandledBody: Din booking anmodning blev behandlet, gå til dine anmodninger for at se vurderingen.
+    bookingRequestClosed: Booking anmodning, lukket automatisk
+    bookingRequestClosedBody: Din booking anmodning blev lukket automatisk, da der blev oprettet en booking af en anden bruger.
 
 # Server error keys - the stable API contract lives in
 # `server/utils/i18n-errors.ts` (ERROR_KEYS). Each entry here mirrors the

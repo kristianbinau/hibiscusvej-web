@@ -1,0 +1,74 @@
+# ---------------------------------------------------------------------------
+# Resident-facing text catalog - Danish (default locale)
+#
+# The Danish file is the source of truth; English translations are written in
+# en.yaml alongside. Board members edit text; the webmaster pastes it in.
+#
+# NOTE: YAML forbids tab indentation - this file uses spaces.
+#
+# Namespaces:
+#   common         - shared UI words (buttons, labels)
+#   nav            - navigation items
+#   auth           - login / register / reset
+#   booking        - booking calendar and booking flow
+#   bookingRequest - booking request modal and lists
+#   parking        - parking
+#   settings       - settings page (incl. the "Sprog" section)
+#   push.user      - web-push notifications rendered for the recipient
+#   push.admin     - web-push notifications rendered for admins
+#   errors         - client-side rendering of server error keys
+#                    (server error responses carry `key` + `params`; the
+#                    Danish `message` on the wire is the fallback)
+#   langHint       - browser-language hint toast. NOTE: the text is chosen by
+#                    the visitor's BROWSER language, not the site locale, so
+#                    both variants are kept identical in da.yaml and en.yaml.
+#   meta           - site metadata (page description etc.)
+#
+# Interpolation uses vue-i18n named params: {date}, {count}, ...
+# Dates arrive as ISO strings and are locale-formatted by the client before
+# interpolation - never hardcode a date format in the message text.
+# ---------------------------------------------------------------------------
+meta:
+  description: Informationer omkring studieboligerne ved Hibiscusvej
+
+langHint:
+  # Selected by the visitor's browser language (see header note).
+  message:
+    en: The website is also available in English.
+    da: Websiden findes også på engelsk.
+  accept:
+    en: Switch to English
+    da: Skift til engelsk
+  dismiss:
+    en: Don't show again
+    da: Vis ikke igen
+
+# Server error keys - the stable API contract lives in
+# `server/utils/i18n-errors.ts` (ERROR_KEYS). Each entry here mirrors the
+# Danish `message` the server sends as fallback; the client renders the
+# catalog text for the active locale instead.
+errors:
+  booking:
+    notVerified: Din bruger er ikke verificeret.
+    bannedUntil: Din bruger er midlertidigt udelukket fra at oprette booking indtil {date}.
+    banned: Din bruger er udelukket fra at oprette booking.
+    startAfterEnd: Start tidspunktet skal være tidligere end slut tidspunktet.
+    startInPast: Booking kan ikke starte i fortiden.
+    slotTaken: Der er allerede en booking i det tidsrum
+    ownRequestOverlap: Du har allerede en anmodning i det tidsrum
+    maxConsecutiveReached: Du kan maksimalt have {count} sammenhængende bookinger.
+    noConsecutiveAllowed: Du kan ikke have sammenhængende bookinger.
+    maxWeeklyReached: Du kan maksimalt have {count} bookinger hver 7. dag.
+    maxMonthlyReached: Du kan maksimalt have {count} bookinger hver 31. dag.
+
+# Filled by Phase 2 (app strings).
+common: {}
+nav: {}
+auth: {}
+booking: {}
+bookingRequest: {}
+parking: {}
+settings: {}
+push:
+  user: {}
+  admin: {}

@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# Resident-facing text catalog - English
+#
+# Danish (da.yaml) is the source of truth; this file mirrors it key for key.
+# YAML forbids tab indentation - this file uses spaces.
+#
+# NOTE on `langHint`: the text is chosen by the visitor's BROWSER language,
+# not the site locale, so both variants are kept identical in da.yaml and
+# en.yaml (see the header comment in da.yaml).
+# ---------------------------------------------------------------------------
+meta:
+  description: Information about the student housing at Hibiscusvej
+
+langHint:
+  # Selected by the visitor's browser language (see header note).
+  message:
+    en: The website is also available in English.
+    da: Websiden findes også på engelsk.
+  accept:
+    en: Switch to English
+    da: Skift til engelsk
+  dismiss:
+    en: Don't show again
+    da: Vis ikke igen
+
+# Server error keys - the stable API contract lives in
+# `server/utils/i18n-errors.ts` (ERROR_KEYS).
+errors:
+  booking:
+    notVerified: Your user is not verified.
+    bannedUntil: Your user is temporarily blocked from creating bookings until {date}.
+    banned: Your user is blocked from creating bookings.
+    startAfterEnd: The start time must be earlier than the end time.
+    startInPast: The booking cannot start in the past.
+    slotTaken: There is already a booking in that time slot
+    ownRequestOverlap: You already have a request in that time slot
+    maxConsecutiveReached: You can have at most {count} consecutive bookings.
+    noConsecutiveAllowed: You cannot have consecutive bookings.
+    maxWeeklyReached: You can have at most {count} bookings every 7 days.
+    maxMonthlyReached: You can have at most {count} bookings every 31 days.
+
+# Filled by Phase 2 (app strings).
+common: {}
+nav: {}
+auth: {}
+booking: {}
+bookingRequest: {}
+parking: {}
+settings: {}
+push:
+  user: {}
+  admin: {}

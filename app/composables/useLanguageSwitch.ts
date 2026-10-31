@@ -38,6 +38,14 @@ export const useLanguageSwitch = () => {
 
 		switching.value = true;
 		try {
+			// 0. An explicit choice is a language decision too — dismiss the
+			//    browser-language hint toast in both directions (a visitor with
+			//    an English browser deliberately choosing Danish must not be
+			//    re-nagged on every load).
+			if (import.meta.client) {
+				window.localStorage.setItem('langHintDismissed', '1');
+			}
+
 			// 1. Write the cookie FIRST (see the note above).
 			preferenceCookie.value = target;
 

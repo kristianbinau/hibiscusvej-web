@@ -174,4 +174,21 @@ describe('locale redirect matrix', async () => {
 
 		expect(text?.trim()).toBe(da.home.welcome);
 	});
+
+	test('the public header language picker switches to Danish', async () => {
+		const page = await createPage(undefined, {
+			locale: 'en-US',
+			extraHTTPHeaders: { 'Accept-Language': 'en-US,en' },
+		});
+		await page.goto(url('/en'), { waitUntil: 'hydration' });
+
+		// The trigger's accessible name follows the active locale...
+		await page.getByRole('button', { name: en.nav.languageCurrent }).click();
+		// ...while the menu items are native names, never translated.
+		await page.getByRole('menuitemcheckbox', { name: 'Dansk' }).click();
+
+		await page.waitForURL(url('/'));
+		const text = await page.textContent('h1');
+		expect(text?.trim()).toBe(da.home.welcome);
+	});
 });

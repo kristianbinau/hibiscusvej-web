@@ -97,6 +97,12 @@ nav:
   privacyPolicy: Privatlivspolitik
   back: Tilbage
 
+  # The header language picker: `language` labels the dropdown menu,
+  # `languageCurrent` is the trigger's tooltip/accessible name in the ACTIVE
+  # locale (it names the current language, so it differs per file).
+  language: Sprog
+  languageCurrent: 'Sprog: Dansk'
+
 # ---------------------------------------------------------------------------
 # Login / register / reset-password.
 # ---------------------------------------------------------------------------

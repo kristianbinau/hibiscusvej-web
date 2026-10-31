@@ -3,19 +3,11 @@
 		<div class="flex items-stretch gap-2">
 			<LayoutNavigation :links="links" class="flex-1 min-w-0" />
 
-			<!-- Language switcher (locked decision §3.6). -->
+			<!-- Language picker (locked decision §3.6). -->
 			<div
 				class="flex items-center border-b border-gray-200 dark:border-gray-800"
 			>
-				<ULocaleSelect
-					:locales="uiLocales"
-					:model-value="locale"
-					:disabled="switching"
-					class="w-32"
-					@update:model-value="
-						(value: string) => switchLanguage(value as LocaleCode)
-					"
-				/>
+				<LayoutLanguagePicker />
 			</div>
 		</div>
 	</header>
@@ -34,15 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import { da as daUiLocale, en as enUiLocale } from '@nuxt/ui/locale';
 import type { NavigationMenuItem } from '#ui/types';
-import type { LocaleCode } from '#shared/constants';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
-const { switchLanguage, switching } = useLanguageSwitch();
-
-const uiLocales = [daUiLocale, enUiLocale];
 
 const { authUser } = await useUser();
 

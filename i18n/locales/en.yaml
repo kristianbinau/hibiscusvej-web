@@ -76,6 +76,12 @@ nav:
   privacyPolicy: Privacy policy
   back: Back
 
+  # The header language picker: `language` labels the dropdown menu,
+  # `languageCurrent` is the trigger's tooltip/accessible name in the ACTIVE
+  # locale (it names the current language, so it differs per file).
+  language: Language
+  languageCurrent: 'Language: English'
+
 # ---------------------------------------------------------------------------
 # Login / register / reset-password.
 # ---------------------------------------------------------------------------

@@ -1,7 +1,17 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 import { defineVitestProject } from '@nuxt/test-utils/config';
 
 export default defineConfig({
+	// Aliases used by the unit project: the server i18n module imports the
+	// YAML catalogs via `~~/...?raw` and `#shared/constants` (`?raw` is
+	// supported natively on the vitest/Vite side).
+	resolve: {
+		alias: {
+			'~~': fileURLToPath(new URL('.', import.meta.url)),
+			'#shared': fileURLToPath(new URL('./shared/', import.meta.url)),
+		},
+	},
 	test: {
 		projects: [
 			{

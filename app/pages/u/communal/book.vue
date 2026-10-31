@@ -3,15 +3,15 @@
 		<ClientOnly>
 			<UAlert
 				v-if="!currentUserVerified"
-				title="Din konto er ikke verificeret!"
-				description="Du kan ikke booke fælleslokalet før din konto er verificeret. Bestyrelsen vil verificere din konto hurtigst muligt."
+				:title="t('booking.notVerified.title')"
+				:description="t('booking.notVerified.description')"
 				icon="i-material-symbols-edit-attributes-outline-rounded"
 				color="error"
 				variant="subtle"
 				class="mb-6"
 				:actions="[
 					{
-						label: 'Aktiver notifikationer',
+						label: t('booking.enableNotifications'),
 						icon: 'i-material-symbols-notification-add-outline-rounded',
 						variant: 'soft',
 						color: 'error',
@@ -23,8 +23,8 @@
 
 			<UAlert
 				v-if="currentUserWarned"
-				title="Advarsel!"
-				description="Du har en eller flere aktive advarsler."
+				:title="t('common.warning')"
+				:description="t('booking.warned')"
 				icon="i-material-symbols-warning-outline-rounded"
 				color="warning"
 				variant="subtle"
@@ -33,8 +33,8 @@
 
 			<UAlert
 				v-if="currentUserBanned"
-				title="Du er udelukket!"
-				description="Du har en eller flere aktive udelukkelser. Du kan ikke booke fælleslokalet mens du er udelukket."
+				:title="t('booking.banned.title')"
+				:description="t('booking.banned.description')"
 				icon="i-material-symbols-dangerous-outline-rounded"
 				color="error"
 				variant="subtle"
@@ -47,16 +47,16 @@
 			>
 				<div>
 					<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">
-						Book fælleslokalet
+						{{ t('booking.title') }}
 					</h1>
 					<p>
-						Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.<br />
-						Du kan fjerne din booking indtil før den starter. <br />
-						Dine bookinger kan ses under
+						{{ t('booking.intro.timing') }}<br />
+						{{ t('booking.intro.deletable') }} <br />
+						{{ t('booking.intro.seeBookings') }}
 						<ULink
-							to="/u/communal/me"
+							:to="localePath('/u/communal/me')"
 							class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
-							>Mine bookinger</ULink
+							>{{ t('nav.myBookings') }}</ULink
 						>.
 					</p>
 					<br />
@@ -71,19 +71,18 @@
 								size="xs"
 								class="font-bold mt-0.5"
 							>
-								NYT
+								{{ t('booking.speaker.badge') }}
 							</UBadge>
 							<p class="text-sm">
-								<strong>Vi har indkøbt en højtaler, som kan lånes!</strong>
+								<strong>{{ t('booking.speaker.heading') }}</strong>
 								<br />
-								Så mangler du god lyd til festen, så send en mail til
-								bestyrelsen:
+								{{ t('booking.speaker.body') }}
 								<a
 									href="mailto:hibiscusvejbestyrelse@outlook.dk"
 									class="text-success-600 dark:text-success-400 underline hover:text-success-700 dark:hover:text-success-300"
 								>
 									hibiscusvejbestyrelse@outlook.dk </a
-								>, så aftaler vi nærmere.
+								>{{ t('booking.speaker.bodyOutro') }}
 							</p>
 						</div>
 					</div>
@@ -99,12 +98,12 @@
 					<UCheckbox v-model="hasReadTerms" class="my-4">
 						<template #label>
 							<span class="select-none">
-								Jeg har læst og accepteret
+								{{ t('booking.readTerms') }}
 								<ULink
-									to="/communal"
+									:to="localePath('/communal')"
 									target="_blank"
 									class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
-									>reglerne</ULink
+									>{{ t('booking.rulesLink') }}</ULink
 								>.
 							</span>
 						</template>
@@ -119,7 +118,7 @@
 							!currentUserVerified ||
 							currentUserBanned
 						"
-						>Book</UButton
+						>{{ t('booking.submit') }}</UButton
 					>
 				</div>
 			</div>
@@ -136,8 +135,12 @@ definePageMeta({
 	middleware: 'auth-required',
 });
 
+const { t } = useI18n();
+const localePath = useLocalePath();
+const { formatDate } = useLocaleDate();
+
 useHead({
-	title: 'Book fælleslokalet',
+	title: () => t('booking.title'),
 });
 
 const toast = useToast();
@@ -184,16 +187,16 @@ const { data: currentUser, refresh: currentUserRefresh } = await useFetch(
 		onResponseError: () => {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: () => currentUserRefresh(),
 					},
 				],
 			});
-			navigateTo('/u');
+			navigateTo(localePath('/u'));
 		},
 	},
 );
@@ -226,8 +229,10 @@ async function onSubmit() {
 
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Success!',
-				description: `Du har booket fælleslokalet - ${bookAsDate.toLocaleDateString()}`,
+				title: t('common.success'),
+				description: t('booking.bookedDescription', {
+					date: formatDate(bookAsDate),
+				}),
 			});
 			refreshNuxtData(['my-bookings']);
 		}
@@ -235,8 +240,9 @@ async function onSubmit() {
 		if (error.statusCode === 409) {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Mislykkes!',
-				description: 'Der er allerede en booking i det tidsrum',
+				title: t('booking.conflictTitle'),
+				description:
+					localizeServerError(t, error) ?? t('errors.booking.slotTaken'),
 			});
 		} else {
 			if (
@@ -248,33 +254,25 @@ async function onSubmit() {
 			) {
 				const createdBookingRequest: Date | undefined = await modal.open({
 					date: formattedBookAsDate,
+					// The raw server message is kept as the stored request reason
+					// (admin-facing data); the localized text is display-only.
 					reason: error.data.message,
+					localizedReason: localizeServerError(t, error),
 				});
 
 				if (createdBookingRequest) {
 					bookingCalendarRef.value?.refetchByDate(createdBookingRequest);
 					refreshNuxtData(['my-booking-requests']);
 				}
-			} else if (error.data.message) {
-				toast.add({
-					icon: 'i-material-symbols-error-outline-rounded',
-					title: 'Fejl!',
-					description: error.data.message,
-					actions: [
-						{
-							label: 'Prøv igen',
-							onClick: onSubmit,
-						},
-					],
-				});
 			} else {
 				toast.add({
 					icon: 'i-material-symbols-error-outline-rounded',
-					title: 'Fejl!',
-					description: 'Der skete en fejl...',
+					title: t('common.error'),
+					description:
+						localizeServerError(t, error) ?? t('common.errorDescription'),
 					actions: [
 						{
-							label: 'Prøv igen',
+							label: t('common.retry'),
 							onClick: onSubmit,
 						},
 					],
@@ -301,8 +299,8 @@ async function subscribeToPush() {
 		subscribeToPushLoading.value = false;
 		toast.add({
 			icon: 'i-material-symbols-warning-outline-rounded',
-			title: 'Advarsel!',
-			description: 'Notifikationer er ikke understøttet på denne enhed',
+			title: t('common.warning'),
+			description: t('common.notifications.unsupported'),
 		});
 		return;
 	}
@@ -314,9 +312,8 @@ async function subscribeToPush() {
 			subscribeToPushLoading.value = false;
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description:
-					'Du har ikke givet tilladelse til at vi må sende notifikationer',
+				title: t('common.error'),
+				description: t('common.notifications.permissionDenied'),
 			});
 			return;
 		}

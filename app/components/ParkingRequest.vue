@@ -1,10 +1,10 @@
 <template>
 	<UModal
-		title="Anmod om parkeringstilladelse"
-		description="Indtast dine oplysninger for at anmode om en parkeringstilladelse."
+		:title="t('parking.request.title')"
+		:description="t('parking.request.description')"
 	>
 		<UButton
-			label="Anmod om parkeringstilladelse"
+			:label="t('parking.request.title')"
 			color="primary"
 			variant="subtle"
 			size="lg"
@@ -20,45 +20,54 @@
 			>
 				<p class="text-muted">
 					<small>
-						Anmodningen vil blive åbnet i dit standard mailprogram med alle
-						oplysninger udfyldt. Du skal selv søge for at klikke på send og
-						verificere at alle oplysninger er korrekte.
+						{{ t('parking.request.mailProgramNote') }}
 					</small>
 				</p>
 
-				<UFormField label="Navn" name="name">
+				<UFormField :label="t('parking.request.nameLabel')" name="name">
 					<UInput v-model="state.name" class="w-full" />
 				</UFormField>
 
-				<UFormField label="Lejlighed" name="apartmentId">
+				<UFormField
+					:label="t('parking.request.apartmentLabel')"
+					name="apartmentId"
+				>
 					<ApartmentSelect ref="apartmentSelect" v-model="state.apartmentId" />
 				</UFormField>
 
 				<UFormField
 					v-if="state.numberplate"
-					label="Nummerplade"
+					:label="t('parking.request.numberplateLabel')"
 					name="numberplate"
 					:ui="{ container: 'flex gap-4' }"
 				>
-					<UFormField label="Land" name="numberplate.country" class="w-1/3">
+					<UFormField
+						:label="t('parking.request.countryLabel')"
+						name="numberplate.country"
+						class="w-1/3"
+					>
 						<USelectMenu
 							v-model="state.numberplate.country"
 							:items="countries"
 							valueKey="value"
-							placeholder="Vælg land"
+							:placeholder="t('parking.request.countryPlaceholder')"
 							class="w-full"
 						/>
 					</UFormField>
-					<UFormField label="Nummer" name="numberplate.number" class="flex-1">
+					<UFormField
+						:label="t('parking.request.numberLabel')"
+						name="numberplate.number"
+						class="flex-1"
+					>
 						<UInput
 							v-model="state.numberplate.number"
-							placeholder="Indtast nummerplade"
+							:placeholder="t('parking.request.numberplatePlaceholder')"
 							class="w-full"
 						/>
 					</UFormField>
 				</UFormField>
 
-				<UFormField label="Zone" name="zone">
+				<UFormField :label="t('parking.request.zoneLabel')" name="zone">
 					<USelectMenu
 						v-model="state.zone"
 						:items="zones"
@@ -66,30 +75,28 @@
 						:search-input="false"
 						multiple
 						class="w-full"
-						placeholder="Vælg en eller flere zoner"
+						:placeholder="t('parking.request.zonePlaceholder')"
 					/>
 				</UFormField>
 
 				<p class="text-muted">
 					<small>
-						Vær opmærksom på, at anmodningen skal sendes til AB Odense for
-						godkendelse. <br />
-						Du vil modtage en <b>individuel bekræftelse per zone</b> via e-mail,
-						når din anmodning er godkendt.
+						{{ t('parking.request.abNote1') }} <br />
+						{{ t('parking.request.abNote2Intro') }}
+						<b>{{ t('parking.request.abNote2Highlight') }}</b>
+						{{ t('parking.request.abNote2Outro') }}
 					</small>
 				</p>
 
 				<p class="text-muted">
 					<small>
-						Anmodningen vil blive åbnet i dit standard mailprogram med alle
-						oplysninger udfyldt. Du skal selv søge for at klikke på send og
-						verificere at alle oplysninger er korrekte.
+						{{ t('parking.request.mailProgramNote') }}
 					</small>
 				</p>
 
 				<div v-if="customMailBody" class="relative">
 					<UTooltip
-						text="Kopier til udklipsholder"
+						:text="t('parking.request.copyTooltip')"
 						class="absolute top-2 right-2 z-10"
 					>
 						<UButton
@@ -103,7 +110,7 @@
 				</div>
 
 				<UButton :loading="onSubmitLoading" type="submit" icon="i-lucide-send">
-					Åben anmodning i mailprogram
+					{{ t('parking.request.submit') }}
 				</UButton>
 			</UForm>
 		</template>
@@ -116,44 +123,49 @@ import type { FormSubmitEvent } from '@nuxt/ui';
 import { ApartmentSelect } from '#components';
 
 const MAIL_TO =
+	// The outgoing mail to AB Odense stays Danish in both locales — the
+	// recipient is a Danish company (see the catalog note under `parking:`).
 	'mailto:ab@abodense.dk?subject=Parkering%20-%20Afdeling%20Garterbyen%20(0128)&body=Hej%2C%0A%0AKan%20jeg%20f%C3%A5%20parkeringstilladelse%20til%20--PLADSER--%3F%0APladsnumre%3A%20--PLADSNUMRE--%0A%0ANummerplade%3A%20(--LANDEKODE--)%20--NUMMERPLADE--%0A%0AMvh.%0A--NAVN--%0A--ADDRESSE--%0AAfdeling%200128%2C%20Gartnerbyen';
+
+const { t } = useI18n();
 
 const apartmentSelect =
 	useTemplateRef<typeof ApartmentSelect>('apartmentSelect');
 
-const countries = [
-	{ value: 'DK', label: 'Danmark' },
-	{ value: 'SE', label: 'Sverige' },
-	{ value: 'NO', label: 'Norge' },
-	{ value: 'FI', label: 'Finland' },
-	{ value: 'DE', label: 'Tyskland' },
-	{ value: 'GB', label: 'Storbritannien' },
-	{ value: 'FR', label: 'Frankrig' },
-	{ value: 'ES', label: 'Spanien' },
-	{ value: 'IT', label: 'Italien' },
-	{ value: 'NL', label: 'Holland' },
-	{ value: 'BE', label: 'Belgien' },
-	{ value: 'PL', label: 'Polen' },
-	{ value: 'AT', label: 'Østrig' },
-	{ value: 'CH', label: 'Schweiz' },
-	{ value: 'LU', label: 'Luxembourg' },
-	{ value: 'IE', label: 'Irland' },
-	{ value: 'PT', label: 'Portugal' },
-	{ value: 'GR', label: 'Grækenland' },
-	{ value: 'CZ', label: 'Tjekkiet' },
-	{ value: 'HU', label: 'Ungarn' },
-	{ value: 'RO', label: 'Rumænien' },
-	{ value: 'SK', label: 'Slovakiet' },
-	{ value: 'SI', label: 'Slovenien' },
-	{ value: 'HR', label: 'Kroatien' },
-	{ value: 'BG', label: 'Bulgarien' },
-];
+const countries = computed(() => [
+	{ value: 'DK', label: t('parking.countries.DK') },
+	{ value: 'SE', label: t('parking.countries.SE') },
+	{ value: 'NO', label: t('parking.countries.NO') },
+	{ value: 'FI', label: t('parking.countries.FI') },
+	{ value: 'DE', label: t('parking.countries.DE') },
+	{ value: 'GB', label: t('parking.countries.GB') },
+	{ value: 'FR', label: t('parking.countries.FR') },
+	{ value: 'ES', label: t('parking.countries.ES') },
+	{ value: 'IT', label: t('parking.countries.IT') },
+	{ value: 'NL', label: t('parking.countries.NL') },
+	{ value: 'BE', label: t('parking.countries.BE') },
+	{ value: 'PL', label: t('parking.countries.PL') },
+	{ value: 'AT', label: t('parking.countries.AT') },
+	{ value: 'CH', label: t('parking.countries.CH') },
+	{ value: 'LU', label: t('parking.countries.LU') },
+	{ value: 'IE', label: t('parking.countries.IE') },
+	{ value: 'PT', label: t('parking.countries.PT') },
+	{ value: 'GR', label: t('parking.countries.GR') },
+	{ value: 'CZ', label: t('parking.countries.CZ') },
+	{ value: 'HU', label: t('parking.countries.HU') },
+	{ value: 'RO', label: t('parking.countries.RO') },
+	{ value: 'SK', label: t('parking.countries.SK') },
+	{ value: 'SI', label: t('parking.countries.SI') },
+	{ value: 'HR', label: t('parking.countries.HR') },
+	{ value: 'BG', label: t('parking.countries.BG') },
+]);
 
-const zones = [
-	{ value: '3930', label: 'Grønne pladser (3930)' },
-	{ value: '4744', label: 'Ekstra pladser (4744)' },
-];
+const zones = computed(() => [
+	{ value: '3930', label: t('parking.zones.green') },
+	{ value: '4744', label: t('parking.zones.extra') },
+]);
 
+// Danish fragments interpolated into the outgoing (Danish) mail to AB Odense.
 function zonesValueToText(values: string[]): string {
 	if (values.includes('3930') && values.includes('4744')) {
 		return 'begge vores pladser';
@@ -168,31 +180,33 @@ function zonesValueToText(values: string[]): string {
 
 const schema = z.object({
 	name: z
-		.string({ required_error: 'Navn er påkrævet' })
-		.min(4, 'Navn er påkrævet'),
-	apartmentId: z.number({ required_error: 'Lejlighed er påkrævet' }),
+		.string({ required_error: t('parking.request.nameRequired') })
+		.min(4, t('parking.request.nameRequired')),
+	apartmentId: z.number({
+		required_error: t('parking.request.apartmentRequired'),
+	}),
 	numberplate: z
 		.object(
 			{
 				country: z
-					.string({ required_error: 'Land er påkrævet' })
-					.refine((value) => countries.some((c) => c.value === value), {
-						message: 'Ugyldigt land',
+					.string({ required_error: t('parking.request.countryRequired') })
+					.refine((value) => countries.value.some((c) => c.value === value), {
+						message: t('parking.request.countryInvalid'),
 					}),
 				number: z
-					.string({ required_error: 'Nummerplade er påkrævet' })
-					.min(4, 'Nummerplade er påkrævet'),
+					.string({ required_error: t('parking.request.numberplateRequired') })
+					.min(4, t('parking.request.numberplateRequired')),
 			},
-			{ required_error: 'Nummerplade er påkrævet' },
+			{ required_error: t('parking.request.numberplateRequired') },
 		)
 		.required(),
 	zone: z
 		.array(
-			z.string().refine((value) => zones.some((z) => z.value === value), {
-				message: 'Ugyldig zone',
+			z.string().refine((value) => zones.value.some((z) => z.value === value), {
+				message: t('parking.request.zoneInvalid'),
 			}),
 		)
-		.min(1, 'Vælg mindst én zone'),
+		.min(1, t('parking.request.zoneMin')),
 });
 
 type Schema = z.output<typeof schema>;
@@ -259,7 +273,7 @@ function copyToClipboard() {
 
 	navigator.clipboard.writeText(text).then(() => {
 		toast.add({
-			title: 'Kopieret til udklipsholderen',
+			title: t('parking.request.copiedToClipboard'),
 			description: text,
 			duration: 3000,
 		});

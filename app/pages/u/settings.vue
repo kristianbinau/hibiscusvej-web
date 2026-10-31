@@ -1,17 +1,19 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Indstillinger</h1>
-			<p>Her kan du ændre oplysninger der er tilknyttet din bruger.<br /></p>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">
+				{{ t('settings.title') }}
+			</h1>
+			<p>{{ t('settings.description') }}<br /></p>
 		</div>
 
 		<ClientOnly>
 			<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-			<h2 class="text-lg">Kontaktpersoner</h2>
+			<h2 class="text-lg">{{ t('settings.persons.heading') }}</h2>
 			<p class="text-sm mb-5">
-				Tilføj eller fjern personer der er tilknyttet din bruger.<br />
-				Minimum én person skal være tilknyttet, max 2 personer.
+				{{ t('settings.persons.description1') }}<br />
+				{{ t('settings.persons.description2') }}
 			</p>
 
 			<div class="flex flex-col md:flex-row gap-4">
@@ -38,7 +40,7 @@
 
 						<USkeleton class="h-full min-h-32"></USkeleton>
 						<UTooltip
-							text="Tilføj en person"
+							:text="t('settings.persons.addTooltip')"
 							class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
 						>
 							<UButton
@@ -60,17 +62,17 @@
 
 			<hr class="border-gray-200 dark:border-gray-800 mt-10 mb-5" />
 
-			<h2 class="text-lg mt-8">Notificationer</h2>
+			<h2 class="text-lg mt-8">{{ t('settings.notifications.heading') }}</h2>
 			<p class="text-sm mb-5">
-				Aktiver notifikationer for at modtage beskeder fra os.<br />
-				Dette kan være opdateringer omkring din bruger, bookinger eller andet.
+				{{ t('settings.notifications.description1') }}<br />
+				{{ t('settings.notifications.description2') }}
 			</p>
 
 			<div class="flex flex-col md:flex-row gap-4">
-				<UTooltip text="Klik for at aktivere notifikationer på denne enhed">
+				<UTooltip :text="t('settings.notifications.enableTooltip')">
 					<UButton
 						icon="i-material-symbols-notification-add-outline-rounded"
-						label="Aktiver"
+						:label="t('settings.notifications.enable')"
 						color="success"
 						variant="soft"
 						class="flex-1"
@@ -80,10 +82,10 @@
 					/>
 				</UTooltip>
 
-				<UTooltip text="Klik for at deaktivere notifikationer på denne enhed">
+				<UTooltip :text="t('settings.notifications.disableTooltip')">
 					<UButton
 						icon="i-material-symbols-notifications-off-outline-rounded"
-						label="Deaktiver"
+						:label="t('settings.notifications.disable')"
 						color="error"
 						variant="soft"
 						class="flex-1"
@@ -101,11 +103,11 @@
 				>
 					<UTooltip
 						class="w-full"
-						text="Klik for at deaktivere notifikationer på alle enheder"
+						:text="t('settings.notifications.disableAllTooltip')"
 					>
 						<UButton
 							icon="i-material-symbols-notifications-off-rounded"
-							label="Deaktiver alle"
+							:label="t('settings.notifications.disableAll')"
 							color="error"
 							variant="soft"
 							class="flex-1"
@@ -116,14 +118,16 @@
 
 					<template #content>
 						<div class="p-4">
-							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+							<h3 class="text-sm font-semibold mb-2">
+								{{ t('common.warning') }}
+							</h3>
 							<p class="text-xs">
-								Du er ved at deaktivere notifikationer på alle enheder. <br />
-								Dette vil medføre, at du ikke længere modtager notifikationer.
+								{{ t('settings.notifications.disableAllWarning1') }} <br />
+								{{ t('settings.notifications.disableAllWarning2') }}
 							</p>
 
 							<UButton
-								label="Godkend"
+								:label="t('common.confirm')"
 								icon="i-material-symbols-check-circle-rounded"
 								color="error"
 								variant="soft"
@@ -139,10 +143,29 @@
 
 			<hr class="border-gray-200 dark:border-gray-800 mt-10 mb-5" />
 
-			<h2 class="text-lg mt-8">Handlinger</h2>
+			<h2 class="text-lg mt-8">{{ t('settings.language.heading') }}</h2>
 			<p class="text-sm mb-5">
-				Foretag handlinger der påvirker din bruger.<br />
-				Disse handlinger kan ikke fortrydes.
+				{{ t('settings.language.description') }}
+			</p>
+
+			<div class="flex flex-col md:flex-row gap-4">
+				<ULocaleSelect
+					:locales="uiLocales"
+					:model-value="locale"
+					:disabled="switching"
+					class="flex-1 max-w-xs"
+					@update:model-value="
+						(value: string) => switchLanguage(value as LocaleCode)
+					"
+				/>
+			</div>
+
+			<hr class="border-gray-200 dark:border-gray-800 mt-10 mb-5" />
+
+			<h2 class="text-lg mt-8">{{ t('settings.actions.heading') }}</h2>
+			<p class="text-sm mb-5">
+				{{ t('settings.actions.description1') }}<br />
+				{{ t('settings.actions.description2') }}
 			</p>
 
 			<div class="flex flex-col md:flex-row gap-4">
@@ -152,10 +175,13 @@
 						side: 'top',
 					}"
 				>
-					<UTooltip class="w-full" text="Klik for at logge ud på alle enheder">
+					<UTooltip
+						class="w-full"
+						:text="t('settings.actions.logoutEverywhereTooltip')"
+					>
 						<UButton
 							icon="i-material-symbols-key-off-outline-rounded"
-							label="Log ud på alle enheder"
+							:label="t('settings.actions.logoutEverywhere')"
 							color="error"
 							variant="soft"
 							class="flex-1"
@@ -165,14 +191,16 @@
 
 					<template #content>
 						<div class="p-4">
-							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+							<h3 class="text-sm font-semibold mb-2">
+								{{ t('common.warning') }}
+							</h3>
 							<p class="text-xs">
-								Du er ved at logge ud på alle enheder. <br />
-								Dette vil medføre, at du skal logge ind igen på alle enheder.
+								{{ t('settings.actions.logoutEverywhereWarning1') }} <br />
+								{{ t('settings.actions.logoutEverywhereWarning2') }}
 							</p>
 
 							<UButton
-								label="Godkend"
+								:label="t('common.confirm')"
 								icon="i-material-symbols-check-circle-rounded"
 								color="error"
 								variant="soft"
@@ -193,11 +221,11 @@
 				>
 					<UTooltip
 						class="w-full"
-						text="Klik for at permanent slette din bruger"
+						:text="t('settings.actions.deleteUserTooltip')"
 					>
 						<UButton
 							icon="i-material-symbols-delete-forever-outline-rounded"
-							label="Slet bruger"
+							:label="t('settings.actions.deleteUser')"
 							color="error"
 							variant="soft"
 							class="flex-1"
@@ -207,21 +235,26 @@
 
 					<template #content>
 						<div class="p-4">
-							<h3 class="text-sm font-semibold mb-2">Advarsel!</h3>
+							<h3 class="text-sm font-semibold mb-2">
+								{{ t('common.warning') }}
+							</h3>
 							<p class="text-xs">
-								Du er ved at slette din bruger. <br />
-								Dette kan ikke fortrydes, og alle dine data vil blive slettet.
+								{{ t('settings.actions.deleteUserWarning1') }} <br />
+								{{ t('settings.actions.deleteUserWarning2') }}
 								<br />
-								<span class="italic"
-									>Fremtidige bookinger vil blive annulleret.</span
-								>
+								<span class="italic">
+									{{ t('settings.actions.deleteUserBookingsNote') }}
+								</span>
 							</p>
 
 							<UFormField
 								class="mt-4"
-								label="Adgangskode"
-								help="Indtast din adgangskode for at bekræfte."
-								:error="wrongCurrentSessionPassword && 'Forkert adgangskode!'"
+								:label="t('settings.actions.passwordLabel')"
+								:help="t('settings.actions.passwordHelp')"
+								:error="
+									wrongCurrentSessionPassword &&
+									t('settings.actions.wrongPassword')
+								"
 								size="xs"
 							>
 								<UInput
@@ -232,7 +265,7 @@
 							</UFormField>
 
 							<UButton
-								label="Godkend"
+								:label="t('common.confirm')"
 								icon="i-material-symbols-check-circle-rounded"
 								color="error"
 								variant="soft"
@@ -250,7 +283,14 @@
 </template>
 
 <script lang="ts" setup>
+import { da as daUiLocale, en as enUiLocale } from '@nuxt/ui/locale';
 import type { MeLogin, MePerson, Me } from '~/utils/types/settings';
+import type { LocaleCode } from '#shared/constants';
+
+const { t, locale } = useI18n();
+const { switchLanguage, switching } = useLanguageSwitch();
+
+const uiLocales = [daUiLocale, enUiLocale];
 
 const toast = useToast();
 
@@ -260,7 +300,7 @@ definePageMeta({
 });
 
 useHead({
-	title: 'Indstillinger',
+	title: () => t('settings.title'),
 });
 
 /**
@@ -285,11 +325,11 @@ async function fetchMe() {
 	} catch (error) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Genindlæs siden',
+					label: t('common.reloadPage'),
 					onClick: () => reloadNuxtApp(),
 				},
 			],
@@ -324,11 +364,11 @@ async function fetchPersons() {
 	} catch (error) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Genindlæs siden',
+					label: t('common.reloadPage'),
 					onClick: () => reloadNuxtApp(),
 				},
 			],
@@ -388,11 +428,11 @@ async function fetchLogins() {
 	} catch (error) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Genindlæs siden',
+					label: t('common.reloadPage'),
 					onClick: () => reloadNuxtApp(),
 				},
 			],
@@ -426,8 +466,8 @@ async function subscribeToPush() {
 		subscribeToPushLoading.value = false;
 		toast.add({
 			icon: 'i-material-symbols-warning-outline-rounded',
-			title: 'Advarel!',
-			description: 'Notifikationer er ikke understøttet på denne enhed',
+			title: t('common.warning'),
+			description: t('common.notifications.unsupported'),
 		});
 		return;
 	}
@@ -439,9 +479,8 @@ async function subscribeToPush() {
 			subscribeToPushLoading.value = false;
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description:
-					'Du har ikke givet tilladelse til at vi må sende notifikationer',
+				title: t('common.error'),
+				description: t('common.notifications.permissionDenied'),
 			});
 			return;
 		}
@@ -465,8 +504,8 @@ async function unsubscribeToPush() {
 		if (!subscription) {
 			toast.add({
 				icon: 'i-material-symbols-info-outline-rounded',
-				title: 'Info!',
-				description: 'Du modtager ikke notifikationer på denne enhed',
+				title: t('settings.infoTitle'),
+				description: t('settings.notifications.notSubscribedHere'),
 			});
 			unsubscribeToPushLoading.value = false;
 			return;
@@ -482,18 +521,18 @@ async function unsubscribeToPush() {
 		if (res) {
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Succes!',
-				description: 'Du modtager ikke længere notifikationer på denne enhed',
+				title: t('settings.successTitle'),
+				description: t('settings.notifications.unsubscribedHere'),
 			});
 		}
 	} catch (error: any) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Prøv igen',
+					label: t('common.retry'),
 					onClick: unsubscribeToPush,
 				},
 			],
@@ -521,18 +560,18 @@ async function unsubscribeToPushEverywhere() {
 		if (res) {
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Succes!',
-				description: 'Du modtager ikke længere notifikationer på nogen enheder',
+				title: t('settings.successTitle'),
+				description: t('settings.notifications.unsubscribedEverywhere'),
 			});
 		}
 	} catch (error: any) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Prøv igen',
+					label: t('common.retry'),
 					onClick: unsubscribeToPushEverywhere,
 				},
 			],
@@ -570,8 +609,8 @@ async function deleteAccount() {
 
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Succes!',
-				description: 'Din bruger blev slettet, og du er blevet logget ud.',
+				title: t('settings.successTitle'),
+				description: t('settings.accountDeleted'),
 			});
 		}
 	} catch (error: any) {
@@ -580,11 +619,11 @@ async function deleteAccount() {
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: deleteAccount,
 					},
 				],
@@ -614,11 +653,11 @@ async function logoutEverywhere() {
 	} catch (error) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Genindlæs siden',
+					label: t('common.reloadPage'),
 					onClick: () => reloadNuxtApp(),
 				},
 			],

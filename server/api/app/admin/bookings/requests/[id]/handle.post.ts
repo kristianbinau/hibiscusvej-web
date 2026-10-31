@@ -125,8 +125,11 @@ export default defineEventHandler(async (event) => {
 		logModule: LOG_MODULE,
 		userId: bookingRequest.userId,
 		bookingRequestId: bookingRequest.id,
-		title: 'Booking anmodning, behandlet',
-		body: `#${bookingRequest.userId}'s anmodning er blevet behandlet.`,
+		title: { key: 'push.admin.bookingRequestHandled' },
+		body: {
+			key: 'push.admin.bookingRequestHandledBody',
+			params: { userId: bookingRequest.userId },
+		},
 	});
 
 	/**
@@ -137,8 +140,8 @@ export default defineEventHandler(async (event) => {
 		logModule: LOG_MODULE,
 		userId: bookingRequest.userId,
 		bookingRequestId: bookingRequest.id,
-		title: 'Booking anmodning, behandlet',
-		body: `Din booking anmodning blev behandlet, gå til dine anmodninger for at se vurderingen.`,
+		title: { key: 'push.user.bookingRequestHandled' },
+		body: { key: 'push.user.bookingRequestHandledBody' },
 	});
 
 	return true;

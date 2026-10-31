@@ -126,6 +126,9 @@ import type { AdminUsersApiResponse, User } from '~/utils/types/admin';
 import type { Apartment } from '~/utils/types/global';
 import type { TableColumn } from '@nuxt/ui';
 
+// Admin pages are excluded from localization: no /en/* route is generated.
+defineI18nRoute(false);
+
 definePageMeta({
 	layout: 'logged-in-admin',
 	middleware: 'admin-required',

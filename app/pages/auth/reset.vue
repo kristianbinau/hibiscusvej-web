@@ -13,16 +13,16 @@
 				<UCard>
 					<template #header>
 						<h1 class="text-2xl font-semibold text-(--ui-primary)">
-							Ny adgangskode
+							{{ t('auth.reset.title') }}
 						</h1>
 					</template>
 
 					<p class="mb-5">
-						Indtast engangskoden du har modtaget og vælg en ny adgangskode.
+						{{ t('auth.reset.description') }}
 					</p>
 
 					<UFormField
-						label="Engangskode"
+						:label="t('auth.reset.singleUseCodeLabel')"
 						name="singleUsePassword"
 						class="mt-3"
 						required
@@ -31,7 +31,7 @@
 					</UFormField>
 
 					<UFormField
-						label="Ny adgangskode"
+						:label="t('auth.reset.newPasswordLabel')"
 						name="newPassword"
 						class="mt-3"
 						required
@@ -48,7 +48,7 @@
 								class="md:max-w-[48%] ml-auto"
 								type="submit"
 								block
-								>Ændre adgangskode</UButton
+								>{{ t('auth.reset.submit') }}</UButton
 							>
 						</div>
 					</template>
@@ -62,10 +62,6 @@
 import { z } from 'zod/v4';
 import type { Form, FormSubmitEvent } from '#ui/types';
 
-useHead({
-	title: 'Ny adgangskode',
-});
-
 definePageMeta({
 	layout: 'minimal',
 	middleware: 'guest-required',
@@ -76,6 +72,13 @@ definePageMeta({
 			/^\d+$/.test(route.query.loginId)
 		);
 	},
+});
+
+const { t } = useI18n();
+const localePath = useLocalePath();
+
+useHead({
+	title: () => t('auth.reset.title'),
 });
 
 const { query } = useRoute();
@@ -91,7 +94,7 @@ const schema = z
 		newPassword: z.string(),
 	})
 	.refine((value) => value.newPassword !== value.singleUsePassword, {
-		message: 'Engangskode må ikke bruges som ny adgangskode',
+		message: t('auth.reset.sameCodeAndPassword'),
 		path: ['newPassword'],
 	});
 
@@ -125,19 +128,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (res) {
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Adgangskode ændret!',
-				description: 'Du kan nu logge ind med din nye adgangskode.',
+				title: t('auth.reset.changed.title'),
+				description: t('auth.reset.changed.description'),
 			});
 
-			await navigateTo('/auth/login');
+			await navigateTo(localePath('/auth/login'));
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: () => onSubmit(event),
 					},
 				],
@@ -148,17 +151,17 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			form.value!.setErrors([
 				{
 					name: 'singleUsePassword',
-					message: 'Kodeord er forkert',
+					message: t('auth.reset.wrongCode'),
 				},
 			]);
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: () => onSubmit(event),
 					},
 				],

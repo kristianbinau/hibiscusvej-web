@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 import { UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays } from 'date-fns';
+import { createLocalizedError, ERROR_KEYS } from '~~/server/utils/i18n-errors';
 import { sendBookingRequestNotificationForAdmin } from '~~/server/utils/notification';
 
 const LOG_MODULE = 'Api/Booking/Request/Create';
@@ -36,11 +37,15 @@ export default defineEventHandler(async (event) => {
 
 	// If user is not verified, return 403 Forbidden
 	if (user.verifiedAt === null) {
-		throw createError({
-			statusCode: 403,
-			statusMessage: 'Forbidden',
-			message: 'Din bruger er ikke verificeret.',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingNotVerified,
+			{},
+			{
+				statusCode: 403,
+				statusMessage: 'Forbidden',
+				message: 'Din bruger er ikke verificeret.',
+			},
+		);
 	}
 
 	const activeRepremandBan = await useDrizzle()
@@ -61,21 +66,21 @@ export default defineEventHandler(async (event) => {
 
 	// If user is banned, return 403 Forbidden
 	if (activeRepremandBan) {
-		const message = activeRepremandBan.expiresAt
-			? `Din bruger er midlertidigt udelukket fra at oprette booking indtil ${activeRepremandBan.expiresAt.toLocaleDateString(
-					'da-DK',
-					{
-						day: '2-digit',
-						month: 'long',
-						year: '2-digit',
-					},
-				)}.`
-			: 'Din bruger er udelukket fra at oprette booking.';
-		throw createError({
-			statusCode: 403,
-			statusMessage: 'Forbidden',
-			message: message,
-		});
+		throw createLocalizedError(
+			activeRepremandBan.expiresAt
+				? ERROR_KEYS.bookingBannedUntil
+				: ERROR_KEYS.bookingBanned,
+			activeRepremandBan.expiresAt
+				? { date: activeRepremandBan.expiresAt.toISOString() }
+				: {},
+			{
+				statusCode: 403,
+				statusMessage: 'Forbidden',
+				message: activeRepremandBan.expiresAt
+					? 'Din bruger er midlertidigt udelukket fra at oprette booking indtil {date}.'
+					: 'Din bruger er udelukket fra at oprette booking.',
+			},
+		);
 	}
 
 	const date = new UTCDateMini(body.date);
@@ -87,20 +92,28 @@ export default defineEventHandler(async (event) => {
 
 	// If from is later than to, return 400 Bad Request
 	if (isAfter(from, to)) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid Time Range',
-			message: 'Start tidspunktet skal være tidligere end slut tidspunktet.',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingStartAfterEnd,
+			{},
+			{
+				statusCode: 400,
+				statusMessage: 'Invalid Time Range',
+				message: 'Start tidspunktet skal være tidligere end slut tidspunktet.',
+			},
+		);
 	}
 
 	// If from is yesterday, return 400 Bad Request
 	if (!isAfter(from, endOfYesterday())) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid Time Range',
-			message: 'Booking kan ikke starte i fortiden.',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingStartInPast,
+			{},
+			{
+				statusCode: 400,
+				statusMessage: 'Invalid Time Range',
+				message: 'Booking kan ikke starte i fortiden.',
+			},
+		);
 	}
 
 	// Is there a booking that overlaps with the new booking?
@@ -126,11 +139,15 @@ export default defineEventHandler(async (event) => {
 
 	// If there is an overlapping booking, return 409 Conflict
 	if (overlappingBooking) {
-		throw createError({
-			statusCode: 409,
-			statusMessage: 'Conflict',
-			message: 'Der er allerede en booking i det tidsrum',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingSlotTaken,
+			{},
+			{
+				statusCode: 409,
+				statusMessage: 'Conflict',
+				message: 'Der er allerede en booking i det tidsrum',
+			},
+		);
 	}
 
 	// Is there a booking request that overlaps with the new booking request from the same user?
@@ -157,11 +174,15 @@ export default defineEventHandler(async (event) => {
 
 	// If there is an overlapping booking request, return 409 Conflict
 	if (overlappingBookingRequest) {
-		throw createError({
-			statusCode: 409,
-			statusMessage: 'Conflict',
-			message: 'Du har allerede en anmodning i det tidsrum',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingOwnRequestOverlap,
+			{},
+			{
+				statusCode: 409,
+				statusMessage: 'Conflict',
+				message: 'Du har allerede en anmodning i det tidsrum',
+			},
+		);
 	}
 
 	// Insert the new booking request
@@ -198,8 +219,11 @@ export default defineEventHandler(async (event) => {
 		logModule: LOG_MODULE,
 		userId: user.id,
 		bookingRequestId: bookingRequest.id,
-		title: 'Ny booking anmodning!',
-		body: `#${user.id} har lavet en ny anmodning, der skal behandles.`,
+		title: { key: 'push.admin.bookingRequestCreated' },
+		body: {
+			key: 'push.admin.bookingRequestCreatedBody',
+			params: { userId: user.id },
+		},
 	});
 
 	setResponseStatus(event, 201);

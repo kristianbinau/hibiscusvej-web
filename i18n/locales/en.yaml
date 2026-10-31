@@ -1,0 +1,469 @@
+# ---------------------------------------------------------------------------
+# Resident-facing text catalog - English
+#
+# Danish (da.yaml) is the source of truth; this file mirrors it key for key.
+# YAML forbids tab indentation - this file uses spaces.
+#
+# NOTE on `langHint`: the text is chosen by the visitor's BROWSER language,
+# not the site locale, so both variants are kept identical in da.yaml and
+# en.yaml (see the header comment in da.yaml).
+# ---------------------------------------------------------------------------
+meta:
+  description: Information about the student housing at Hibiscusvej
+
+langHint:
+  # Selected by the visitor's browser language (see header note).
+  message:
+    en: The website is also available in English.
+    da: Websiden findes også på engelsk.
+  accept:
+    en: Switch to English
+    da: Skift til engelsk
+  dismiss:
+    en: Don't show again
+    da: Vis ikke igen
+
+# ---------------------------------------------------------------------------
+# Shared UI words (buttons, labels, toast titles, table columns).
+# ---------------------------------------------------------------------------
+common:
+  error: Error!
+  errorDescription: Something went wrong...
+  retry: Try again
+  reloadPage: Reload the page
+  success: Success!
+  warning: Warning!
+  confirm: Confirm
+
+  # Validation messages shared by the client-side zod schemas.
+  required: Required
+  invalidEmail: Invalid email
+  phoneMinLength: The phone number must be at least 8 characters
+
+  loading: Loading...
+  selectApartment: Select an apartment
+
+  # Table column headers shared by the booking tables.
+  date: Date
+  createdAt: Created
+  actions: Actions
+
+  notifications:
+    unsupported: Notifications are not supported on this device
+    permissionDenied: You have not given permission for us to send notifications
+    subscribeError: An error occurred while setting up notifications
+    subscribeRejected: Setting up notifications was rejected
+    subscribed: Notifications are now enabled
+
+# ---------------------------------------------------------------------------
+# Navigation items (layouts + page headings that mirror them).
+# ---------------------------------------------------------------------------
+nav:
+  communal: Communal room
+  borrow: Borrow & Rent
+  parking: Parking
+  contact: Contact
+  login: Log in
+  bookRoom: Book room
+  myBookings: My bookings
+  myRequests: My requests
+  settings: Settings
+  logout: Log out
+  admin: Admin
+
+  # Footer privacy-policy link (LayoutLinks) and the back link in the
+  # minimal layout (auth pages).
+  privacyPolicy: Privacy policy
+  back: Back
+
+  # The header language picker: `language` labels the dropdown menu,
+  # `languageCurrent` is the trigger's tooltip/accessible name in the ACTIVE
+  # locale (it names the current language, so it differs per file).
+  language: Language
+  languageCurrent: 'Language: English'
+
+# ---------------------------------------------------------------------------
+# Login / register / reset-password.
+# ---------------------------------------------------------------------------
+auth:
+  fields:
+    email: Email
+    name: Name
+    phone: Phone
+
+  login:
+    title: Log in
+    # The Danish label is (and stays) the English word "Password".
+    passwordLabel: Password
+    noAccount: Don't have an account?
+    submit: Log in
+    wrongCredentials: Wrong email or password
+    singleUseUsed:
+      title: One-time code used!
+      description: Since you logged in with a one-time code, you have been redirected to create a new password.
+
+  register:
+    title: Register
+    submit: Register
+
+    apartment: Apartment
+    apartmentDescription: We need to know which apartment you live in. Once you have created your account, the local residents' board will verify the information you entered.
+
+    loginSection: Login
+    loginDescription: We need your login details so you can log in to your account. Your password is encrypted before it is sent to our servers.
+    passwordLabel: Password
+    passwordMinLength: The password must be at least 8 characters
+
+    contactSection: Contact
+    contactDescription: We need contact details for everyone living in the apartment. It is important that we have correct details so we can contact you.
+    contactPersonNth: 'Contact person {n}'
+    addContactPerson: Add contact person
+    removeContactPerson: Remove contact person
+    minContactPersons: There must be at least 1 contact person
+    maxContactPersons: There can be at most 2 contact persons
+
+    consentSection: Consent
+    # Split around the privacy-policy link: consentIntro + link + "."
+    consentIntro: We need your consent to process your information in accordance with our
+    privacyPolicyLink: privacy policy
+    consentCheckbox: I consent to my information being processed in accordance with the privacy policy
+    hasAccount: Already have an account?
+
+    emailInUse: Email is already in use
+    accountCreated:
+      title: Account created
+      description: Shall we take you to the login page?
+      action: Yes, take me to the login page
+
+  reset:
+    title: New password
+    description: Enter the one-time code you received and choose a new password.
+    singleUseCodeLabel: One-time code
+    newPasswordLabel: New password
+    submit: Change password
+    sameCodeAndPassword: The one-time code cannot be used as the new password
+    wrongCode: Wrong code
+    changed:
+      title: Password changed!
+      description: You can now log in with your new password.
+
+  unsupportedBrowser:
+    title: Browser not supported
+    description: Login is not supported in your current browser.
+    switchBrowser: Switch to Chrome or Firefox to log in.
+    reason1: This is due to missing support for security standards in your current browser.
+    reason2: For security reasons we therefore cannot allow login.
+    backToHome: Back to the front page
+
+# ---------------------------------------------------------------------------
+# Booking calendar and booking flow ("Book the communal room", "My bookings"
+# and the booking-request list page).
+#
+# `booking.request.autoClosed` replaces the raw Danish `handledText` the
+# server writes on auto-close (`AUTO_CLOSE_HANDLED_TEXT` in
+# `shared/constants.ts`); the Danish value matches that text byte for byte.
+# ---------------------------------------------------------------------------
+booking:
+  title: Book the communal room
+
+  notVerified:
+    title: Your account is not verified!
+    description: You cannot book the communal room until your account is verified. The board will verify your account as soon as possible.
+  warned: You have one or more active warnings.
+  banned:
+    title: You are banned!
+    description: You have one or more active bans. You cannot book the communal room while you are banned.
+
+  intro:
+    timing: Every booking is from 10:00 AM to 10:00 AM the following day.
+    deletable: You can remove your booking until it starts.
+    # Split around the "My bookings" link: seeBookings + link + "."
+    seeBookings: Your bookings can be found under
+
+  speaker:
+    badge: NEW
+    heading: We have purchased a speaker that can be borrowed!
+    # Split around the mailto link: body + link + bodyOutro
+    body: 'If you need good sound for the party, send an email to the board:'
+    bodyOutro: ', and we will arrange the details.'
+
+  # Split around the "the rules" link: readTerms + link + "."
+  readTerms: I have read and accepted
+  rulesLink: the rules
+
+  submit: Book
+  enableNotifications: Enable notifications
+
+  bookedDescription: 'You have booked the communal room - {date}'
+  conflictTitle: Failed!
+
+  calendar:
+    ownRequest: You already have a booking request that day. Wait for it to be approved or rejected.
+    infoTitle: Info
+    ownBooking: You already have a booking that day
+    otherBooking: There is already a booking that day
+
+  me:
+    description1: Here you can see your bookings and delete them if you need to.
+    description2: Bookings cannot be deleted once they have started.
+    empty: No bookings found
+    delete: Delete booking
+    deleted: The booking was deleted
+
+  request:
+    title: My booking requests
+    description1: Here you can see your booking requests and delete them if you need to.
+    description2: Requests cannot be deleted once they have been handled.
+    status: Status
+    handledText: Handled text
+    requestText: Request text
+    permitted: Permitted
+    pending: Pending
+    approved: Approved
+    rejected: Rejected
+    deleteTooltip: Click to remove the booking request
+    delete: Delete this request
+    yourReason: Your reason
+    adminDecision: "Administrator's decision"
+    adminExplanation: "Administrator's explanation"
+    autoClosed: Automatically closed because another user created a booking for the time slot
+    deleted: The booking request was deleted
+
+# ---------------------------------------------------------------------------
+# Booking request modal ("Request approval").
+# ---------------------------------------------------------------------------
+bookingRequest:
+  description: The booking you tried to make is not automatically allowed.
+
+  why:
+    title: Why?
+    intro: The board has experienced bookings being made without consideration for other users.
+    examplesIntro: For example, users making..
+    example1: Reservations so they can sleep in and only clean up late in the afternoon.
+    example2: Reservations of entire weekends where the room is only used on one day.
+    outro: Some bookings must therefore now be approved manually by the board to ensure that everyone gets a fair chance to use the communal room.
+
+  requestLine: Request to have your booking approved manually.
+  triedToBook: You tried to book the communal room on {date}.
+
+  reasonLabel: Reason
+  reasonHelp: State the reason for your booking
+  reasonPlaceholder: I need to book the communal room because...
+  reasonMinLength: Please provide a more detailed reason
+  submit: Request approval
+
+  errorTitle: Error
+  requestedDescription: 'You have requested a booking - {date}'
+  reloadError: Something went wrong, try reloading the page.
+
+# ---------------------------------------------------------------------------
+# Parking request form (`ParkingRequest.vue`, rendered by the
+# `::parking-request` MDC tag on the parking content pages).
+#
+# The outgoing mail to AB Odense (the mailto subject/body and the zone
+# fragments interpolated into it) is INTENTIONALLY not localized: the
+# recipient is a Danish company, so the mail is written in Danish in both
+# locales. The mail-body preview in the modal therefore shows Danish text
+# on the English page as well.
+# ---------------------------------------------------------------------------
+parking:
+  request:
+    title: Request a parking permit
+    description: Enter your details to request a parking permit.
+    mailProgramNote: The request will open in your default mail program with all the details filled in. You need to click send yourself and verify that all the details are correct.
+
+    nameLabel: Name
+    apartmentLabel: Apartment
+    numberplateLabel: Number plate
+    countryLabel: Country
+    countryPlaceholder: Select a country
+    numberLabel: Number
+    numberplatePlaceholder: Enter the number plate
+    zoneLabel: Zone
+    zonePlaceholder: Select one or more zones
+
+    abNote1: Please note that the request must be sent to AB Odense for approval.
+    # Split around the bold "individual confirmation per zone":
+    # abNote2Intro + abNote2Highlight + abNote2Outro.
+    abNote2Intro: You will receive an
+    abNote2Highlight: individual confirmation per zone
+    abNote2Outro: by email once your request has been approved.
+
+    copyTooltip: Copy to clipboard
+    submit: Open the request in your mail program
+    copiedToClipboard: Copied to the clipboard
+
+    # Client-side zod validation messages.
+    nameRequired: Name is required
+    apartmentRequired: Apartment is required
+    numberplateRequired: Number plate is required
+    countryRequired: Country is required
+    countryInvalid: Invalid country
+    zoneInvalid: Invalid zone
+    zoneMin: Select at least one zone
+
+  # Zone labels ("Green spaces"/"Extra spaces" as in parking.md).
+  zones:
+    green: Green spaces (3930)
+    extra: Extra spaces (4744)
+
+  # Country names shown in the number-plate country selector.
+  countries:
+    DK: Denmark
+    SE: Sweden
+    NO: Norway
+    FI: Finland
+    DE: Germany
+    GB: United Kingdom
+    FR: France
+    ES: Spain
+    IT: Italy
+    NL: Netherlands
+    BE: Belgium
+    PL: Poland
+    AT: Austria
+    CH: Switzerland
+    LU: Luxembourg
+    IE: Ireland
+    PT: Portugal
+    GR: Greece
+    CZ: Czechia
+    HU: Hungary
+    RO: Romania
+    SK: Slovakia
+    SI: Slovenia
+    HR: Croatia
+    BG: Bulgaria
+
+# ---------------------------------------------------------------------------
+# Settings page.
+# ---------------------------------------------------------------------------
+settings:
+  title: Settings
+  description: Here you can change the information associated with your user.
+
+  successTitle: Success!
+  infoTitle: Info!
+
+  persons:
+    heading: Contact persons
+    description1: Add or remove people associated with your user.
+    description2: At least one person must be associated, maximum 2 people.
+    addTooltip: Add a person
+    title: 'Contact person {n}'
+    idTitle: 'Contact person ID: {id}'
+    unsavedTitle: Unsaved contact person
+    # NOTE: the Danish labels on this card are the English words
+    # "Name"/"Phone" today, so both locales show the same text.
+    nameLabel: Name
+    emailLabel: Email
+    phoneLabel: Phone
+    delete: Delete person
+    save: Save changes
+    remove: Remove person
+    create: Create person
+    deleted: The contact person was deleted
+    created: The contact person was created
+    updated: The contact person was updated
+
+  notifications:
+    heading: Notifications
+    description1: Enable notifications to receive messages from us.
+    description2: This can be updates about your user, bookings or anything else.
+    enableTooltip: Click to enable notifications on this device
+    enable: Enable
+    disableTooltip: Click to disable notifications on this device
+    disable: Disable
+    disableAllTooltip: Click to disable notifications on all devices
+    disableAll: Disable all
+    disableAllWarning1: You are about to disable notifications on all devices.
+    disableAllWarning2: This means you will no longer receive notifications.
+    notSubscribedHere: You do not receive notifications on this device
+    unsubscribedHere: You no longer receive notifications on this device
+    unsubscribedEverywhere: You no longer receive notifications on any devices
+
+  language:
+    heading: Language
+    description: Choose which language the website is shown in.
+
+  actions:
+    heading: Actions
+    description1: Perform actions that affect your user.
+    description2: These actions cannot be undone.
+    logoutEverywhereTooltip: Click to log out on all devices
+    logoutEverywhere: Log out on all devices
+    logoutEverywhereWarning1: You are about to log out on all devices.
+    logoutEverywhereWarning2: This means you will have to log in again on all devices.
+    deleteUserTooltip: Click to permanently delete your user
+    deleteUser: Delete user
+    deleteUserWarning1: You are about to delete your user.
+    deleteUserWarning2: This cannot be undone, and all your data will be deleted.
+    deleteUserBookingsNote: Future bookings will be cancelled.
+    passwordLabel: Password
+    passwordHelp: Enter your password to confirm.
+    wrongPassword: Wrong password!
+
+  accountDeleted: Your user was deleted, and you have been logged out.
+
+# ---------------------------------------------------------------------------
+# Front page.
+# ---------------------------------------------------------------------------
+home:
+  title: Front page
+  welcome: Welcome to Hibiscusvej 2-30
+  governedBy: This site is run by the residence's volunteer board.
+  # Split around the board mailto link: contactIntro + link + "."
+  contactIntro: If you have questions, you are always welcome to contact
+  boardLink: the board
+  # Split around the Facebook link: facebookIntro + link + facebookOutro
+  facebookIntro: The residence also has a
+  facebookLink: Facebook group
+  facebookOutro: ', where useful information is shared regularly.'
+
+# ---------------------------------------------------------------------------
+# Web-push notifications, rendered SERVER-side per recipient language
+# (see the header note in da.yaml). Admin voice and user voice are different
+# audiences - the two namespaces never share a string.
+# ---------------------------------------------------------------------------
+push:
+  admin:
+    # A user registered themselves (sent from auth/register), and reused as
+    # the title when an admin verifies a user that registered recently.
+    newUser: New user!
+    newUserCreatedBody: '#{userId} has been created and is awaiting verification.'
+    userVerified: User verified!
+    verifiedBodyRecent: '{admin} verified #{userId}, created {duration} ago.'
+    verifiedBody: '{admin} verified #{userId}.'
+
+    bookingRequestCreated: New booking request!
+    bookingRequestCreatedBody: '#{userId} has made a new request that needs to be handled.'
+    bookingRequestDeleted: Booking request deleted
+    bookingRequestDeletedBody: '#{userId} has deleted their booking request #{requestId}.'
+    bookingRequestHandled: Booking request handled
+    bookingRequestHandledBody: 'The request from #{userId} has been handled.'
+    bookingRequestClosed: Booking request closed automatically
+    bookingRequestClosedBody: '#{userId} had a request closed automatically because a booking was created by {bookedByUserId}.'
+
+  user:
+    accountVerified: Account verified!
+    accountVerifiedBody: The board has verified your account, and you can now book the communal room!
+    bookingRequestHandled: Booking request handled
+    bookingRequestHandledBody: Your booking request has been handled, go to your requests to see the assessment.
+    bookingRequestClosed: Booking request closed automatically
+    bookingRequestClosedBody: Your booking request was closed automatically because another user created a booking.
+
+# Server error keys - the stable API contract lives in
+# `server/utils/i18n-errors.ts` (ERROR_KEYS).
+errors:
+  booking:
+    notVerified: Your user is not verified.
+    bannedUntil: Your user is temporarily blocked from creating bookings until {date}.
+    banned: Your user is blocked from creating bookings.
+    startAfterEnd: The start time must be earlier than the end time.
+    startInPast: The booking cannot start in the past.
+    slotTaken: There is already a booking in that time slot
+    ownRequestOverlap: You already have a request in that time slot
+    maxConsecutiveReached: You can have at most {count} consecutive bookings.
+    noConsecutiveAllowed: You cannot have consecutive bookings.
+    maxWeeklyReached: You can have at most {count} bookings every 7 days.
+    maxMonthlyReached: You can have at most {count} bookings every 31 days.

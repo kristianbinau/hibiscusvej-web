@@ -88,6 +88,9 @@
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui';
 
+// Admin pages are excluded from localization: no /en/* route is generated.
+defineI18nRoute(false);
+
 import { isAfter } from 'date-fns';
 
 definePageMeta({

@@ -1,6 +1,15 @@
 <template>
 	<header class="md:container md:px-0 sm:px-3 px-1 w-full mx-auto">
-		<LayoutNavigation :links="links" />
+		<div class="flex items-stretch gap-2">
+			<LayoutNavigation :links="links" class="flex-1 min-w-0" />
+
+			<!-- Language picker (locked decision §3.6). -->
+			<div
+				class="flex items-center border-b border-gray-200 dark:border-gray-800"
+			>
+				<LayoutLanguagePicker />
+			</div>
+		</div>
 	</header>
 
 	<main class="md:container w-full md:px-0 sm:px-3 px-1 mb-12 mx-auto">
@@ -19,59 +28,67 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '#ui/types';
 
+const { t } = useI18n();
+const localePath = useLocalePath();
+
 const { authUser } = await useUser();
 
-const links = ref<NavigationMenuItem[][]>([
+// The "Mine bookinger"/"Mine anmodninger" nav items stay hidden until their
+// data has loaded and actually contains rows (see the watchers below).
+const hasMyBookings = ref(false);
+const hasMyRequests = ref(false);
+
+const links = computed<NavigationMenuItem[][]>(() => [
 	[
 		{
+			// Site name — identical in every locale.
 			label: 'Hibiscusvej 2-30',
 			icon: 'Logo',
-			to: '/',
+			to: localePath('/'),
 		},
 	],
 	[
 		{
-			label: 'Book lokale',
+			label: t('nav.bookRoom'),
 			icon: 'i-material-symbols-add-home-work-rounded',
-			to: '/u/communal/book',
+			to: localePath('/u/communal/book'),
 		},
 		{
-			label: 'Mine bookinger',
+			label: t('nav.myBookings'),
 			icon: 'i-material-symbols-home-work-rounded',
-			to: '/u/communal/me',
-			class: 'hidden',
+			to: localePath('/u/communal/me'),
+			class: hasMyBookings.value ? '' : 'hidden',
 		},
 		{
-			label: 'Mine anmodninger',
+			label: t('nav.myRequests'),
 			icon: 'i-material-symbols-home-work-outline-rounded',
-			to: '/u/communal/me-requests',
-			class: 'hidden',
+			to: localePath('/u/communal/me-requests'),
+			class: hasMyRequests.value ? '' : 'hidden',
 		},
 	],
 	[
+		// Admin routes are not localized — the link stays unprefixed.
+		...(authUser.value && authUser.value.user.admin
+			? [
+					{
+						icon: 'i-material-symbols-admin-panel-settings-rounded',
+						label: t('nav.admin'),
+						to: '/u/admin',
+					} as NavigationMenuItem,
+				]
+			: []),
 		{
 			icon: 'i-material-symbols-settings-account-box-rounded',
-			label: 'Indstillinger',
-			to: '/u/settings',
+			label: t('nav.settings'),
+			to: localePath('/u/settings'),
 		},
 		{
 			icon: 'i-material-symbols-key-off-outline-rounded',
-			label: 'Logout',
+			label: t('nav.logout'),
 			onSelect: () => logout(),
 		},
 	],
 ]);
-
-if (authUser.value && authUser.value.user.admin) {
-	const link: NavigationMenuItem = {
-		icon: 'i-material-symbols-admin-panel-settings-rounded',
-		label: 'Admin',
-		to: '/u/admin',
-	};
-
-	// @ts-ignore
-	links.value[2].unshift(link);
-}
 
 const { data: myBookings, pending: fetchingBookings } = await useFetch(
 	'/api/app/bookings/me',
@@ -83,18 +100,8 @@ const { data: myBookings, pending: fetchingBookings } = await useFetch(
 watch(
 	[fetchingBookings, myBookings],
 	([loading, bookings]) => {
-		const link = '/u/communal/me';
-
-		// @ts-ignore
-		const meBookingLink = links.value[1]?.find((l) => l.to === link);
-		if (!meBookingLink) return;
-
-		// Depending on if we have any requests, add or remove "hidden" class
-		if (!loading && bookings && bookings.length > 0) {
-			meBookingLink.class = '';
-		} else {
-			meBookingLink.class = 'hidden';
-		}
+		// Depending on if we have any bookings, show or hide the nav item
+		hasMyBookings.value = !loading && !!bookings && bookings.length > 0;
 	},
 	{ immediate: true },
 );
@@ -107,18 +114,8 @@ const { data: myBookingRequests, pending: fetchingBookingRequests } =
 watch(
 	[fetchingBookingRequests, myBookingRequests],
 	([loading, requests]) => {
-		const link = '/u/communal/me-requests';
-
-		// @ts-ignore
-		const meRequestsLink = links.value[1]?.find((l) => l.to === link);
-		if (!meRequestsLink) return;
-
-		// Depending on if we have any requests, add or remove "hidden" class
-		if (!loading && requests && requests.length > 0) {
-			meRequestsLink.class = '';
-		} else {
-			meRequestsLink.class = 'hidden';
-		}
+		// Depending on if we have any requests, show or hide the nav item
+		hasMyRequests.value = !loading && !!requests && requests.length > 0;
 	},
 	{ immediate: true },
 );
@@ -130,10 +127,10 @@ async function logout() {
 		});
 
 		if (res) {
-			await navigateTo('/');
+			await navigateTo(localePath('/'));
 		}
 	} catch (error: any) {
-		await navigateTo('/');
+		await navigateTo(localePath('/'));
 	}
 }
 </script>

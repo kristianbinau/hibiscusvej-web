@@ -13,41 +13,41 @@
 			class="lg:absolute lg:mt-0 -bottom-16 xl:bottom-0 z-30 mt-2 bg-neutral-100 dark:bg-neutral-900 p-4 rounded-tl-lg rounded-tr-lg"
 		>
 			<h1 class="text-(--ui-primary) text-4xl mb-2">
-				Velkommen til Hibiscusvej 2-30
+				{{ t('home.welcome') }}
 			</h1>
 
-			<p class="mb-2">
-				Denne side er styret af boligens frivillige bestyrelse.<br />
-			</p>
+			<p class="mb-2">{{ t('home.governedBy') }}<br /></p>
 			<p>
-				Hvis du har spørgsmål, er du altid velkommen til at kontakte
+				{{ t('home.contactIntro') }}
 				<ULink
 					to="mailto:hibiscusvejbestyrelse@outlook.dk"
 					:external="true"
 					target="_blank"
 					class="text-(--ui-primary) underline"
 				>
-					bestyrelsen</ULink
+					{{ t('home.boardLink') }}</ULink
 				>.
 			</p>
 
 			<p>
-				Boligen har også en
+				{{ t('home.facebookIntro') }}
 				<ULink
 					to="https://www.facebook.com/groups/692711287862071"
 					:external="true"
 					target="_blank"
 					class="text-(--ui-primary) underline"
 				>
-					Facebook-gruppe</ULink
-				>, hvor der løbende bliver delt nyttig information.
+					{{ t('home.facebookLink') }}</ULink
+				>{{ t('home.facebookOutro') }}
 			</p>
 		</section>
 	</section>
 </template>
 
 <script lang="ts" setup>
+const { t } = useI18n();
+
 useHead({
-	title: 'Forside',
+	title: () => t('home.title'),
 });
 </script>

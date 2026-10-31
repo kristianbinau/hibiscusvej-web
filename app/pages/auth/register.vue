@@ -13,21 +13,21 @@
 			>
 				<UCard>
 					<template #header>
-						<h1 class="text-2xl font-semibold text-(--ui-primary)">Registér</h1>
+						<h1 class="text-2xl font-semibold text-(--ui-primary)">
+							{{ t('auth.register.title') }}
+						</h1>
 					</template>
 
 					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">
-						Lejlighed
+						{{ t('auth.register.apartment') }}
 					</h3>
 
 					<p class="mb-5">
-						Vi har brug for at vide hvilken lejlighed du bor i. Når du har
-						oprettet din konto vil Afdelingsbestyrelsen verificere de indtastede
-						informationer.
+						{{ t('auth.register.apartmentDescription') }}
 					</p>
 
 					<UFormField
-						label="Lejlighed"
+						:label="t('auth.register.apartment')"
 						name="apartmentId"
 						class="mt-3 mb-5"
 						required
@@ -37,20 +37,25 @@
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
-					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">Login</h3>
+					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">
+						{{ t('auth.register.loginSection') }}
+					</h3>
 
 					<p class="mb-5">
-						Vi har brug for login informationer, så du kan logge ind på din
-						konto. Din adgangskoden bliver krypteret før den bliver sendt til
-						vores servere.
+						{{ t('auth.register.loginDescription') }}
 					</p>
 
-					<UFormField label="Email" name="email" class="my-3" required>
+					<UFormField
+						:label="t('auth.fields.email')"
+						name="email"
+						class="my-3"
+						required
+					>
 						<UInput v-model="state.email" class="w-full" />
 					</UFormField>
 
 					<UFormField
-						label="Kodeord"
+						:label="t('auth.register.passwordLabel')"
 						name="password"
 						class="mt-3 mb-5"
 						eager-validation
@@ -62,13 +67,11 @@
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
 					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">
-						Kontakt
+						{{ t('auth.register.contactSection') }}
 					</h3>
 
 					<p class="mb-5">
-						Vi har brug for kontaktinformationer på alle beboere i lejligheden.
-						Det er vigtigt at vi har korrekte informationer, så vi kan kontakte
-						jer.
+						{{ t('auth.register.contactDescription') }}
 					</p>
 
 					<!-- Contact Information -->
@@ -76,11 +79,11 @@
 						<div class="flex flex-col gap-6">
 							<template v-for="(person, index) in state.persons">
 								<UFormField
-									:label="`${index + 1}. kontaktperson`"
+									:label="t('auth.register.contactPersonNth', { n: index + 1 })"
 									:name="`persons.${index}`"
 								>
 									<UFormField
-										label="Navn"
+										:label="t('auth.fields.name')"
 										:name="`persons.${index}.name`"
 										class="mt-3"
 										required
@@ -88,7 +91,7 @@
 										<UInput v-model="person.name" label="Name" class="w-full" />
 									</UFormField>
 									<UFormField
-										label="Email"
+										:label="t('auth.fields.email')"
 										:name="`persons.${index}.email`"
 										class="mt-3"
 										required
@@ -96,7 +99,7 @@
 										<UInput v-model="person.email" class="w-full" />
 									</UFormField>
 									<UFormField
-										label="Telefon"
+										:label="t('auth.fields.phone')"
 										:name="`persons.${index}.phone`"
 										class="mt-3"
 										required
@@ -114,7 +117,7 @@
 										@click="() => removePerson(index)"
 										class="mt-5"
 									>
-										Fjern kontaktperson
+										{{ t('auth.register.removeContactPerson') }}
 									</UButton>
 								</UFormField>
 							</template>
@@ -128,31 +131,30 @@
 							@click="addPerson"
 							class="mt-5 mb-5"
 						>
-							Tilføj kontaktperson
+							{{ t('auth.register.addContactPerson') }}
 						</UButton>
 					</template>
 
 					<hr class="border-gray-200 dark:border-gray-800 mb-5" />
 
 					<h3 class="text-xl font-semibold text-(--ui-primary) mb-2">
-						Samtykke
+						{{ t('auth.register.consentSection') }}
 					</h3>
 
 					<p class="mb-5">
-						Vi har brug for dit samtykke til at behandle dine informationer i
-						overstemmelse med vores
+						{{ t('auth.register.consentIntro') }}
 						<ULink
-							to="/privacy"
+							:to="localePath('/privacy')"
 							target="_blank"
 							class="text-(--ui-primary) underline"
-							>privatlivspolitik</ULink
+							>{{ t('auth.register.privacyPolicyLink') }}</ULink
 						>.
 					</p>
 
 					<UFormField name="acceptedPrivacyPolicy" class="mt-3 mb-5" required>
 						<UCheckbox
 							v-model="state.acceptedPrivacyPolicy"
-							label="Jeg giver samtykke til at mine informationer bliver behandlet i henhold til privatlivspolitikken"
+							:label="t('auth.register.consentCheckbox')"
 							class="select-none"
 						/>
 					</UFormField>
@@ -162,10 +164,10 @@
 							class="flex gap-3 flex-wrap md:flex-nowrap flex-1 justify-between"
 						>
 							<ULink
-								to="/auth/login"
+								:to="localePath('/auth/login')"
 								class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 							>
-								Har du allerede en konto?
+								{{ t('auth.register.hasAccount') }}
 							</ULink>
 
 							<UButton
@@ -173,7 +175,7 @@
 								class="md:max-w-[48%]"
 								type="submit"
 								block
-								>Registér</UButton
+								>{{ t('auth.register.submit') }}</UButton
 							>
 						</div>
 					</template>
@@ -193,8 +195,11 @@ definePageMeta({
 	middleware: 'guest-required',
 });
 
+const { t } = useI18n();
+const localePath = useLocalePath();
+
 useHead({
-	title: 'Registér',
+	title: () => t('auth.register.title'),
 });
 
 const toast = useToast();
@@ -206,44 +211,44 @@ const { hash } = useHash();
 
 const schema = z.object({
 	apartmentId: z.number({
-		required_error: 'Påkrævet',
+		required_error: t('common.required'),
 	}),
 	email: z
 		.string({
-			required_error: 'Påkrævet',
+			required_error: t('common.required'),
 		})
-		.email('Ugyldig email'),
+		.email(t('common.invalidEmail')),
 	password: z
 		.string({
-			required_error: 'Påkrævet',
+			required_error: t('common.required'),
 		})
-		.min(8, 'Kodeord skal være mindst 8 tegn'),
+		.min(8, t('auth.register.passwordMinLength')),
 	persons: z
 		.array(
 			z.object({
 				name: z.string({
-					required_error: 'Påkrævet',
+					required_error: t('common.required'),
 				}),
 				email: z
 					.string({
-						required_error: 'Påkrævet',
+						required_error: t('common.required'),
 					})
-					.email('Ugyldig email'),
+					.email(t('common.invalidEmail')),
 				phone: z
 					.string({
-						required_error: 'Påkrævet',
+						required_error: t('common.required'),
 					})
-					.min(8, 'Telefonnummeret skal være mindst 8 tegn'),
+					.min(8, t('common.phoneMinLength')),
 			}),
 		)
-		.min(1, 'Det skal være mindst 1 kontaktperson')
-		.max(2, 'Det kan maksimalt være 2 kontaktpersoner'),
+		.min(1, t('auth.register.minContactPersons'))
+		.max(2, t('auth.register.maxContactPersons')),
 	acceptedPrivacyPolicy: z
 		.boolean({
-			required_error: 'Påkrævet',
+			required_error: t('common.required'),
 		})
 		.refine((value) => value === true, {
-			message: 'Påkrævet',
+			message: t('common.required'),
 		}),
 });
 
@@ -296,14 +301,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (res) {
 			toast.add({
 				icon: 'i-material-symbols-person-check',
-				title: 'Konto oprettet',
-				description: 'Skal vi tage dig til login siden?',
+				title: t('auth.register.accountCreated.title'),
+				description: t('auth.register.accountCreated.description'),
 				duration: 20000,
 				actions: [
 					{
-						label: 'Ja, før mig til login siden',
+						label: t('auth.register.accountCreated.action'),
 						onClick: async () => {
-							await navigateTo('/auth/login');
+							await navigateTo(localePath('/auth/login'));
 						},
 					},
 				],
@@ -311,11 +316,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: () => onSubmit(event),
 					},
 				],
@@ -332,18 +337,18 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		} else if (error.statusCode === 409) {
 			form.value!.setErrors([
 				{
-					message: 'Email er allerede i brug',
+					message: t('auth.register.emailInUse'),
 					name: 'email',
 				},
 			]);
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: () => onSubmit(event),
 					},
 				],

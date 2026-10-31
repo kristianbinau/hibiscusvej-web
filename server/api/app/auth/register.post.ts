@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { sendAdminNotification } from '~~/server/utils/notification';
 
 const LOG_MODULE = 'Api/Auth/Register';
 
@@ -135,39 +136,19 @@ export default defineEventHandler(async (event) => {
 	/**
 	 * Notify Admins
 	 */
-	try {
-		const admins = await useDrizzle()
-			.select()
-			.from(tables.users)
-			.where(eq(tables.users.admin, true))
-			.all();
-		const adminUserIds = admins.map((admin) => admin.id);
-
-		const topic = `admin_notify_new_user-${user.id}`;
-		const title = 'Ny bruger!';
-		const body = `#${user.id} er blevet oprettet, og venter på verificering.`;
-
-		const pushMessage = {
-			data: JSON.stringify({
-				title: title,
-				options: {
-					body: body,
-					tag: topic,
-					link: `/u/admin/users?userId=${user.id}`,
-					silent: true,
-				},
-			}),
-			options: {
-				topic: topic,
-				ttl: 86400,
-				urgency: 'normal' as const,
-			},
-		} as WebPushMessage;
-
-		await sendPushNotificationToUserIds(adminUserIds, pushMessage);
-	} catch (error) {
-		void logError(LOG_MODULE, 'Failed Notify Admins', error);
-	}
+	await sendAdminNotification({
+		logModule: LOG_MODULE,
+		topic: `admin_notify_new_user-${user.id}`,
+		link: `/u/admin/users?userId=${user.id}`,
+		// The new-user push selects ALL admin users, system admins included —
+		// this payload's historical recipient set.
+		includeSystemAdmins: true,
+		title: { key: 'push.admin.newUser' },
+		body: {
+			key: 'push.admin.newUserCreatedBody',
+			params: { userId: user.id },
+		},
+	});
 
 	setResponseStatus(event, 201);
 	return true;

@@ -5,6 +5,7 @@
 		:min-value="minDate"
 		:max-value="maxDate"
 		:year-controls="false"
+		:locale="localeTag"
 		v-model:placeholder="placeholderValue"
 		@update:placeholder="(placeholder: any) => handleMonthChange(placeholder)"
 	>
@@ -23,10 +24,12 @@
 import { type DateValue, CalendarDate, today } from '@internationalized/date';
 import type { Booking } from '~/utils/types/global';
 
+const { t } = useI18n();
+const { localeTag } = useLocaleDate();
+
 const toast = useToast();
 
 const TIMEZONE = 'Europe/Copenhagen';
-const LOCALE = 'da-DK';
 
 const minDate = today(TIMEZONE);
 const maxDate = today(TIMEZONE).add({ years: 1 });
@@ -56,23 +59,22 @@ watch(selectedDate, (newValue) => {
 			if (booking.request) {
 				toast.add({
 					icon: 'i-material-symbols-warning-outline-rounded',
-					title: 'Advarsel!',
-					description:
-						'Du har allerede en booking-anmodning den dag. Vent på at den bliver godkendt eller afvist.',
+					title: t('common.warning'),
+					description: t('booking.calendar.ownRequest'),
 					duration: 10000,
 				});
 			} else {
 				toast.add({
 					icon: 'i-material-symbols-info-outline-rounded',
-					title: 'Info',
-					description: 'Du har allerede en booking den dag',
+					title: t('booking.calendar.infoTitle'),
+					description: t('booking.calendar.ownBooking'),
 				});
 			}
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-warning-outline-rounded',
-				title: 'Advarsel!',
-				description: 'Der er allerede en booking den dag',
+				title: t('common.warning'),
+				description: t('booking.calendar.otherBooking'),
 			});
 		}
 	}

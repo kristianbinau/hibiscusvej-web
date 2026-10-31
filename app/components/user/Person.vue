@@ -14,24 +14,34 @@
 						<template v-if="isCreated">
 							{{
 								personIndex
-									? `${personIndex}. Kontaktperson`
-									: `Kontaktperson ID: ${person.id}`
+									? t('settings.persons.title', { n: personIndex })
+									: t('settings.persons.idTitle', { id: person.id })
 							}}
 						</template>
-						<template v-else> Uoprettet Konktaktperson </template>
+						<template v-else>
+							{{ t('settings.persons.unsavedTitle') }}
+						</template>
 					</h3>
 				</div>
 			</template>
 
-			<UFormField label="Name" name="name" required>
+			<UFormField :label="t('settings.persons.nameLabel')" name="name" required>
 				<UInput v-model="state.name" class="w-full" />
 			</UFormField>
 
-			<UFormField label="Email" name="email" required>
+			<UFormField
+				:label="t('settings.persons.emailLabel')"
+				name="email"
+				required
+			>
 				<UInput v-model="state.email" class="w-full" />
 			</UFormField>
 
-			<UFormField label="Phone" name="phone" required>
+			<UFormField
+				:label="t('settings.persons.phoneLabel')"
+				name="phone"
+				required
+			>
 				<UInput v-model="state.phone" class="w-full" />
 			</UFormField>
 
@@ -45,7 +55,7 @@
 						variant="soft"
 						class="flex-1"
 						block
-						>Slet Person</UButton
+						>{{ t('settings.persons.delete') }}</UButton
 					>
 
 					<UButton
@@ -55,7 +65,7 @@
 						type="submit"
 						class="flex-1"
 						block
-						>Gem Ændringer</UButton
+						>{{ t('settings.persons.save') }}</UButton
 					>
 				</template>
 
@@ -66,7 +76,7 @@
 						variant="soft"
 						class="flex-1"
 						block
-						>Fjern Person</UButton
+						>{{ t('settings.persons.remove') }}</UButton
 					>
 
 					<UButton
@@ -75,7 +85,7 @@
 						type="submit"
 						class="flex-1"
 						block
-						>Opret Person</UButton
+						>{{ t('settings.persons.create') }}</UButton
 					>
 				</template>
 			</template>
@@ -89,6 +99,8 @@ import type { Form, FormSubmitEvent } from '#ui/types';
 import type { MePerson } from '~/utils/types/settings';
 
 const emit = defineEmits(['delete']);
+
+const { t } = useI18n();
 
 const person = defineModel<MePerson>('person', {
 	required: true,
@@ -105,18 +117,18 @@ const toast = useToast();
 
 const schema = z.object({
 	name: z.string({
-		required_error: 'Påkrævet',
+		required_error: t('common.required'),
 	}),
 	email: z
 		.string({
-			required_error: 'Påkrævet',
+			required_error: t('common.required'),
 		})
-		.email('Ugyldig email'),
+		.email(t('common.invalidEmail')),
 	phone: z
 		.string({
-			required_error: 'Påkrævet',
+			required_error: t('common.required'),
 		})
-		.min(8, 'Telefonnummeret skal være mindst 8 tegn'),
+		.min(8, t('common.phoneMinLength')),
 });
 
 type Schema = z.output<typeof schema>;
@@ -159,8 +171,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 			});
 		}
 	}
@@ -186,8 +198,8 @@ async function onDelete() {
 		if (res) {
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Success!',
-				description: 'Kontaktpersonen blev slettet',
+				title: t('common.success'),
+				description: t('settings.persons.deleted'),
 			});
 		}
 
@@ -195,11 +207,11 @@ async function onDelete() {
 	} catch (error: any) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Prøv igen',
+					label: t('common.retry'),
 					onClick: onDelete,
 				},
 			],
@@ -231,8 +243,8 @@ async function createPerson(event: FormSubmitEvent<Schema>) {
 
 		toast.add({
 			icon: 'i-material-symbols-check-circle-outline-rounded',
-			title: 'Success!',
-			description: 'Kontaktpersonen blev oprettet',
+			title: t('common.success'),
+			description: t('settings.persons.created'),
 		});
 	}
 }
@@ -258,8 +270,8 @@ async function updatePerson(event: FormSubmitEvent<Schema>) {
 
 		toast.add({
 			icon: 'i-material-symbols-check-circle-outline-rounded',
-			title: 'Success!',
-			description: 'Kontaktpersonen blev opdateret',
+			title: t('common.success'),
+			description: t('settings.persons.updated'),
 		});
 	}
 }

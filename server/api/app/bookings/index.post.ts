@@ -1,10 +1,12 @@
 import { z } from 'zod/v4';
 import { type UTCDate, UTCDateMini } from '@date-fns/utc';
 import { endOfYesterday, isAfter, addDays, isBefore } from 'date-fns';
+import { AUTO_CLOSE_HANDLED_TEXT } from '#shared/constants';
 import {
 	sendBookingRequestNotificationForAdmin,
 	sendBookingRequestNotificationForUser,
 } from '~~/server/utils/notification';
+import { createLocalizedError, ERROR_KEYS } from '~~/server/utils/i18n-errors';
 
 const LOG_MODULE = 'Api/Booking/Create';
 
@@ -41,11 +43,15 @@ export default defineEventHandler(async (event) => {
 
 	// If user is not verified, return 403 Forbidden
 	if (user.verifiedAt === null) {
-		throw createError({
-			statusCode: 403,
-			statusMessage: 'Forbidden',
-			message: 'Din bruger er ikke verificeret.',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingNotVerified,
+			{},
+			{
+				statusCode: 403,
+				statusMessage: 'Forbidden',
+				message: 'Din bruger er ikke verificeret.',
+			},
+		);
 	}
 
 	const activeRepremandBan = await useDrizzle()
@@ -66,21 +72,21 @@ export default defineEventHandler(async (event) => {
 
 	// If user is banned, return 403 Forbidden
 	if (activeRepremandBan) {
-		const message = activeRepremandBan.expiresAt
-			? `Din bruger er midlertidigt udelukket fra at oprette booking indtil ${activeRepremandBan.expiresAt.toLocaleDateString(
-					'da-DK',
-					{
-						day: '2-digit',
-						month: 'long',
-						year: '2-digit',
-					},
-				)}.`
-			: 'Din bruger er udelukket fra at oprette booking.';
-		throw createError({
-			statusCode: 403,
-			statusMessage: 'Forbidden',
-			message: message,
-		});
+		throw createLocalizedError(
+			activeRepremandBan.expiresAt
+				? ERROR_KEYS.bookingBannedUntil
+				: ERROR_KEYS.bookingBanned,
+			activeRepremandBan.expiresAt
+				? { date: activeRepremandBan.expiresAt.toISOString() }
+				: {},
+			{
+				statusCode: 403,
+				statusMessage: 'Forbidden',
+				message: activeRepremandBan.expiresAt
+					? 'Din bruger er midlertidigt udelukket fra at oprette booking indtil {date}.'
+					: 'Din bruger er udelukket fra at oprette booking.',
+			},
+		);
 	}
 
 	const date = new UTCDateMini(body.date);
@@ -131,8 +137,7 @@ export default defineEventHandler(async (event) => {
 			.update(tables.communalBookingRequests)
 			.set({
 				handledBy: authUser.user.id,
-				handledText:
-					'Automatisk lukket ved oprettelse af booking af anden bruger',
+				handledText: AUTO_CLOSE_HANDLED_TEXT,
 				handledAt: new Date(),
 				updatedAt: new Date(),
 			})
@@ -163,8 +168,14 @@ export default defineEventHandler(async (event) => {
 				logModule: LOG_MODULE,
 				userId: bookingRequest.userId,
 				bookingRequestId: bookingRequest.id,
-				title: 'Booking anmodning, lukket automatisk',
-				body: `#${bookingRequest.userId} fik lukket en anmodning automatisk, da der blev oprettet en booking af ${authUser.user.id}.`,
+				title: { key: 'push.admin.bookingRequestClosed' },
+				body: {
+					key: 'push.admin.bookingRequestClosedBody',
+					params: {
+						userId: bookingRequest.userId,
+						bookedByUserId: authUser.user.id,
+					},
+				},
 			});
 
 			/**
@@ -174,8 +185,8 @@ export default defineEventHandler(async (event) => {
 				logModule: LOG_MODULE,
 				userId: bookingRequest.userId,
 				bookingRequestId: bookingRequest.id,
-				title: 'Booking anmodning, lukket automatisk',
-				body: `Din booking anmodning blev lukket automatisk, da der blev oprettet en booking af en anden bruger.`,
+				title: { key: 'push.user.bookingRequestClosed' },
+				body: { key: 'push.user.bookingRequestClosedBody' },
 			});
 		}
 	} catch (error) {
@@ -198,20 +209,28 @@ export default defineEventHandler(async (event) => {
 export async function checkBookingValidity(from: UTCDate, to: UTCDate) {
 	// If from is later than to, return 400 Bad Request
 	if (isAfter(from, to)) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid Time Range',
-			message: 'Start tidspunktet skal være tidligere end slut tidspunktet.',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingStartAfterEnd,
+			{},
+			{
+				statusCode: 400,
+				statusMessage: 'Invalid Time Range',
+				message: 'Start tidspunktet skal være tidligere end slut tidspunktet.',
+			},
+		);
 	}
 
 	// If from is yesterday, return 400 Bad Request
 	if (!isAfter(from, endOfYesterday())) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid Time Range',
-			message: 'Booking kan ikke starte i fortiden.',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingStartInPast,
+			{},
+			{
+				statusCode: 400,
+				statusMessage: 'Invalid Time Range',
+				message: 'Booking kan ikke starte i fortiden.',
+			},
+		);
 	}
 
 	// Is there a booking that overlaps with the new booking?
@@ -237,10 +256,15 @@ export async function checkBookingValidity(from: UTCDate, to: UTCDate) {
 
 	// If there is an overlapping booking, return 409 Conflict
 	if (overlappingBooking) {
-		throw createError({
-			statusCode: 409,
-			statusMessage: 'Conflict',
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingSlotTaken,
+			{},
+			{
+				statusCode: 409,
+				statusMessage: 'Conflict',
+				message: 'Der er allerede en booking i det tidsrum',
+			},
+		);
 	}
 }
 
@@ -264,30 +288,49 @@ function shouldCheckBookingLimits(_user: User, date: UTCDate): boolean {
  */
 async function checkBookingLimits(user: User, date: UTCDate) {
 	if ((await checkConsecutiveBookings(user.id, date)) >= maxConsecutiveDays) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Max Consecutive Bookings Reached',
-			message:
-				maxConsecutiveDays > 1
-					? `Du kan maksimalt have ${maxConsecutiveDays} sammenhængende bookinger.`
-					: 'Du kan ikke have sammenhængende bookinger.',
-		});
+		throw maxConsecutiveDays > 1
+			? createLocalizedError(
+					ERROR_KEYS.bookingMaxConsecutiveReached,
+					{ count: maxConsecutiveDays },
+					{
+						statusCode: 400,
+						statusMessage: 'Max Consecutive Bookings Reached',
+						message: `Du kan maksimalt have ${maxConsecutiveDays} sammenhængende bookinger.`,
+					},
+				)
+			: createLocalizedError(
+					ERROR_KEYS.bookingNoConsecutiveAllowed,
+					{},
+					{
+						statusCode: 400,
+						statusMessage: 'Max Consecutive Bookings Reached',
+						message: 'Du kan ikke have sammenhængende bookinger.',
+					},
+				);
 	}
 
 	if ((await checkWeekBookings(user.id, date)) >= maxDaysPerWeek) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Max Weekly Bookings Reached',
-			message: `Du kan maksimalt have ${maxDaysPerWeek} bookinger hver 7. dag.`,
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingMaxWeeklyReached,
+			{ count: maxDaysPerWeek },
+			{
+				statusCode: 400,
+				statusMessage: 'Max Weekly Bookings Reached',
+				message: `Du kan maksimalt have ${maxDaysPerWeek} bookinger hver 7. dag.`,
+			},
+		);
 	}
 
 	if ((await checkMonthBookings(user.id, date)) >= maxDaysPerMonth) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Max Monthly Bookings Reached',
-			message: `Du kan maksimalt have ${maxDaysPerMonth} bookinger hver 31. dag.`,
-		});
+		throw createLocalizedError(
+			ERROR_KEYS.bookingMaxMonthlyReached,
+			{ count: maxDaysPerMonth },
+			{
+				statusCode: 400,
+				statusMessage: 'Max Monthly Bookings Reached',
+				message: `Du kan maksimalt have ${maxDaysPerMonth} bookinger hver 31. dag.`,
+			},
+		);
 	}
 }
 

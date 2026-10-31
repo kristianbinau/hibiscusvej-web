@@ -55,3 +55,23 @@ jobs:
         run: npm ci
       - name: Type check
         run: npm run check:types
+
+  i18n-keys:
+    name: i18n Keys
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      # vue-i18n-extract over app/** vs i18n/locales/*.yaml. Server-referenced
+      # errors.* keys are covered by the server-key catalog unit test.
+      - name: Check i18n catalog keys
+        run: npm run check:i18n

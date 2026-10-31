@@ -45,8 +45,11 @@ export default defineEventHandler(async (event) => {
 		logModule: LOG_MODULE,
 		userId: authUser.user.id,
 		bookingRequestId: id,
-		title: 'Booking anmodning, slettet',
-		body: `#${authUser.user.id} har slettet sin booking anmodning #${id}.`,
+		title: { key: 'push.admin.bookingRequestDeleted' },
+		body: {
+			key: 'push.admin.bookingRequestDeletedBody',
+			params: { userId: authUser.user.id, requestId: id },
+		},
 	});
 
 	return true;

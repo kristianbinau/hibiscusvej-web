@@ -2,12 +2,11 @@
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
 			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">
-				Mine booking anmodninger
+				{{ t('booking.request.title') }}
 			</h1>
 			<p>
-				Her kan du se dine booking anmodninger og slette dem hvis du har brug
-				for det.<br />
-				Anmodninger kan ikke slettes efter de er blevet håndteret.
+				{{ t('booking.request.description1') }}<br />
+				{{ t('booking.request.description2') }}
 			</p>
 		</div>
 
@@ -22,23 +21,23 @@
 				<template #handledAt-cell="{ row }">
 					<UBadge
 						v-if="row.getValue<boolean | null>('permitted') === null"
-						label="Afventer"
+						:label="t('booking.request.pending')"
 						color="warning"
 					/>
 
 					<UBadge
 						v-else-if="row.getValue<boolean>('permitted')"
-						label="Godkendt"
+						:label="t('booking.request.approved')"
 						color="success"
 					/>
-					<UBadge v-else label="Afvist" color="error" />
+					<UBadge v-else :label="t('booking.request.rejected')" color="error" />
 				</template>
 
 				<template #id-cell="{ row }">
-					<UTooltip text="Klik for at fjerne booking anmodning">
+					<UTooltip :text="t('booking.request.deleteTooltip')">
 						<UButton
 							size="md"
-							label="Slet denne anmodning"
+							:label="t('booking.request.delete')"
 							color="error"
 							variant="soft"
 							:disabled="
@@ -53,31 +52,35 @@
 
 				<template #expanded="{ row }">
 					<div class="flex flex-col gap-4">
-						<UFormField label="Din Begrundelse">
+						<UFormField :label="t('booking.request.yourReason')">
 							<p>{{ row.getValue('requestText') }}</p>
 						</UFormField>
 
-						<UFormField label="Administrators Beslutning">
+						<UFormField :label="t('booking.request.adminDecision')">
 							<UBadge
 								v-if="row.getValue<boolean | null>('permitted') === null"
-								label="Afventer"
+								:label="t('booking.request.pending')"
 								color="warning"
 							/>
 
 							<UBadge
 								v-else-if="row.getValue<boolean>('permitted')"
-								label="Godkendt"
+								:label="t('booking.request.approved')"
 								color="success"
 							/>
-							<UBadge v-else label="Afvist" color="error" />
+							<UBadge
+								v-else
+								:label="t('booking.request.rejected')"
+								color="error"
+							/>
 						</UFormField>
 
 						<UFormField
 							v-if="row.getValue<string | null>('handledText') !== null"
-							label="Administrators Forklaring"
+							:label="t('booking.request.adminExplanation')"
 						>
 							<p>
-								{{ row.getValue('handledText') }}
+								{{ displayHandledText(row.getValue('handledText')) }}
 							</p>
 						</UFormField>
 					</div>
@@ -95,6 +98,7 @@ type MyBookingRequestsApiResponse =
 	InternalApi['/api/app/bookings/requests/me']['get'];
 
 import { isAfter } from 'date-fns';
+import { AUTO_CLOSE_HANDLED_TEXT } from '#shared/constants';
 
 const UButton = resolveComponent('UButton');
 const UBadge = resolveComponent('UBadge');
@@ -104,8 +108,11 @@ definePageMeta({
 	middleware: 'auth-required',
 });
 
+const { t } = useI18n();
+const { formatDate } = useLocaleDate();
+
 useHead({
-	title: 'Mine bookinger',
+	title: () => t('nav.myBookings'),
 });
 
 const toast = useToast();
@@ -119,6 +126,20 @@ type MyBookingRequestRow = {
 	permitted: boolean | null;
 	id: number;
 };
+
+/**
+ * Render the persisted `handledText` for residents. The server-written
+ * auto-close text (`AUTO_CLOSE_HANDLED_TEXT`) is replaced by its localized
+ * counterpart; anything else is admin-entered free text (UGC) and is shown
+ * raw, exactly as persisted.
+ */
+function displayHandledText(handledText: string | null): string {
+	if (handledText === AUTO_CLOSE_HANDLED_TEXT) {
+		return t('booking.request.autoClosed');
+	}
+
+	return handledText ?? '';
+}
 
 const columns: TableColumn<MyBookingRequestRow>[] = [
 	{
@@ -141,33 +162,33 @@ const columns: TableColumn<MyBookingRequestRow>[] = [
 	},
 	{
 		accessorKey: 'handledAt',
-		header: 'Status',
+		header: t('booking.request.status'),
 	},
 	{
 		accessorKey: 'date',
-		header: 'Dato',
-		cell: ({ row }) => row.getValue<Date>('date').toLocaleDateString(),
+		header: t('common.date'),
+		cell: ({ row }) => formatDate(row.getValue<Date>('date')),
 	},
 	{
 		accessorKey: 'createdAt',
-		header: 'Oprettet',
-		cell: ({ row }) => row.getValue<Date>('createdAt').toLocaleDateString(),
+		header: t('common.createdAt'),
+		cell: ({ row }) => formatDate(row.getValue<Date>('createdAt')),
 	},
 	{
 		accessorKey: 'id',
-		header: 'Handlinger',
+		header: t('common.actions'),
 	},
 	{
 		accessorKey: 'handledText',
-		header: 'Håndteret Tekst',
+		header: t('booking.request.handledText'),
 	},
 	{
 		accessorKey: 'requestText',
-		header: 'Anmodnings Tekst',
+		header: t('booking.request.requestText'),
 	},
 	{
 		accessorKey: 'permitted',
-		header: 'Tilladt',
+		header: t('booking.request.permitted'),
 	},
 ];
 
@@ -222,18 +243,18 @@ async function deleteBookingRequest(id: number) {
 
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Success!',
-				description: 'Booking anmodning blev slettet',
+				title: t('common.success'),
+				description: t('booking.request.deleted'),
 			});
 		}
 	} catch (error) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Prøv igen',
+					label: t('common.retry'),
 					onClick: () => deleteBookingRequest(id),
 				},
 			],

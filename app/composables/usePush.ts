@@ -1,4 +1,5 @@
 export const usePush = () => {
+	const { t } = useI18n();
 	const runtimeConfig = useRuntimeConfig();
 	const toast = useToast();
 
@@ -66,10 +67,10 @@ export const usePush = () => {
 			return true;
 		} catch {
 			toast.add({
-				title: 'Der opstod en fejl under oprettelse af notifikationer',
+				title: t('common.notifications.subscribeError'),
 				actions: [
 					{
-						label: 'Genindlæs siden',
+						label: t('common.reloadPage'),
 						onClick: () => {
 							location.reload();
 						},
@@ -118,18 +119,18 @@ export const usePush = () => {
 
 			if (!res) {
 				toast.add({
-					title: 'Oprettelse af notifikationer blev afvist',
+					title: t('common.notifications.subscribeRejected'),
 				});
 				return false;
 			}
 
 			toast.add({
-				title: 'Notifikationer er nu aktiveret',
+				title: t('common.notifications.subscribed'),
 			});
 			return true;
 		} catch {
 			toast.add({
-				title: 'Der opstod en fejl under oprettelse af notifikationer',
+				title: t('common.notifications.subscribeError'),
 			});
 			return false;
 		}

@@ -6,13 +6,15 @@
 		class="w-full"
 		:disabled="loading"
 		:loading="loading"
-		:placeholder="loading ? 'Indlæser...' : 'Vælg lejlighed'"
+		:placeholder="loading ? t('common.loading') : t('common.selectApartment')"
 	/>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type { Apartment } from '~/utils/types/global';
+
+const { t } = useI18n();
 
 const selected = defineModel<number | undefined>();
 

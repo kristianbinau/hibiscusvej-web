@@ -12,10 +12,12 @@
 			>
 				<UCard>
 					<template #header>
-						<h1 class="text-2xl font-semibold text-(--ui-primary)">Login</h1>
+						<h1 class="text-2xl font-semibold text-(--ui-primary)">
+							{{ t('auth.login.title') }}
+						</h1>
 					</template>
 
-					<UFormField label="Email" name="email">
+					<UFormField :label="t('auth.fields.email')" name="email">
 						<UInput
 							v-model="state.email"
 							autocomplete="email"
@@ -24,7 +26,11 @@
 						/>
 					</UFormField>
 
-					<UFormField label="Password" name="password" class="mt-3">
+					<UFormField
+						:label="t('auth.login.passwordLabel')"
+						name="password"
+						class="mt-3"
+					>
 						<Password v-model="state.password" class="w-full" />
 					</UFormField>
 
@@ -33,10 +39,10 @@
 							class="flex gap-3 flex-wrap md:flex-nowrap flex-1 justify-between"
 						>
 							<ULink
-								to="/auth/register"
+								:to="localePath('/auth/register')"
 								class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 							>
-								Har du ikke en konto?
+								{{ t('auth.login.noAccount') }}
 							</ULink>
 
 							<UButton
@@ -44,7 +50,7 @@
 								class="md:max-w-[48%]"
 								type="submit"
 								block
-								>Login</UButton
+								>{{ t('auth.login.submit') }}</UButton
 							>
 						</div>
 					</template>
@@ -63,16 +69,19 @@ definePageMeta({
 	middleware: 'guest-required',
 });
 
+const { t } = useI18n();
+const localePath = useLocalePath();
+
 useHead({
-	title: 'Login',
+	title: () => t('auth.login.title'),
 });
 
 const { hash } = useHash();
 const toast = useToast();
 
 const schema = z.object({
-	email: z.string({ required_error: 'Påkrævet' }),
-	password: z.string({ required_error: 'Påkrævet' }),
+	email: z.string({ required_error: t('common.required') }),
+	password: z.string({ required_error: t('common.required') }),
 });
 
 type Schema = z.output<typeof schema>;
@@ -104,22 +113,26 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (res && 'singleUse' in res && res.singleUse === true) {
 			toast.add({
 				icon: 'i-material-symbols-info-outline-rounded',
-				title: 'Engangskode brugt!',
-				description:
-					'Da du har brugt en engangskode, er du blevet videresendt for at oprette en ny adgangskode.',
+				title: t('auth.login.singleUseUsed.title'),
+				description: t('auth.login.singleUseUsed.description'),
 				duration: 10000,
 			});
-			await navigateTo(`/auth/reset?loginId=${res.loginId}`);
+			await navigateTo(
+				localePath({
+					path: '/auth/reset',
+					query: { loginId: res.loginId },
+				}),
+			);
 		} else if (res && 'accessToken' in res) {
-			await navigateTo('/u');
+			await navigateTo(localePath('/u'));
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: () => onSubmit(event),
 					},
 				],
@@ -130,21 +143,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 			form.value!.setErrors([
 				{
 					name: 'email',
-					message: 'Email eller kodeord er forkert',
+					message: t('auth.login.wrongCredentials'),
 				},
 				{
 					name: 'password',
-					message: 'Email eller kodeord er forkert',
+					message: t('auth.login.wrongCredentials'),
 				},
 			]);
 		} else {
 			toast.add({
 				icon: 'i-material-symbols-error-outline-rounded',
-				title: 'Fejl!',
-				description: 'Der skete en fejl...',
+				title: t('common.error'),
+				description: t('common.errorDescription'),
 				actions: [
 					{
-						label: 'Prøv igen',
+						label: t('common.retry'),
 						onClick: () => onSubmit(event),
 					},
 				],

@@ -14,6 +14,7 @@
 #   bookingRequest - booking request modal and lists
 #   parking        - parking
 #   settings       - settings page (incl. the "Sprog" section)
+#   home           - front page (index.vue)
 #   push.user      - web-push notifications rendered for the recipient
 #   push.admin     - web-push notifications rendered for admins
 #   errors         - client-side rendering of server error keys
@@ -43,6 +44,320 @@ langHint:
     en: Don't show again
     da: Vis ikke igen
 
+# ---------------------------------------------------------------------------
+# Shared UI words (buttons, labels, toast titles, table columns).
+# ---------------------------------------------------------------------------
+common:
+  error: Fejl!
+  errorDescription: Der skete en fejl...
+  retry: Prøv igen
+  reloadPage: Genindlæs siden
+  success: Success!
+  warning: Advarsel!
+  confirm: Godkend
+
+  # Validation messages shared by the client-side zod schemas.
+  required: Påkrævet
+  invalidEmail: Ugyldig email
+  phoneMinLength: Telefonnummeret skal være mindst 8 tegn
+
+  loading: Indlæser...
+  selectApartment: Vælg lejlighed
+
+  # Table column headers shared by the booking tables.
+  date: Dato
+  createdAt: Oprettet
+  actions: Handlinger
+
+  notifications:
+    unsupported: Notifikationer er ikke understøttet på denne enhed
+    permissionDenied: Du har ikke givet tilladelse til at vi må sende notifikationer
+    subscribeError: Der opstod en fejl under oprettelse af notifikationer
+    subscribeRejected: Oprettelse af notifikationer blev afvist
+    subscribed: Notifikationer er nu aktiveret
+
+# ---------------------------------------------------------------------------
+# Navigation items (layouts + page headings that mirror them).
+# ---------------------------------------------------------------------------
+nav:
+  communal: Fælleslokale
+  borrow: 'Lån & Leje'
+  parking: Parkering
+  contact: Kontakt
+  login: Login
+  bookRoom: Book lokale
+  myBookings: Mine bookinger
+  myRequests: Mine anmodninger
+  settings: Indstillinger
+  logout: Logout
+  admin: Admin
+
+# ---------------------------------------------------------------------------
+# Login / register / reset-password.
+# ---------------------------------------------------------------------------
+auth:
+  fields:
+    email: Email
+    name: Navn
+    phone: Telefon
+
+  login:
+    title: Login
+    passwordLabel: Password
+    noAccount: Har du ikke en konto?
+    submit: Login
+    wrongCredentials: Email eller kodeord er forkert
+    singleUseUsed:
+      title: Engangskode brugt!
+      description: Da du har brugt en engangskode, er du blevet videresendt for at oprette en ny adgangskode.
+
+  register:
+    title: Registér
+    submit: Registér
+
+    apartment: Lejlighed
+    apartmentDescription: Vi har brug for at vide hvilken lejlighed du bor i. Når du har oprettet din konto vil Afdelingsbestyrelsen verificere de indtastede informationer.
+
+    loginSection: Login
+    loginDescription: Vi har brug for login informationer, så du kan logge ind på din konto. Din adgangskoden bliver krypteret før den bliver sendt til vores servere.
+    passwordLabel: Kodeord
+    passwordMinLength: Kodeord skal være mindst 8 tegn
+
+    contactSection: Kontakt
+    contactDescription: Vi har brug for kontaktinformationer på alle beboere i lejligheden. Det er vigtigt at vi har korrekte informationer, så vi kan kontakte jer.
+    contactPersonNth: '{n}. kontaktperson'
+    addContactPerson: Tilføj kontaktperson
+    removeContactPerson: Fjern kontaktperson
+    minContactPersons: Det skal være mindst 1 kontaktperson
+    maxContactPersons: Det kan maksimalt være 2 kontaktpersoner
+
+    consentSection: Samtykke
+    # Split around the privacy-policy link: consentIntro + link + "."
+    consentIntro: Vi har brug for dit samtykke til at behandle dine informationer i overstemmelse med vores
+    privacyPolicyLink: privatlivspolitik
+    consentCheckbox: Jeg giver samtykke til at mine informationer bliver behandlet i henhold til privatlivspolitikken
+    hasAccount: Har du allerede en konto?
+
+    emailInUse: Email er allerede i brug
+    accountCreated:
+      title: Konto oprettet
+      description: Skal vi tage dig til login siden?
+      action: Ja, før mig til login siden
+
+  reset:
+    title: Ny adgangskode
+    description: Indtast engangskoden du har modtaget og vælg en ny adgangskode.
+    singleUseCodeLabel: Engangskode
+    newPasswordLabel: Ny adgangskode
+    submit: Ændre adgangskode
+    sameCodeAndPassword: Engangskode må ikke bruges som ny adgangskode
+    wrongCode: Kodeord er forkert
+    changed:
+      title: Adgangskode ændret!
+      description: Du kan nu logge ind med din nye adgangskode.
+
+  unsupportedBrowser:
+    title: Browser ikke understøttet
+    description: Login er ikke understøttet i din nuværende browser.
+    switchBrowser: Skift til Chrome eller Firefox for at kunne logge ind.
+    reason1: Dette er grundet manglende understøttelse af sikkerhedsstandarder i din nuværende browser.
+    reason2: Af sikkerhedsmæssige årsager kan vi derfor ikke tillade login.
+    backToHome: Tilbage til forsiden
+
+# ---------------------------------------------------------------------------
+# Booking calendar and booking flow ("Book fælleslokalet", "Mine bookinger"
+# and the booking-request list page).
+#
+# `booking.request.autoClosed` replaces the raw Danish `handledText` the
+# server writes on auto-close (`AUTO_CLOSE_HANDLED_TEXT` in
+# `shared/constants.ts`); its Danish value matches that text byte for byte.
+# ---------------------------------------------------------------------------
+booking:
+  title: Book fælleslokalet
+
+  notVerified:
+    title: Din konto er ikke verificeret!
+    description: Du kan ikke booke fælleslokalet før din konto er verificeret. Bestyrelsen vil verificere din konto hurtigst muligt.
+  warned: Du har en eller flere aktive advarsler.
+  banned:
+    title: Du er udelukket!
+    description: Du har en eller flere aktive udelukkelser. Du kan ikke booke fælleslokalet mens du er udelukket.
+
+  intro:
+    timing: Hver booking er fra kl. 10:00 til kl. 10:00 dagen efter.
+    deletable: Du kan fjerne din booking indtil før den starter.
+    # Split around the "Mine bookinger" link: seeBookings + link + "."
+    seeBookings: Dine bookinger kan ses under
+
+  speaker:
+    badge: NYT
+    heading: Vi har indkøbt en højtaler, som kan lånes!
+    # Split around the mailto link: body + link + bodyOutro
+    body: 'Så mangler du god lyd til festen, så send en mail til bestyrelsen:'
+    bodyOutro: ', så aftaler vi nærmere.'
+
+  # Split around the "reglerne" link: readTerms + link + "."
+  readTerms: Jeg har læst og accepteret
+  rulesLink: reglerne
+
+  submit: Book
+  enableNotifications: Aktiver notifikationer
+
+  bookedDescription: 'Du har booket fælleslokalet - {date}'
+  conflictTitle: Mislykkes!
+
+  calendar:
+    ownRequest: Du har allerede en booking-anmodning den dag. Vent på at den bliver godkendt eller afvist.
+    infoTitle: Info
+    ownBooking: Du har allerede en booking den dag
+    otherBooking: Der er allerede en booking den dag
+
+  me:
+    description1: Her kan du se dine bookinger og slette dem hvis du har brug for det.
+    description2: Bookinger kan ikke slettes hvis de er startet.
+    empty: Ingen bookinger fundet
+    delete: Slet booking
+    deleted: Booking blev slettet
+
+  request:
+    title: Mine booking anmodninger
+    description1: Her kan du se dine booking anmodninger og slette dem hvis du har brug for det.
+    description2: Anmodninger kan ikke slettes efter de er blevet håndteret.
+    status: Status
+    handledText: Håndteret Tekst
+    requestText: Anmodnings Tekst
+    permitted: Tilladt
+    pending: Afventer
+    approved: Godkendt
+    rejected: Afvist
+    deleteTooltip: Klik for at fjerne booking anmodning
+    delete: Slet denne anmodning
+    yourReason: Din Begrundelse
+    adminDecision: Administrators Beslutning
+    adminExplanation: Administrators Forklaring
+    autoClosed: Automatisk lukket ved oprettelse af booking af anden bruger
+    deleted: Booking anmodning blev slettet
+
+# ---------------------------------------------------------------------------
+# Booking request modal ("Anmod om godkendelse").
+# ---------------------------------------------------------------------------
+bookingRequest:
+  description: Den booking du har forsøgt at lave er ikke automatisk tilladt.
+
+  why:
+    title: Hvorfor?
+    intro: Bestyrelsen har oplevet, at der bliver foretaget bookinger uden hensyn til andre brugere.
+    examplesIntro: Eksempelvis at brugere foretager..
+    example1: Reservationer for at kunne sove længe og først gøre rent sent på eftermiddagen.
+    example2: Reservationer af hele weekender, hvor lokalet kun benyttes én dag.
+    outro: Derfor skal nogle bookinger nu godkendes manuelt af bestyrelsen for at sikre, at alle får en fair chance for at bruge fælleslokalet.
+
+  requestLine: Anmod om at få din booking godkendt manuelt.
+  triedToBook: Du har forsøgt at booke fælleslokalet d. {date}.
+
+  reasonLabel: Årsag
+  reasonHelp: Angiv årsagen for din booking
+  reasonPlaceholder: Jeg har brug for at booke fælleslokalet fordi...
+  reasonMinLength: Angiv venligst en mere udførlig årsag
+  submit: Anmod om godkendelse
+
+  errorTitle: Fejl
+  requestedDescription: 'Du har anmodet om en booking - {date}'
+  reloadError: Der skete en fejl, prøv at genindlæse siden.
+
+# Filled by Phase 3/4 (parking component is currently unused).
+parking: {}
+
+# ---------------------------------------------------------------------------
+# Settings page.
+# ---------------------------------------------------------------------------
+settings:
+  title: Indstillinger
+  description: Her kan du ændre oplysninger der er tilknyttet din bruger.
+
+  successTitle: Succes!
+  infoTitle: Info!
+
+  persons:
+    heading: Kontaktpersoner
+    description1: Tilføj eller fjern personer der er tilknyttet din bruger.
+    description2: Minimum én person skal være tilknyttet, max 2 personer.
+    addTooltip: Tilføj en person
+    title: '{n}. Kontaktperson'
+    idTitle: 'Kontaktperson ID: {id}'
+    unsavedTitle: Uoprettet kontaktperson
+    # NOTE: the Danish labels below are the ones the page shows today
+    # (kept exactly as-is, including "Name"/"Phone").
+    nameLabel: Name
+    emailLabel: Email
+    phoneLabel: Phone
+    delete: Slet Person
+    save: Gem Ændringer
+    remove: Fjern Person
+    create: Opret Person
+    deleted: Kontaktpersonen blev slettet
+    created: Kontaktpersonen blev oprettet
+    updated: Kontaktpersonen blev opdateret
+
+  notifications:
+    heading: Notificationer
+    description1: Aktiver notifikationer for at modtage beskeder fra os.
+    description2: Dette kan være opdateringer omkring din bruger, bookinger eller andet.
+    enableTooltip: Klik for at aktivere notifikationer på denne enhed
+    enable: Aktiver
+    disableTooltip: Klik for at deaktivere notifikationer på denne enhed
+    disable: Deaktiver
+    disableAllTooltip: Klik for at deaktivere notifikationer på alle enheder
+    disableAll: Deaktiver alle
+    disableAllWarning1: Du er ved at deaktivere notifikationer på alle enheder.
+    disableAllWarning2: Dette vil medføre, at du ikke længere modtager notifikationer.
+    notSubscribedHere: Du modtager ikke notifikationer på denne enhed
+    unsubscribedHere: Du modtager ikke længere notifikationer på denne enhed
+    unsubscribedEverywhere: Du modtager ikke længere notifikationer på nogen enheder
+
+  language:
+    heading: Sprog
+    description: Vælg hvilket sprog hjemmesiden skal vises på.
+
+  actions:
+    heading: Handlinger
+    description1: Foretag handlinger der påvirker din bruger.
+    description2: Disse handlinger kan ikke fortrydes.
+    logoutEverywhereTooltip: Klik for at logge ud på alle enheder
+    logoutEverywhere: Log ud på alle enheder
+    logoutEverywhereWarning1: Du er ved at logge ud på alle enheder.
+    logoutEverywhereWarning2: Dette vil medføre, at du skal logge ind igen på alle enheder.
+    deleteUserTooltip: Klik for at permanent slette din bruger
+    deleteUser: Slet bruger
+    deleteUserWarning1: Du er ved at slette din bruger.
+    deleteUserWarning2: Dette kan ikke fortrydes, og alle dine data vil blive slettet.
+    deleteUserBookingsNote: Fremtidige bookinger vil blive annulleret.
+    passwordLabel: Adgangskode
+    passwordHelp: Indtast din adgangskode for at bekræfte.
+    wrongPassword: Forkert adgangskode!
+
+  accountDeleted: Din bruger blev slettet, og du er blevet logget ud.
+
+# ---------------------------------------------------------------------------
+# Front page.
+# ---------------------------------------------------------------------------
+home:
+  title: Forside
+  welcome: Velkommen til Hibiscusvej 2-30
+  governedBy: Denne side er styret af boligens frivillige bestyrelse.
+  # Split around the board mailto link: contactIntro + link + "."
+  contactIntro: Hvis du har spørgsmål, er du altid velkommen til at kontakte
+  boardLink: bestyrelsen
+  # Split around the Facebook link: facebookIntro + link + facebookOutro
+  facebookIntro: Boligen har også en
+  facebookLink: Facebook-gruppe
+  facebookOutro: ', hvor der løbende bliver delt nyttig information.'
+
+# Filled by Phase 3 (server-rendered push notifications).
+push:
+  user: {}
+  admin: {}
+
 # Server error keys - the stable API contract lives in
 # `server/utils/i18n-errors.ts` (ERROR_KEYS). Each entry here mirrors the
 # Danish `message` the server sends as fallback; the client renders the
@@ -60,15 +375,3 @@ errors:
     noConsecutiveAllowed: Du kan ikke have sammenhængende bookinger.
     maxWeeklyReached: Du kan maksimalt have {count} bookinger hver 7. dag.
     maxMonthlyReached: Du kan maksimalt have {count} bookinger hver 31. dag.
-
-# Filled by Phase 2 (app strings).
-common: {}
-nav: {}
-auth: {}
-booking: {}
-bookingRequest: {}
-parking: {}
-settings: {}
-push:
-  user: {}
-  admin: {}

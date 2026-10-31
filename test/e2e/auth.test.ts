@@ -6,12 +6,21 @@ describe('auth', async () => {
 		host: 'http://localhost:3000',
 	});
 
+	// Playwright defaults to en-US, which the locale middleware would treat as
+	// an English preference; pin Danish so the existing assertions keep
+	// testing the Danish surface (implementation brief §7.12).
+	const createDanishPage = () =>
+		createPage(undefined, {
+			locale: 'da-DK',
+			extraHTTPHeaders: { 'Accept-Language': 'da-DK,da' },
+		});
+
 	test('login', async () => {
 		/**
 		 * Navigate to Login, Validate Title
 		 */
 
-		const page = await createPage();
+		const page = await createDanishPage();
 		await page.goto(url('/auth/login'), { waitUntil: 'hydration' });
 		const text = await page.textContent('h1');
 
@@ -58,7 +67,7 @@ describe('auth', async () => {
 	}, 10_000);
 
 	test('register', async () => {
-		const page = await createPage();
+		const page = await createDanishPage();
 		await page.goto(url('/auth/register'), { waitUntil: 'hydration' });
 		const text = await page.textContent('h1');
 		expect(text).toBe('Registér');

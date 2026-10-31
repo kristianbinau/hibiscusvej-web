@@ -92,6 +92,11 @@ nav:
   logout: Logout
   admin: Admin
 
+  # Footer privacy-policy link (LayoutLinks) and the back link in the
+  # minimal layout (auth pages).
+  privacyPolicy: Privatlivspolitik
+  back: Tilbage
+
 # ---------------------------------------------------------------------------
 # Login / register / reset-password.
 # ---------------------------------------------------------------------------

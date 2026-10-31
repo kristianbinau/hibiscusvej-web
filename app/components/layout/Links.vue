@@ -22,10 +22,10 @@
 				</ULink>
 
 				<ULink
-					to="/privacy"
+					:to="localePath('/privacy')"
 					class="text-neutral-500 underline hover:text-neutral-600 dark:hover:text-neutral-400"
 				>
-					Privatlivspolitik
+					{{ t('nav.privacyPolicy') }}
 				</ULink>
 			</div>
 
@@ -51,6 +51,9 @@
 	</section>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const { t } = useI18n();
+const localePath = useLocalePath();
+</script>
 
 <style></style>

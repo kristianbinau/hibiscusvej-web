@@ -11,20 +11,24 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '#ui/types';
 
-const links: NavigationMenuItem[] | NavigationMenuItem[][] = [
+const { t } = useI18n();
+const localePath = useLocalePath();
+
+const links = computed<NavigationMenuItem[] | NavigationMenuItem[][]>(() => [
 	[
 		{
+			// Site name — identical in every locale.
 			label: 'Hibiscusvej 2-30',
 			icon: 'Logo',
-			to: '/',
+			to: localePath('/'),
 		},
 	],
 	[
 		{
 			icon: 'i-material-symbols-arrow-back-rounded',
-			label: 'Tilbage',
-			to: '/',
+			label: t('nav.back'),
+			to: localePath('/'),
 		},
 	],
-];
+]);
 </script>

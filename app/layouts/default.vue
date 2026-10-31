@@ -15,43 +15,47 @@
 </template>
 
 <script setup lang="ts">
-const links = [
+const { t } = useI18n();
+const localePath = useLocalePath();
+
+const links = computed(() => [
 	[
 		{
+			// Site name — identical in every locale.
 			label: 'Hibiscusvej 2-30',
 			icon: 'Logo',
-			to: '/',
+			to: localePath('/'),
 		},
 	],
 	[
 		{
-			label: 'Fælleslokale',
+			label: t('nav.communal'),
 			icon: 'i-material-symbols-add-home-work-rounded',
-			to: '/communal',
+			to: localePath('/communal'),
 		},
 		{
-			label: 'Lån & Leje',
+			label: t('nav.borrow'),
 			icon: 'i-material-symbols-tools-power-drill',
-			to: '/borrow',
+			to: localePath('/borrow'),
 		},
 		{
-			label: 'Parkering',
+			label: t('nav.parking'),
 			icon: 'i-material-symbols-car-tag',
-			to: '/parking',
+			to: localePath('/parking'),
 		},
 		{
-			label: 'Kontakt',
+			label: t('nav.contact'),
 			icon: 'i-material-symbols-phone-enabled',
-			to: '/contact',
+			to: localePath('/contact'),
 		},
 	],
 	[
 		{
 			// @ts-ignore
 			icon: 'i-material-symbols-key-outline-rounded',
-			label: 'Login',
-			to: '/auth/login',
+			label: t('nav.login'),
+			to: localePath('/auth/login'),
 		},
 	],
-];
+]);
 </script>

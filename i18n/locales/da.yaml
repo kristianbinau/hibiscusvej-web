@@ -265,8 +265,84 @@ bookingRequest:
   requestedDescription: 'Du har anmodet om en booking - {date}'
   reloadError: Der skete en fejl, prøv at genindlæse siden.
 
-# Filled by Phase 3/4 (parking component is currently unused).
-parking: {}
+# ---------------------------------------------------------------------------
+# Parking request form (`ParkingRequest.vue`, rendered by the
+# `::parking-request` MDC tag on the parking content pages).
+#
+# The outgoing mail to AB Odense (the mailto subject/body and the zone
+# fragments interpolated into it) is INTENTIONALLY not localized: the
+# recipient is a Danish company, so the mail is written in Danish in both
+# locales. The mail-body preview in the modal therefore shows Danish text
+# on the English page as well.
+# ---------------------------------------------------------------------------
+parking:
+  request:
+    title: Anmod om parkeringstilladelse
+    description: Indtast dine oplysninger for at anmode om en parkeringstilladelse.
+    mailProgramNote: Anmodningen vil blive åbnet i dit standard mailprogram med alle oplysninger udfyldt. Du skal selv søge for at klikke på send og verificere at alle oplysninger er korrekte.
+
+    nameLabel: Navn
+    apartmentLabel: Lejlighed
+    numberplateLabel: Nummerplade
+    countryLabel: Land
+    countryPlaceholder: Vælg land
+    numberLabel: Nummer
+    numberplatePlaceholder: Indtast nummerplade
+    zoneLabel: Zone
+    zonePlaceholder: Vælg en eller flere zoner
+
+    abNote1: Vær opmærksom på, at anmodningen skal sendes til AB Odense for godkendelse.
+    # Split around the bold "individuel bekræftelse per zone":
+    # abNote2Intro + abNote2Highlight + abNote2Outro.
+    abNote2Intro: Du vil modtage en
+    abNote2Highlight: individuel bekræftelse per zone
+    abNote2Outro: via e-mail, når din anmodning er godkendt.
+
+    copyTooltip: Kopier til udklipsholder
+    submit: Åben anmodning i mailprogram
+    copiedToClipboard: Kopieret til udklipsholderen
+
+    # Client-side zod validation messages.
+    nameRequired: Navn er påkrævet
+    apartmentRequired: Lejlighed er påkrævet
+    numberplateRequired: Nummerplade er påkrævet
+    countryRequired: Land er påkrævet
+    countryInvalid: Ugyldigt land
+    zoneInvalid: Ugyldig zone
+    zoneMin: Vælg mindst én zone
+
+  # Zone labels ("Grønne pladser"/"Ekstra pladser" as in parking.md).
+  zones:
+    green: Grønne pladser (3930)
+    extra: Ekstra pladser (4744)
+
+  # Country names shown in the number-plate country selector.
+  countries:
+    DK: Danmark
+    SE: Sverige
+    NO: Norge
+    FI: Finland
+    DE: Tyskland
+    GB: Storbritannien
+    FR: Frankrig
+    ES: Spanien
+    IT: Italien
+    NL: Holland
+    BE: Belgien
+    PL: Polen
+    AT: Østrig
+    CH: Schweiz
+    LU: Luxembourg
+    IE: Irland
+    PT: Portugal
+    GR: Grækenland
+    CZ: Tjekkiet
+    HU: Ungarn
+    RO: Rumænien
+    SK: Slovakiet
+    SI: Slovenien
+    HR: Kroatien
+    BG: Bulgarien
 
 # ---------------------------------------------------------------------------
 # Settings page.

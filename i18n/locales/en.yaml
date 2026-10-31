@@ -245,8 +245,84 @@ bookingRequest:
   requestedDescription: 'You have requested a booking - {date}'
   reloadError: Something went wrong, try reloading the page.
 
-# Filled by Phase 3/4 (parking component is currently unused).
-parking: {}
+# ---------------------------------------------------------------------------
+# Parking request form (`ParkingRequest.vue`, rendered by the
+# `::parking-request` MDC tag on the parking content pages).
+#
+# The outgoing mail to AB Odense (the mailto subject/body and the zone
+# fragments interpolated into it) is INTENTIONALLY not localized: the
+# recipient is a Danish company, so the mail is written in Danish in both
+# locales. The mail-body preview in the modal therefore shows Danish text
+# on the English page as well.
+# ---------------------------------------------------------------------------
+parking:
+  request:
+    title: Request a parking permit
+    description: Enter your details to request a parking permit.
+    mailProgramNote: The request will open in your default mail program with all the details filled in. You need to click send yourself and verify that all the details are correct.
+
+    nameLabel: Name
+    apartmentLabel: Apartment
+    numberplateLabel: Number plate
+    countryLabel: Country
+    countryPlaceholder: Select a country
+    numberLabel: Number
+    numberplatePlaceholder: Enter the number plate
+    zoneLabel: Zone
+    zonePlaceholder: Select one or more zones
+
+    abNote1: Please note that the request must be sent to AB Odense for approval.
+    # Split around the bold "individual confirmation per zone":
+    # abNote2Intro + abNote2Highlight + abNote2Outro.
+    abNote2Intro: You will receive an
+    abNote2Highlight: individual confirmation per zone
+    abNote2Outro: by email once your request has been approved.
+
+    copyTooltip: Copy to clipboard
+    submit: Open the request in your mail program
+    copiedToClipboard: Copied to the clipboard
+
+    # Client-side zod validation messages.
+    nameRequired: Name is required
+    apartmentRequired: Apartment is required
+    numberplateRequired: Number plate is required
+    countryRequired: Country is required
+    countryInvalid: Invalid country
+    zoneInvalid: Invalid zone
+    zoneMin: Select at least one zone
+
+  # Zone labels ("Green spaces"/"Extra spaces" as in parking.md).
+  zones:
+    green: Green spaces (3930)
+    extra: Extra spaces (4744)
+
+  # Country names shown in the number-plate country selector.
+  countries:
+    DK: Denmark
+    SE: Sweden
+    NO: Norway
+    FI: Finland
+    DE: Germany
+    GB: United Kingdom
+    FR: France
+    ES: Spain
+    IT: Italy
+    NL: Netherlands
+    BE: Belgium
+    PL: Poland
+    AT: Austria
+    CH: Switzerland
+    LU: Luxembourg
+    IE: Ireland
+    PT: Portugal
+    GR: Greece
+    CZ: Czechia
+    HU: Hungary
+    RO: Romania
+    SK: Slovakia
+    SI: Slovenia
+    HR: Croatia
+    BG: Bulgaria
 
 # ---------------------------------------------------------------------------
 # Settings page.

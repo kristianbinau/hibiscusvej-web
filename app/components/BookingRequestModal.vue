@@ -1,36 +1,36 @@
 <template>
 	<UModal
-		:title="reason"
-		description="Den booking du har forsøgt at lave er ikke automatisk tilladt."
+		:title="localizedReason ?? reason"
+		:description="t('bookingRequest.description')"
 		:dismissible="true"
 		:close="true"
 	>
 		<template #body>
-			<UAlert color="neutral" variant="subtle" title="Hvorfor?" class="mb-4">
+			<UAlert
+				color="neutral"
+				variant="subtle"
+				:title="t('bookingRequest.why.title')"
+				class="mb-4"
+			>
 				<template #description>
-					Bestyrelsen har oplevet, at der bliver foretaget bookinger uden hensyn
-					til andre brugere. <br /><br />
-					Eksempelvis at brugere foretager..
+					{{ t('bookingRequest.why.intro') }} <br /><br />
+					{{ t('bookingRequest.why.examplesIntro') }}
 					<ul class="my-1">
 						<li class="list-disc ml-6">
-							Reservationer for at kunne sove længe og først gøre rent sent på
-							eftermiddagen.
+							{{ t('bookingRequest.why.example1') }}
 						</li>
 						<li class="list-disc ml-6">
-							Reservationer af hele weekender, hvor lokalet kun benyttes én dag.
+							{{ t('bookingRequest.why.example2') }}
 						</li>
 					</ul>
 					<br />
-					Derfor skal nogle bookinger nu godkendes manuelt af bestyrelsen for at
-					sikre, at alle får en fair chance for at bruge fælleslokalet.
+					{{ t('bookingRequest.why.outro') }}
 				</template>
 			</UAlert>
 
-			<p>Anmod om at få din booking godkendt manuelt.</p>
+			<p>{{ t('bookingRequest.requestLine') }}</p>
 			<p>
-				Du har forsøgt at booke fælleslokalet d.
-				<strong>{{ formattedDate }}</strong
-				>.
+				{{ t('bookingRequest.triedToBook', { date: formattedDate }) }}
 			</p>
 
 			<USeparator class="my-4" />
@@ -43,15 +43,15 @@
 				class="w-full"
 			>
 				<UFormField
-					label="Årsag"
+					:label="t('bookingRequest.reasonLabel')"
 					name="requestText"
-					help="Angiv årsagen for din booking"
+					:help="t('bookingRequest.reasonHelp')"
 					class="w-full"
 					required
 				>
 					<UTextarea
 						v-model="state.requestText"
-						placeholder="Jeg har brug for at booke fælleslokalet fordi..."
+						:placeholder="t('bookingRequest.reasonPlaceholder')"
 						class="w-full"
 					/>
 				</UFormField>
@@ -60,15 +60,15 @@
 					v-if="errorMessage"
 					color="error"
 					variant="subtle"
-					title="Fejl"
+					:title="t('bookingRequest.errorTitle')"
 					:description="errorMessage"
 					icon="i-material-symbols-error-outline-rounded"
 					class="mt-4"
 				/>
 
-				<UButton :loading="onSubmitLoading" type="submit" class="mt-4"
-					>Anmod om godkendelse</UButton
-				>
+				<UButton :loading="onSubmitLoading" type="submit" class="mt-4">{{
+					t('bookingRequest.submit')
+				}}</UButton>
 			</UForm>
 		</template>
 	</UModal>
@@ -80,11 +80,17 @@ import type { Form, FormSubmitEvent } from '#ui/types';
 
 const props = defineProps<{
 	date: string;
+	/** Raw server message — also stored as the request reason (admin-facing). */
 	reason: string;
+	/** Localized display text for the same message, when the server issued a key. */
+	localizedReason?: string;
 }>();
 
+const { t } = useI18n();
+const { formatDate } = useLocaleDate();
+
 const formattedDate = computed(() => {
-	return new Date(props.date).toLocaleDateString('da-DK', {
+	return formatDate(new Date(props.date), {
 		day: '2-digit',
 		month: 'short',
 		year: 'numeric',
@@ -97,8 +103,8 @@ const toast = useToast();
 
 const schema = z.object({
 	requestText: z
-		.string('Påkrævet')
-		.min(12, 'Angiv venligst en mere udførlig årsag'),
+		.string(t('common.required'))
+		.min(12, t('bookingRequest.reasonMinLength')),
 });
 
 type Schema = z.output<typeof schema>;
@@ -135,21 +141,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 		if (res) {
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Success!',
-				description: `Du har anmodet om en booking - ${bookAsDate.toLocaleDateString()}`,
+				title: t('common.success'),
+				description: t('bookingRequest.requestedDescription', {
+					date: formatDate(bookAsDate),
+				}),
 			});
 			emit('close', bookAsDate);
 		}
 	} catch (error: any) {
 		if (error.statusCode === 409) {
 			errorMessage.value =
-				error.data.message || 'Der er allerede en booking i det tidsrum';
+				localizeServerError(t, error) ?? t('errors.booking.slotTaken');
 		} else {
-			if (error.data.message) {
-				errorMessage.value = error.data.message;
-			} else {
-				errorMessage.value = 'Der skete en fejl, prøv at genindlæse siden.';
-			}
+			errorMessage.value =
+				localizeServerError(t, error) ?? t('bookingRequest.reloadError');
 		}
 	}
 

@@ -1,10 +1,12 @@
 <template>
 	<section class="sm:w-full lg:w-3/4 mx-auto pt-8 px-4 md:px-0">
 		<div class="mb-8">
-			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">Mine bookinger</h1>
+			<h1 class="text-(--ui-primary) text-2xl mt-2 mb-2">
+				{{ t('nav.myBookings') }}
+			</h1>
 			<p>
-				Her kan du se dine bookinger og slette dem hvis du har brug for det.<br />
-				Bookinger kan ikke slettes hvis de er startet.
+				{{ t('booking.me.description1') }}<br />
+				{{ t('booking.me.description2') }}
 			</p>
 		</div>
 
@@ -21,7 +23,9 @@
 						<div
 							class="flex flex-col items-center justify-center py-6 text-muted"
 						>
-							<div class="text-muted text-sm">Ingen bookinger fundet</div>
+							<div class="text-muted text-sm">
+								{{ t('booking.me.empty') }}
+							</div>
 						</div>
 					</template>
 				</UTable>
@@ -47,8 +51,11 @@ definePageMeta({
 	middleware: 'auth-required',
 });
 
+const { t } = useI18n();
+const { formatDate } = useLocaleDate();
+
 useHead({
-	title: 'Mine bookinger',
+	title: () => t('nav.myBookings'),
 });
 
 const toast = useToast();
@@ -89,10 +96,10 @@ function createSortableHeader(label: string) {
 const columns: TableColumn<MyBookingRow>[] = [
 	{
 		accessorKey: 'date',
-		header: createSortableHeader('Dato'),
+		header: createSortableHeader(t('common.date')),
 		cell: ({ row }) => {
 			const date = row.getValue<Date>('date');
-			return date.toLocaleDateString('da-DK', {
+			return formatDate(date, {
 				day: 'numeric',
 				month: 'short',
 				year: 'numeric',
@@ -107,10 +114,10 @@ const columns: TableColumn<MyBookingRow>[] = [
 	},
 	{
 		accessorKey: 'createdAt',
-		header: createSortableHeader('Oprettet'),
+		header: createSortableHeader(t('common.createdAt')),
 		cell: ({ row }) => {
 			const date = row.getValue<Date>('createdAt');
-			return date.toLocaleDateString('da-DK', {
+			return formatDate(date, {
 				day: 'numeric',
 				month: 'short',
 				year: 'numeric',
@@ -128,7 +135,7 @@ const columns: TableColumn<MyBookingRow>[] = [
 	},
 	{
 		id: 'actions',
-		header: 'Handlinger',
+		header: t('common.actions'),
 		meta: {
 			class: {
 				th: 'text-right sr-only sm:not-sr-only',
@@ -174,7 +181,7 @@ function getRowItems(row: Row<MyBookingRow>, isPast: boolean) {
 	actions.push([
 		{
 			type: 'label' as const,
-			label: 'Handlinger',
+			label: t('common.actions'),
 		},
 	]);
 
@@ -185,7 +192,7 @@ function getRowItems(row: Row<MyBookingRow>, isPast: boolean) {
 				type: 'separator' as const,
 			},
 			{
-				label: 'Slet booking',
+				label: t('booking.me.delete'),
 				icon: 'i-lucide-trash',
 				color: 'error' as const,
 				onSelect() {
@@ -235,18 +242,18 @@ async function deleteBooking(id: number) {
 
 			toast.add({
 				icon: 'i-material-symbols-check-circle-outline-rounded',
-				title: 'Success!',
-				description: 'Booking blev slettet',
+				title: t('common.success'),
+				description: t('booking.me.deleted'),
 			});
 		}
 	} catch (error) {
 		toast.add({
 			icon: 'i-material-symbols-error-outline-rounded',
-			title: 'Fejl!',
-			description: 'Der skete en fejl...',
+			title: t('common.error'),
+			description: t('common.errorDescription'),
 			actions: [
 				{
-					label: 'Prøv igen',
+					label: t('common.retry'),
 					onClick: () => deleteBooking(id),
 				},
 			],

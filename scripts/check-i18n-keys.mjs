@@ -1,16 +1,17 @@
 /**
- * i18n catalog key check (CI).
+ * i18n catalog key check (CI) — the permanent catalog drift guard.
  *
- * Wraps `vue-i18n-extract`'s report so the CI job fails on:
+ * Wraps `vue-i18n-extract`'s report so the CI job fails (non-zero exit) on:
  * - missing keys (used in `app/**` but absent from a locale file)
- * - unused LEAF keys — except keys referenced from server code
- *   (`server/**`), which vue-i18n-extract does not scan. Server-referenced
- *   keys (`errors.*`, `push.*`) are covered by the server-key catalog unit
- *   test instead (implementation brief §5); the same dotted-key candidates
- *   the unit test matches are treated as used here.
+ * - unused LEAF keys — catalog text no code consumes anymore
+ * - empty namespace placeholders (e.g. `foo: {}`) — they carry no checkable
+ *   keys and only exist while a namespace is awaiting implementation
  *
- * Empty namespace placeholders (e.g. `parking: {}`) are not leaf keys and
- * are ignored.
+ * except keys referenced from server code (`server/**`), which
+ * vue-i18n-extract does not scan. Server-referenced keys (`errors.*`,
+ * `push.*`) are covered by the server-key catalog unit test instead
+ * (implementation brief §5); the same dotted-key candidates the unit test
+ * matches are treated as used here.
  */
 import { createI18NReport } from 'vue-i18n-extract';
 import { readdir, readFile } from 'node:fs/promises';
@@ -80,7 +81,29 @@ const report = await createI18NReport({
 	languageFiles: './i18n/locales/*.yaml',
 });
 
-const problems = [];
+/**
+ * Empty namespaces (`foo: {}`) carry no leaf keys, so the unused-key check
+ * cannot see them. Every namespace is consumed by code now, so a leftover
+ * placeholder can only be catalog drift.
+ */
+const collectEmptyNamespaces = async () => {
+	const empty = [];
+	for (const name of localeFiles) {
+		const catalog = parse(await readFile(new URL(name, localeDir), 'utf8'));
+		for (const [namespace, value] of Object.entries(catalog)) {
+			if (
+				value !== null &&
+				typeof value === 'object' &&
+				Object.keys(value).length === 0
+			) {
+				empty.push(`empty namespace: ${namespace} (${name})`);
+			}
+		}
+	}
+	return empty;
+};
+
+const problems = [...(await collectEmptyNamespaces())];
 
 for (const { language, path } of report.missingKeys) {
 	problems.push(`missing: [${language}] ${path}`);
